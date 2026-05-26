@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { ArrowLeft, Moon, Sun, UserCircle } from 'lucide-react'
+import { Moon, Sun, UserCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { AppShell } from '../components/burnpal/AppShell'
 import { PageTransition } from '../components/layout/PageTransition'
@@ -105,15 +105,7 @@ export function SettingsPage() {
   return (
     <AppShell scrollable>
       <PageTransition className="mx-auto w-full max-w-2xl pb-8">
-        <header className="flex items-center gap-3 px-5 py-4">
-          <Link
-            to="/chat"
-            replace
-            className="glass-panel flex h-10 w-10 items-center justify-center rounded-full shadow-glass"
-            aria-label={t('action.back')}
-          >
-            <ArrowLeft className="h-5 w-5 text-slate-800" />
-          </Link>
+        <header className="px-5 py-4">
           <h1 className="text-lg font-semibold text-slate-800">{t('settings.title')}</h1>
         </header>
 
