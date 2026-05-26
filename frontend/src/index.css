@@ -1,0 +1,53 @@
+@import "tailwindcss";
+@import "./styles/tokens.css";
+@import "./styles/theme-dark.css";
+
+@theme {
+  --color-background: #f0fdf4;
+  --color-surface: #f0fdf4;
+  --color-foreground: #1f2937;
+  --color-primary: #34d399;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #2dd4bf;
+  --color-secondary-foreground: #ffffff;
+  --color-card: rgba(255, 255, 255, 0.6);
+  --color-accent: #2dd4bf;
+  --color-accent-foreground: #1f2937;
+  --color-muted: rgba(255, 255, 255, 0.65);
+  --color-muted-foreground: #64748b;
+  --color-border: rgba(255, 255, 255, 0.8);
+  --color-destructive: #ef4444;
+  --color-gray-900: #1f2937;
+  --color-gray-600: #64748b;
+  --color-slate-800: #1f2937;
+  --color-slate-500: #64748b;
+  --color-ink: #1f2937;
+  --color-body: #64748b;
+  --font-display: "Inter", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
+  --font-body: "Inter", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
+  --radius-2xl: 24px;
+  --shadow-glass: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 32px rgba(16, 185, 129, 0.06);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100dvh;
+  width: 100%;
+}
+
+body {
+  margin: 0;
+  background-color: #f0fdf4;
+  color: #1f2937;
+}
+
+button {
+  font: inherit;
+}

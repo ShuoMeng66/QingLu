@@ -1,0 +1,39 @@
+{
+  "cities": [
+    {
+      "city": "北京",
+      "districts": [
+        {
+          "name": "朝阳区",
+          "default_lat": 39.9219,
+          "default_lng": 116.4436,
+          "weather_alias": "Beijing"
+        },
+        {
+          "name": "海淀区",
+          "default_lat": 39.9599,
+          "default_lng": 116.2982,
+          "weather_alias": "Beijing"
+        }
+      ]
+    },
+    {
+      "city": "上海",
+      "districts": [
+        {
+          "name": "浦东新区",
+          "default_lat": 31.2459,
+          "default_lng": 121.5062,
+          "weather_alias": "Shanghai"
+        }
+      ]
+    }
+  ],
+  "mock_current": {
+    "city": "北京",
+    "district": "朝阳区",
+    "weather_alias": "Beijing",
+    "season_hint": "spring",
+    "indoor_recommendation_bias": 0.3
+  }
+}

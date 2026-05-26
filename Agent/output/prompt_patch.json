@@ -1,0 +1,10 @@
+{
+  "clusterConstraints": [
+    "分步骤、给出可执行数字或具体动作",
+    "语气友好简洁",
+    "紧扣饮食/运动/恢复"
+  ],
+  "preferenceHints": [],
+  "starterStyle": "balanced",
+  "isgTone": "具体数字、低门槛、可点击即问"
+}

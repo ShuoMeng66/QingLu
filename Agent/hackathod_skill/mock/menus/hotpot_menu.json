@@ -1,0 +1,16 @@
+{
+  "poi_id": "poi_hotpot_001",
+  "items": [
+    {"sku": "broth_tomato", "name": "番茄锅底", "kcal_per_serving": 180, "protein_g": 4, "carb_g": 12, "fat_g": 10, "tags": ["推荐"]},
+    {"sku": "broth_mushroom", "name": "菌汤锅底", "kcal_per_serving": 160, "protein_g": 5, "carb_g": 10, "fat_g": 8, "tags": ["推荐"]},
+    {"sku": "broth_spicy", "name": "牛油红锅", "kcal_per_serving": 420, "protein_g": 6, "carb_g": 8, "fat_g": 38, "tags": ["慎选"]},
+    {"sku": "beef_tripe", "name": "鲜毛肚", "kcal_per_100g": 95, "protein_g": 14, "carb_g": 2, "fat_g": 3, "unit": "100g", "tags": ["高蛋白"]},
+    {"sku": "lean_beef", "name": "瘦牛肉片", "kcal_per_100g": 125, "protein_g": 22, "carb_g": 0, "fat_g": 4, "unit": "100g", "tags": ["高蛋白"]},
+    {"sku": "shrimp_paste", "name": "虾滑", "kcal_per_100g": 110, "protein_g": 18, "carb_g": 3, "fat_g": 2, "unit": "100g", "tags": ["高蛋白"]},
+    {"sku": "tofu_skin", "name": "豆皮", "kcal_per_100g": 210, "protein_g": 16, "carb_g": 8, "fat_g": 12, "unit": "100g", "tags": ["适量"]},
+    {"sku": "potato", "name": "土豆片", "kcal_per_100g": 85, "protein_g": 2, "carb_g": 18, "fat_g": 0, "unit": "100g", "tags": ["主食替代"]},
+    {"sku": "leafy_mix", "name": "绿叶菜拼盘", "kcal_per_100g": 28, "protein_g": 2, "carb_g": 4, "fat_g": 0, "unit": "100g", "tags": ["无限加"]},
+    {"sku": "dipping_sesame", "name": "麻酱蘸料", "kcal_per_serving": 280, "protein_g": 8, "carb_g": 6, "fat_g": 24, "tags": ["热量炸弹"]},
+    {"sku": "dipping_vinegar", "name": "醋+蒜泥+香菜", "kcal_per_serving": 35, "protein_g": 1, "carb_g": 6, "fat_g": 0, "tags": ["推荐蘸料"]}
+  ]
+}

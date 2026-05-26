@@ -1,0 +1,60 @@
+html {
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: var(--leading-normal);
+  letter-spacing: var(--tracking-normal);
+  color: var(--body);
+}
+
+body {
+  font-size: var(--text-base);
+  font-weight: 500;
+}
+
+h1,
+h2,
+h3,
+.text-display {
+  font-family: var(--font-display);
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-tight);
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.text-title {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.text-body {
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  font-weight: 500;
+  color: var(--body);
+}
+
+.text-body-lg {
+  font-size: var(--text-md);
+  line-height: var(--leading-relaxed);
+  font-weight: 500;
+  color: var(--body);
+}
+
+.text-caption {
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.text-label {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}

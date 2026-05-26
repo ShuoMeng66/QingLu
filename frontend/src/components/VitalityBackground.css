@@ -1,0 +1,94 @@
+.vitality-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.vitality-canvas__base {
+  position: absolute;
+  inset: 0;
+  background: var(--canvas-morning);
+}
+
+.vitality-canvas__blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(72px);
+  opacity: 0.18;
+  will-change: transform;
+}
+
+.vitality-canvas__blob--green {
+  width: min(52vw, 420px);
+  height: min(52vw, 420px);
+  top: -8%;
+  left: -6%;
+  background: var(--vitality-green);
+  animation: vitality-float-a 18s ease-in-out infinite;
+}
+
+.vitality-canvas__blob--sky {
+  width: min(44vw, 360px);
+  height: min(44vw, 360px);
+  top: 18%;
+  right: -8%;
+  background: var(--vitality-sky);
+  animation: vitality-float-b 22s ease-in-out infinite;
+}
+
+.vitality-canvas__blob--orange {
+  width: min(40vw, 320px);
+  height: min(40vw, 320px);
+  bottom: 8%;
+  left: 28%;
+  background: var(--vitality-orange);
+  opacity: 0.2;
+  animation: vitality-float-c 20s ease-in-out infinite;
+}
+
+.vitality-canvas__wave {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 48px;
+  fill: rgba(255, 255, 255, 0.35);
+}
+
+@keyframes vitality-float-a {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(24px, 18px) scale(1.06);
+  }
+}
+
+@keyframes vitality-float-b {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-20px, 28px) scale(1.04);
+  }
+}
+
+@keyframes vitality-float-c {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(16px, -14px) scale(1.05);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vitality-canvas__blob {
+    animation: none;
+  }
+}

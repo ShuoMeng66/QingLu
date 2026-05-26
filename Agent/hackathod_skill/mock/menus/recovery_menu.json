@@ -1,0 +1,57 @@
+{
+  "scene": "workout_recovery",
+  "post_workout_templates": [
+    {
+      "template_id": "pwr_001",
+      "name": "力量训练后·快速恢复",
+      "window_min": 90,
+      "target_kcal": 480,
+      "target_protein_g": 35,
+      "target_carb_g": 45,
+      "target_fat_g": 12,
+      "items": [
+        {"name": "希腊酸奶200g", "kcal": 130, "protein_g": 15, "carb_g": 8, "fat_g": 4},
+        {"name": "香蕉1根", "kcal": 105, "protein_g": 1, "carb_g": 27, "fat_g": 0},
+        {"name": "即食鸡胸100g", "kcal": 165, "protein_g": 19, "carb_g": 0, "fat_g": 3}
+      ],
+      "total_kcal": 400,
+      "total_protein_g": 35,
+      "notes": "训练后45分钟内优先蛋白+快碳"
+    },
+    {
+      "template_id": "pwr_002",
+      "name": "力量训练后·正餐型",
+      "window_min": 120,
+      "target_kcal": 650,
+      "target_protein_g": 45,
+      "target_carb_g": 55,
+      "target_fat_g": 18,
+      "items": [
+        {"name": "糙米饭碗半份", "kcal": 180, "protein_g": 4, "carb_g": 38, "fat_g": 2},
+        {"name": "清蒸鱼150g", "kcal": 180, "protein_g": 28, "carb_g": 0, "fat_g": 6},
+        {"name": "西兰花200g", "kcal": 70, "protein_g": 5, "carb_g": 10, "fat_g": 1},
+        {"name": "蛋白饮1份", "kcal": 120, "protein_g": 24, "carb_g": 3, "fat_g": 1}
+      ],
+      "total_kcal": 550,
+      "total_protein_g": 61,
+      "notes": "若当日蛋白缺口大可保留蛋白饮，否则去掉"
+    },
+    {
+      "template_id": "cardio_001",
+      "name": "有氧后·轻恢复",
+      "window_min": 60,
+      "target_kcal": 320,
+      "target_protein_g": 25,
+      "target_carb_g": 35,
+      "target_fat_g": 8,
+      "items": [
+        {"name": "低脂牛奶250ml", "kcal": 120, "protein_g": 8, "carb_g": 12, "fat_g": 4},
+        {"name": "全麦面包1片", "kcal": 90, "protein_g": 4, "carb_g": 15, "fat_g": 1},
+        {"name": "水煮蛋2个", "kcal": 140, "protein_g": 12, "carb_g": 1, "fat_g": 10}
+      ],
+      "total_kcal": 350,
+      "total_protein_g": 24,
+      "notes": "有氧强度不高时可再减50kcal"
+    }
+  ]
+}

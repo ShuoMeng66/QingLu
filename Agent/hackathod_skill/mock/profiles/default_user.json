@@ -1,0 +1,45 @@
+{
+  "user_id": "mock_user_001",
+  "nickname": "小爪用户",
+  "goal": "fat_loss",
+  "sex": "male",
+  "age": 28,
+  "height_cm": 175,
+  "weight_kg": 78,
+  "body_fat_pct": 22,
+  "activity_level": "moderate",
+  "daily_targets": {
+    "kcal": 1850,
+    "protein_g": 140,
+    "carb_g": 160,
+    "fat_g": 55
+  },
+  "meal_budget": {
+    "breakfast_kcal": 420,
+    "lunch_kcal": 580,
+    "dinner_kcal": 650,
+    "snack_kcal": 200
+  },
+  "preferences": {
+    "spicy_tolerance": "medium",
+    "avoid": ["内脏", "油炸"],
+    "favorite_cuisines": ["川菜", "轻食", "日料"]
+  },
+  "training": {
+    "frequency_per_week": 4,
+    "typical_session": "strength_60min",
+    "post_workout_window_min": 90
+  },
+  "sports": {
+    "fitness_level": "intermediate",
+    "favorite_sports": ["飞盘", "骑行", "跑步", "徒步"],
+    "avoid_sports": [],
+    "max_intensity": "moderate_high",
+    "social_preference": "small_group",
+    "preferred_time_slots": ["weekend_afternoon", "weekday_evening"],
+    "push_enabled": true,
+    "push_quiet_hours": [23, 8]
+  },
+  "location_city": "北京",
+  "location_district": "朝阳区"
+}

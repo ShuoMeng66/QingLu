@@ -1,0 +1,20 @@
+{
+  "patch_id": "p_error_sample_traj_error_001",
+  "source_trajectory": "sample-traj-error-001",
+  "target": "hackathod_skill/skills/scene-orchestrator/references/evolved-lessons.md",
+  "type": "append_section",
+  "rationale": "评分偏低：回答可能过短或缺少可执行细节",
+  "generalizability": "high",
+  "reject": false,
+  "content": "## 失败模式\n- 评分偏低：回答可能过短或缺少可执行细节\n- 用户点踩：需先给结论、举例更具体、避免空泛鼓励\n- 缺少具体数字：补充 kcal、蛋白质克数或组数/次数",
+  "prompt_patch": {
+    "clusterConstraints": [
+      "先给结论和具体数字，再展开细节"
+    ],
+    "preferenceHints": [
+      "评分偏低：回答可能过短或缺少可执行细节",
+      "用户点踩：需先给结论、举例更具体、避免空泛鼓励"
+    ],
+    "starterStyle": "conclusion_first"
+  }
+}

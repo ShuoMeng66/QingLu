@@ -1,0 +1,490 @@
+/* 像素袋鼠 — 侧面极简 + Tamagotchi 框，Claude 式纯色块 */
+
+.pix-pet {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  user-select: none;
+}
+
+.pix-pet--hero {
+  align-self: flex-start;
+  margin: 0 0 8px;
+}
+
+.pix-pet--compact {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  align-self: flex-start;
+  margin-bottom: 12px;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+/* --- 气泡 --- */
+.pix-pet__bubble {
+  max-width: min(260px, 88vw);
+  padding: 10px 14px;
+  border-radius: 16px 16px 16px 4px;
+  background: var(--surface-card, #fff);
+  border: 1px solid var(--hairline, #dad4c8);
+  box-shadow: rgba(0, 0, 0, 0.06) 0 2px 8px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink, #2d2a26);
+}
+
+.pix-pet--compact .pix-pet__bubble {
+  max-width: 180px;
+  padding: 8px 12px;
+  font-size: var(--text-xs);
+}
+
+.pix-pet__bubble--happy {
+  border-color: var(--lemon, #fbbd41);
+  background: var(--surface-soft, #fdfdf8);
+}
+
+.pix-pet__bubble--listening {
+  border-color: var(--matcha-deep, #078a52);
+}
+
+.pix-pet__bubble--thinking {
+  border-color: var(--muted, #9f9b93);
+}
+
+.pix-pet__bubble--celebrate {
+  border-color: var(--matcha, #84e7a5);
+}
+
+/* --- Tamagotchi 外壳（奶油 + 细线框） --- */
+.pix-pet__tama-shell {
+  border: 2px solid var(--hairline, #dad4c8);
+  border-radius: 20px;
+  background: var(--surface-soft, #fdfdf8);
+  padding: 10px 12px 12px;
+  box-shadow: rgba(0, 0, 0, 0.06) 0 4px 16px;
+}
+
+.pix-pet--hero .pix-pet__tama-shell {
+  width: 200px;
+}
+
+.pix-pet--compact .pix-pet__tama-shell {
+  width: 88px;
+  padding: 6px 8px;
+  border-radius: 14px;
+}
+
+.pix-pet__tama-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.pix-pet__tama-brand {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--body, #55534e);
+}
+
+.pix-pet--compact .pix-pet__tama-brand {
+  font-size: 8px;
+}
+
+.pix-pet__tama-led {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--matcha-deep, #078a52);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.pix-pet__tama-led--doze {
+  background: var(--lemon, #fbbd41);
+}
+
+.pix-pet__tama-led--sleep {
+  background: var(--muted-soft, #b6b7af);
+}
+
+.pix-pet__tama-lcd {
+  border: 2px solid var(--hairline, #dad4c8);
+  border-radius: 10px;
+  background: var(--surface-cream-strong, #eeefe9);
+  overflow: hidden;
+}
+
+.pix-pet--hero .pix-pet__tama-lcd {
+  min-height: 148px;
+}
+
+.pix-pet--compact .pix-pet__tama-lcd {
+  min-height: 64px;
+  border-radius: 8px;
+}
+
+.pix-pet__tama-footer {
+  margin-top: 8px;
+}
+
+.pix-pet__tama-status {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted, #9f9b93);
+}
+
+.pix-pet--compact .pix-pet__tama-status {
+  font-size: 8px;
+}
+
+.pix-pet--rest-sleep .pix-pet__tama-lcd,
+.pix-pet--rest-doze .pix-pet__tama-lcd {
+  filter: brightness(0.96);
+}
+
+/* --- 舞台 --- */
+.pix-pet__stage {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 132px;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.pix-pet--compact .pix-pet__stage {
+  min-height: 56px;
+  padding: 4px;
+}
+
+.pix-pet__stage:active {
+  transform: scale(0.98);
+}
+
+.pix-pet__avatar {
+  width: 100%;
+  max-width: 120px;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.pix-pet--compact .pix-pet__avatar {
+  max-width: 52px;
+}
+
+.pix-pet__stage svg {
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* --- Sprite 层默认 --- */
+.kangaroo-sprite {
+  overflow: visible;
+  shape-rendering: crispEdges;
+}
+
+.kangaroo-sprite__body,
+.kangaroo-sprite__face,
+.kangaroo-sprite__tail,
+.kangaroo-sprite__eye {
+  transform-origin: 80px 72px;
+}
+
+.kangaroo-sprite__arm-idle,
+.kangaroo-sprite__arm-eat,
+.kangaroo-sprite__arm-lift,
+.kangaroo-sprite__arm-kick,
+.kangaroo-sprite__arm-shoot,
+.kangaroo-sprite__leg-run,
+.kangaroo-sprite__prop-hotpot,
+.kangaroo-sprite__prop-bbq,
+.kangaroo-sprite__prop-meal,
+.kangaroo-sprite__prop-dumbbell,
+.kangaroo-sprite__prop-treadmill,
+.kangaroo-sprite__prop-football,
+.kangaroo-sprite__prop-basketball,
+.kangaroo-sprite__sleep-face,
+.kangaroo-sprite__think,
+.kangaroo-sprite__listen-mark,
+.kangaroo-sprite__zzz {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.kangaroo-sprite__arm-idle {
+  opacity: 1;
+}
+
+/* idle */
+.kangaroo-sprite--idle .kangaroo-sprite__body {
+  animation: kp-bob 2.4s ease-in-out infinite;
+}
+
+.kangaroo-sprite--idle .kangaroo-sprite__tail {
+  animation: kp-tail 1.8s ease-in-out infinite;
+}
+
+/* 休息 */
+.kangaroo-sprite--rest-doze .kangaroo-sprite__eye,
+.kangaroo-sprite--rest-sleep .kangaroo-sprite__eye {
+  opacity: 0;
+}
+
+.kangaroo-sprite--rest-doze .kangaroo-sprite__sleep-face {
+  opacity: 0.6;
+}
+
+.kangaroo-sprite--rest-sleep .kangaroo-sprite__sleep-face {
+  opacity: 1;
+}
+
+.kangaroo-sprite--rest-sleep .kangaroo-sprite__zzz {
+  opacity: 1;
+  animation: kp-zzz 2s ease-in-out infinite;
+}
+
+.kangaroo-sprite--rest-doze .kangaroo-sprite__body,
+.kangaroo-sprite--rest-sleep .kangaroo-sprite__body {
+  animation: kp-sleep-bob 3s ease-in-out infinite;
+}
+
+/* 吃饭 — 双手 + 道具 */
+.kangaroo-sprite--eating-hotpot .kangaroo-sprite__arm-idle,
+.kangaroo-sprite--eating-bbq .kangaroo-sprite__arm-idle,
+.kangaroo-sprite--eating-meal .kangaroo-sprite__arm-idle {
+  opacity: 0;
+}
+
+.kangaroo-sprite--eating-hotpot .kangaroo-sprite__arm-eat,
+.kangaroo-sprite--eating-bbq .kangaroo-sprite__arm-eat,
+.kangaroo-sprite--eating-meal .kangaroo-sprite__arm-eat {
+  opacity: 1;
+  animation: kp-eat 0.55s ease-in-out infinite alternate;
+}
+
+.kangaroo-sprite--eating-hotpot .kangaroo-sprite__prop-hotpot,
+.kangaroo-sprite--eating-bbq .kangaroo-sprite__prop-bbq,
+.kangaroo-sprite--eating-meal .kangaroo-sprite__prop-meal {
+  opacity: 1;
+}
+
+.kangaroo-sprite--eating-hotpot .kangaroo-sprite__body,
+.kangaroo-sprite--eating-bbq .kangaroo-sprite__body,
+.kangaroo-sprite--eating-meal .kangaroo-sprite__body {
+  animation: kp-munch 0.5s ease-in-out infinite alternate;
+}
+
+/* 举铁 / 健身 — 双手举杠 */
+.kangaroo-sprite--exercising-dumbbell .kangaroo-sprite__arm-idle,
+.kangaroo-sprite--exercising-workout .kangaroo-sprite__arm-idle {
+  opacity: 0;
+}
+
+.kangaroo-sprite--exercising-dumbbell .kangaroo-sprite__arm-lift,
+.kangaroo-sprite--exercising-workout .kangaroo-sprite__arm-lift,
+.kangaroo-sprite--exercising-dumbbell .kangaroo-sprite__prop-dumbbell,
+.kangaroo-sprite--exercising-workout .kangaroo-sprite__prop-dumbbell {
+  opacity: 1;
+  animation: kp-lift 0.7s ease-in-out infinite alternate;
+}
+
+/* 跑步 */
+.kangaroo-sprite--exercising-treadmill .kangaroo-sprite__prop-treadmill,
+.kangaroo-sprite--exercising-treadmill .kangaroo-sprite__leg-run {
+  opacity: 1;
+}
+
+.kangaroo-sprite--exercising-treadmill .kangaroo-sprite__leg-run {
+  animation: kp-run 0.28s steps(2) infinite;
+}
+
+.kangaroo-sprite--exercising-treadmill .kangaroo-sprite__body {
+  animation: kp-bob 0.28s ease-in-out infinite alternate;
+}
+
+/* 足球 */
+.kangaroo-sprite--exercising-football .kangaroo-sprite__arm-kick,
+.kangaroo-sprite--exercising-football .kangaroo-sprite__prop-football {
+  opacity: 1;
+}
+
+.kangaroo-sprite--exercising-football .kangaroo-sprite__arm-kick {
+  animation: kp-kick 0.45s ease-in-out infinite alternate;
+}
+
+.kangaroo-sprite--exercising-football .kangaroo-sprite__prop-football {
+  animation: kp-ball 0.45s ease-in-out infinite alternate;
+}
+
+/* 篮球 */
+.kangaroo-sprite--exercising-basketball .kangaroo-sprite__arm-idle {
+  opacity: 0;
+}
+
+.kangaroo-sprite--exercising-basketball .kangaroo-sprite__arm-shoot,
+.kangaroo-sprite--exercising-basketball .kangaroo-sprite__prop-basketball {
+  opacity: 1;
+  animation: kp-shoot 0.65s ease-in-out infinite alternate;
+}
+
+/* 心情 */
+.kangaroo-sprite--mood-listening .kangaroo-sprite__listen-mark {
+  opacity: 1;
+}
+
+.kangaroo-sprite--mood-thinking .kangaroo-sprite__think {
+  opacity: 1;
+}
+
+.kangaroo-sprite--mood-happy .kangaroo-sprite__body {
+  animation: kp-hop 0.45s ease-out;
+}
+
+.kangaroo-sprite--mood-celebrate .kangaroo-sprite__body {
+  animation: kp-hop 0.5s ease-in-out infinite alternate;
+}
+
+/* 休息隐藏道具 */
+.kangaroo-sprite--rest-doze .kangaroo-sprite__prop-hotpot,
+.kangaroo-sprite--rest-doze .kangaroo-sprite__prop-bbq,
+.kangaroo-sprite--rest-doze .kangaroo-sprite__prop-meal,
+.kangaroo-sprite--rest-doze .kangaroo-sprite__prop-dumbbell,
+.kangaroo-sprite--rest-doze .kangaroo-sprite__prop-treadmill,
+.kangaroo-sprite--rest-doze .kangaroo-sprite__prop-football,
+.kangaroo-sprite--rest-doze .kangaroo-sprite__prop-basketball,
+.kangaroo-sprite--rest-sleep .kangaroo-sprite__prop-hotpot,
+.kangaroo-sprite--rest-sleep .kangaroo-sprite__prop-bbq,
+.kangaroo-sprite--rest-sleep .kangaroo-sprite__prop-meal,
+.kangaroo-sprite--rest-sleep .kangaroo-sprite__prop-dumbbell,
+.kangaroo-sprite--rest-sleep .kangaroo-sprite__prop-treadmill,
+.kangaroo-sprite--rest-sleep .kangaroo-sprite__prop-football,
+.kangaroo-sprite--rest-sleep .kangaroo-sprite__prop-basketball,
+.kangaroo-sprite--rest-doze .kangaroo-sprite__arm-eat,
+.kangaroo-sprite--rest-doze .kangaroo-sprite__arm-lift,
+.kangaroo-sprite--rest-sleep .kangaroo-sprite__arm-eat,
+.kangaroo-sprite--rest-sleep .kangaroo-sprite__arm-lift {
+  opacity: 0 !important;
+}
+
+@keyframes kp-bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes kp-tail {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(6deg);
+  }
+}
+
+@keyframes kp-sleep-bob {
+  0%,
+  100% {
+    transform: translateY(1px);
+  }
+  50% {
+    transform: translateY(3px);
+  }
+}
+
+@keyframes kp-zzz {
+  50% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
+@keyframes kp-eat {
+  to {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes kp-munch {
+  to {
+    transform: translateY(1px) scaleY(0.98);
+  }
+}
+
+@keyframes kp-lift {
+  to {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes kp-run {
+  50% {
+    transform: translateY(-2px);
+  }
+}
+
+@keyframes kp-kick {
+  to {
+    transform: rotate(-12deg) translateX(2px);
+  }
+}
+
+@keyframes kp-ball {
+  to {
+    transform: translateX(6px);
+  }
+}
+
+@keyframes kp-shoot {
+  to {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes kp-hop {
+  0% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-6px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 720px) {
+  .pix-pet--hero .pix-pet__tama-shell {
+    width: 176px;
+  }
+
+  .pix-pet--hero .pix-pet__tama-lcd {
+    min-height: 132px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kangaroo-sprite *,
+  .pix-pet__stage {
+    animation: none !important;
+  }
+}

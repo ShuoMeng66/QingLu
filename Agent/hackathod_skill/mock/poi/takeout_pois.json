@@ -1,0 +1,33 @@
+{
+  "scene": "takeout",
+  "updated_at": "2026-05-21",
+  "pois": [
+    {
+      "poi_id": "poi_salad_001",
+      "name": "轻食能量碗（望京店）",
+      "category": "light_meal",
+      "delivery_eta_min": 28,
+      "min_order_yuan": 35,
+      "tags": ["鸡胸", "糙米", "双蛋白"],
+      "health_score_base": 88
+    },
+    {
+      "poi_id": "poi_fastfood_001",
+      "name": "麦乐堡（国贸店）",
+      "category": "fastfood",
+      "delivery_eta_min": 22,
+      "min_order_yuan": 20,
+      "tags": ["板烧", "玉米杯", "零度"],
+      "health_score_base": 62
+    },
+    {
+      "poi_id": "poi_rice_001",
+      "name": "老乡鸡（CBD店）",
+      "category": "fast_casual",
+      "delivery_eta_min": 25,
+      "min_order_yuan": 25,
+      "tags": ["蒸鸡", "西兰花", "杂粮饭半份"],
+      "health_score_base": 79
+    }
+  ]
+}

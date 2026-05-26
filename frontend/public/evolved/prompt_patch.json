@@ -1,0 +1,13 @@
+{
+  "clusterConstraints": [
+    "分步骤、给出可执行数字或具体动作",
+    "先给结论和具体数字，再展开细节",
+    "语气友好简洁",
+    "紧扣饮食/运动/恢复"
+  ],
+  "preferenceHints": [
+    "成功模式：回答含具体数字（kcal/克/次），用户更易采纳"
+  ],
+  "starterStyle": "detailed_steps",
+  "isgTone": "具体数字、低门槛、可点击即问"
+}

@@ -1,0 +1,298 @@
+.fat-loss-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-height: 0;
+  padding: 20px 18px 18px;
+  border-right: 1px solid var(--hairline);
+  background: linear-gradient(180deg, rgba(132, 231, 165, 0.12) 0%, var(--surface-soft) 38%);
+  overflow-y: auto;
+}
+
+.fat-loss-panel__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.fat-loss-panel__brand {
+  min-width: 0;
+}
+
+.fat-loss-panel__eyebrow {
+  display: block;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--matcha-deep);
+}
+
+.fat-loss-panel__title {
+  margin: 4px 0 0;
+  font-family: var(--font-display);
+  font-size: 1.65rem;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.fat-loss-panel__tagline {
+  margin: 6px 0 0;
+  font-size: var(--text-sm);
+  color: var(--body);
+}
+
+.fat-loss-panel__section-label {
+  margin: 0 0 8px;
+  font-size: var(--text-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.fat-loss-panel__focus-hint {
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--hairline);
+  background: var(--surface-card);
+  font-size: var(--text-sm);
+  line-height: 1.45;
+  color: var(--body-strong);
+}
+
+.fat-loss-starter-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+  width: 100%;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px dashed var(--matcha-deep);
+  border-radius: 12px;
+  background: rgba(132, 231, 165, 0.1);
+  cursor: pointer;
+  text-align: left;
+}
+
+.fat-loss-starter-chip__label {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--matcha-deep);
+  text-transform: uppercase;
+}
+
+.fat-loss-starter-chip strong {
+  font-size: var(--text-sm);
+  color: var(--ink);
+}
+
+.fat-loss-starter-chip span:last-child {
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+.fat-loss-pillars {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.fat-loss-pillar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 6px;
+  border-radius: 12px;
+  border: 1px solid var(--hairline);
+  background: var(--surface-card);
+  text-align: center;
+}
+
+.fat-loss-pillar__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.fat-loss-pillar--diet .fat-loss-pillar__icon {
+  background: rgba(251, 191, 65, 0.22);
+  color: #b45309;
+}
+
+.fat-loss-pillar--calorie .fat-loss-pillar__icon {
+  background: rgba(252, 121, 129, 0.18);
+  color: var(--primary-active);
+}
+
+.fat-loss-pillar--move .fat-loss-pillar__icon {
+  background: rgba(132, 231, 165, 0.28);
+  color: var(--matcha-deep);
+}
+
+.fat-loss-pillar__label {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.fat-loss-pillar__hint {
+  font-size: 9px;
+  line-height: 1.3;
+  color: var(--muted);
+}
+
+.fat-loss-pipeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.fat-loss-pipeline__step {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--hairline-soft);
+  background: rgba(255, 255, 255, 0.65);
+  font-size: var(--text-sm);
+}
+
+.fat-loss-pipeline__step--active {
+  border-color: var(--matcha-deep);
+  background: rgba(132, 231, 165, 0.14);
+}
+
+.fat-loss-pipeline__step--done {
+  opacity: 0.82;
+}
+
+.fat-loss-pipeline__dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--muted-soft);
+}
+
+.fat-loss-pipeline__step--working .fat-loss-pipeline__dot,
+.fat-loss-pipeline__step--active .fat-loss-pipeline__dot {
+  background: var(--matcha-deep);
+  box-shadow: 0 0 0 3px rgba(7, 138, 82, 0.2);
+}
+
+.fat-loss-pipeline__step--done .fat-loss-pipeline__dot {
+  background: var(--matcha-deep);
+}
+
+.fat-loss-pipeline__name {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.fat-loss-pipeline__status {
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+.fat-loss-inbox {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--hairline);
+  border-radius: 14px;
+  background: var(--surface-card);
+  cursor: pointer;
+  text-align: left;
+  position: relative;
+}
+
+.fat-loss-inbox:hover:not(:disabled) {
+  border-color: var(--matcha-deep);
+  box-shadow: var(--shadow-soft);
+}
+
+.fat-loss-inbox__icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(251, 191, 65, 0.22);
+  font-size: 18px;
+}
+
+.fat-loss-inbox__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fat-loss-inbox__text strong {
+  font-size: var(--text-sm);
+  color: var(--ink);
+}
+
+.fat-loss-inbox__text span {
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+.fat-loss-inbox__badge {
+  margin-left: auto;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--matcha-deep);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+
+@media (max-width: 768px) {
+  .fat-loss-panel {
+    border-right: none;
+    border-bottom: 1px solid var(--hairline);
+    padding: 14px 16px;
+    gap: 12px;
+  }
+
+  .fat-loss-panel__title {
+    font-size: 1.35rem;
+  }
+
+  .fat-loss-pillars {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .fat-loss-inbox {
+    margin-top: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fat-loss-pipeline__step--active .fat-loss-pipeline__dot {
+    box-shadow: none;
+  }
+}

@@ -1,0 +1,168 @@
+/* BurnPal 轻鹭 · Morning Mint Vitality design system */
+
+.bg-surface {
+  background-color: #f0fdf4;
+}
+
+/* Frosted glass panel — cards, panels, dock */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    var(--shadow-glass-inner),
+    0 8px 32px rgba(16, 185, 129, 0.06);
+}
+
+.shadow-glass {
+  box-shadow:
+    var(--shadow-glass-inner),
+    0 8px 32px rgba(16, 185, 129, 0.06);
+}
+
+.shadow-glow-emerald {
+  box-shadow: var(--shadow-vitality-btn);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    var(--shadow-glass-inner),
+    0 8px 32px rgba(16, 185, 129, 0.06);
+}
+
+/* Primary CTA — emerald → teal gradient */
+.btn-vitality {
+  background: linear-gradient(to right, #34d399, #2dd4bf);
+  color: #ffffff;
+  box-shadow: var(--shadow-vitality-btn);
+}
+
+.btn-vitality:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+/* Secondary glass button */
+.btn-glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  color: #1f2937;
+  box-shadow:
+    var(--shadow-glass-inner),
+    0 8px 32px rgba(16, 185, 129, 0.06);
+}
+
+.btn-glass:disabled {
+  opacity: 0.45;
+}
+
+/* AI chat bubble — high-transparency white glass */
+.ai-bubble-glass {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    var(--shadow-glass-inner),
+    0 8px 32px rgba(16, 185, 129, 0.06);
+}
+
+/* Card tag chips */
+.tag-vitality {
+  background-color: #ecfdf5;
+  color: #059669;
+}
+
+.text-body-primary {
+  color: #1f2937;
+}
+
+.text-body-secondary {
+  color: #64748b;
+}
+
+.font-display-serif {
+  font-family: 'Noto Serif SC', 'Songti SC', 'STSong', Georgia, serif;
+}
+
+.burnpal-page-inner {
+  width: 100%;
+  padding-inline: 1rem;
+}
+
+/* ChatGPT-style centered conversation column */
+.burnpal-chat-column {
+  width: 100%;
+  max-width: 56rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+.burnpal-scroll-hidden {
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.burnpal-scroll-hidden::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.burnpal-float-dock {
+  margin: 0 auto;
+  width: 100%;
+  border-radius: 28px;
+}
+
+/* Floating shell panels — sidebar & main chat */
+.burnpal-shell-panel {
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  border-radius: 28px;
+  box-shadow:
+    var(--shadow-glass-inner),
+    0 8px 32px rgba(16, 185, 129, 0.06);
+}
+
+.burnpal-shell-divider {
+  height: 1px;
+  margin-inline: 0.75rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.95) 20%,
+    rgba(255, 255, 255, 0.95) 80%,
+    transparent
+  );
+}
+
+@keyframes cursor-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.cursor-blink {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: currentColor;
+  animation: cursor-blink 1s step-end infinite;
+}

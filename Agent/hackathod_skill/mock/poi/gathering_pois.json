@@ -1,0 +1,33 @@
+{
+  "scene": "gathering",
+  "updated_at": "2026-05-21",
+  "pois": [
+    {
+      "poi_id": "poi_hotpot_001",
+      "name": "蜀味鲜火锅（三里屯店）",
+      "category": "hotpot",
+      "avg_price_per_person": 128,
+      "tags": ["牛油锅", "毛肚", "鸭血", "菌汤"],
+      "nutrition_notes": "锅底与蘸料是热量主要来源，优先清汤/番茄/菌汤",
+      "recommended_strategy": "鸳鸯锅+蛋白优先+蔬菜垫底+少蘸料"
+    },
+    {
+      "poi_id": "poi_bbq_001",
+      "name": "炭火小筑烧烤",
+      "category": "bbq",
+      "avg_price_per_person": 95,
+      "tags": ["烤鸡翅", "烤蔬菜", "烤虾"],
+      "nutrition_notes": "避免刷蜜汁酱，选瘦肉与海鲜",
+      "recommended_strategy": "海鲜+禽类为主，蔬菜串占一半，啤酒换无糖茶"
+    },
+    {
+      "poi_id": "poi_sichuan_001",
+      "name": "川味小馆",
+      "category": "sichuan",
+      "avg_price_per_person": 78,
+      "tags": ["水煮鱼", "口水鸡", "清炒时蔬"],
+      "nutrition_notes": "重油菜系需主动要求少油",
+      "recommended_strategy": "一荤一素一汤，主食半份"
+    }
+  ]
+}

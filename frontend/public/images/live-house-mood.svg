@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" role="img" aria-label="原创 live house 氛围插画">
+  <defs>
+    <linearGradient id="sky" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ecfdf5"/>
+      <stop offset="45%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#ffedd5"/>
+    </linearGradient>
+    <linearGradient id="stage" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#166534"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </linearGradient>
+    <radialGradient id="spot" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" stop-color="#fbbf24" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#fbbf24" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="640" height="360" fill="url(#sky)"/>
+  <ellipse cx="320" cy="120" rx="220" ry="90" fill="url(#spot)"/>
+  <rect x="0" y="250" width="640" height="110" fill="url(#stage)"/>
+  <rect x="80" y="268" width="480" height="8" rx="4" fill="#86efac" opacity="0.5"/>
+  <path d="M290 190 L320 130 L350 190 Z" fill="#f97316" opacity="0.85"/>
+  <rect x="308" y="190" width="24" height="58" rx="6" fill="#ea580c"/>
+  <ellipse cx="320" cy="248" rx="34" ry="8" fill="#052e16" opacity="0.25"/>
+  <circle cx="120" cy="80" r="6" fill="#fda4af" opacity="0.7"/>
+  <circle cx="160" cy="60" r="4" fill="#fdba74" opacity="0.8"/>
+  <circle cx="500" cy="70" r="5" fill="#fde68a" opacity="0.75"/>
+  <circle cx="540" cy="95" r="3.5" fill="#fca5a5" opacity="0.7"/>
+  <path d="M40 40 Q60 20 80 40 T120 40" fill="none" stroke="#86efac" stroke-width="2" opacity="0.35"/>
+  <path d="M520 30 Q540 10 560 30 T600 30" fill="none" stroke="#fbbf24" stroke-width="2" opacity="0.35"/>
+  <text x="32" y="330" font-family="sans-serif" font-size="14" fill="#dcfce7" opacity="0.9">原创插画 · 非官方 IP 素材</text>
+</svg>

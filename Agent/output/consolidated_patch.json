@@ -1,0 +1,19 @@
+{
+  "consolidated_id": "p_star",
+  "targets": [
+    "hackathod_skill/skills/scene-orchestrator/references/evolved-lessons.md"
+  ],
+  "prevalence_notes": "merged 0 patches, withheld 0",
+  "content": "- （暂无轨迹 patch，使用默认指南）",
+  "prompt_patch": {
+    "clusterConstraints": [
+      "分步骤、给出可执行数字或具体动作",
+      "语气友好简洁",
+      "紧扣饮食/运动/恢复"
+    ],
+    "preferenceHints": [],
+    "starterStyle": "balanced",
+    "isgTone": "具体数字、低门槛、可点击即问"
+  },
+  "discarded_patch_ids": []
+}
