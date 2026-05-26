@@ -5,6 +5,7 @@ import { buildAiPreferencePrompt } from './aiPreferencePrompt'
 import { loadAppPreferences } from './appPreferences'
 import { getPromptPreferences, buildEvolvedPreferenceHints } from './promptPreferences'
 import { routeDietScene, scoreResponseWithEvalAgent } from './evalAgent'
+import { buildUserContextPrompt } from './userContextPrompt'
 
 const SCENE_STEPS: Record<Exclude<DietSceneId, 'general_health'>, string[]> = {
   A1_gathering_poi: [
@@ -13,13 +14,13 @@ const SCENE_STEPS: Record<Exclude<DietSceneId, 'general_health'>, string[]> = {
     '给出选店理由 + 到店点菜原则',
   ],
   A2_in_store_order: [
-    '识别门店/菜系与今日热量额度',
+    '使用已知位置/门店与今日剩余热量额度',
     '按少油少糖原则点选具体 SKU',
     '估算本餐 kcal 与蛋白克数',
   ],
   B_takeout: [
-    '确认配送范围与今日剩余额度',
-    '筛选 2–3 套外卖组合',
+    '使用已知配送区域与今日剩余热量额度',
+    '筛选 2–3 套外卖组合（含店名或品类）',
     '标注热量与替换建议',
   ],
   C_travel_explore: [
@@ -110,12 +111,16 @@ export function buildClusterSystemPrompt(plan: TaskPlan): string {
   const constraints = prefs.clusterConstraints.join('；')
   const aiPrefs = buildAiPreferencePrompt(loadAppPreferences().ai, loadAppPreferences().locale)
 
+  const userContext = buildUserContextPrompt()
+
   return [
     '你是「轻鹭」，用户的本地生活减脂 AI 管家。产品调性：轻松友好、不说教；数据先行、推荐有理有据。',
+    userContext,
     `本轮重点：${plan.focus}`,
     '本轮步骤：',
     steps,
     'Skill 1 全局规则：先给结论与 kcal/克数；用「可以/建议」而非「必须」；推荐带理由；少铺垫；用户懊恼时先安抚。',
+    '若【用户实况】已含位置或今日热量，直接据此推荐，勿用「先告诉我地址/吃了多少」开场。',
     `要求：${constraints}`,
     aiPrefs,
     hint,
