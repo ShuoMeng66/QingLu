@@ -107,3 +107,28 @@ export async function fetchMe(token: string) {
     { headers: { Authorization: `Bearer ${token}` } },
   )
 }
+
+export async function updateAccountProfile(
+  token: string,
+  input: { displayName?: string | null },
+) {
+  return request<{ user: { id: string; email: string; displayName: string | null } }>(
+    '/auth/profile',
+    {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${token}` },
+      body: JSON.stringify(input),
+    },
+  )
+}
+
+export async function changeAccountPassword(
+  token: string,
+  input: { currentPassword: string; newPassword: string },
+) {
+  return request<{ ok: boolean }>('/auth/change-password', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+    body: JSON.stringify(input),
+  })
+}

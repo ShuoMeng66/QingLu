@@ -4,6 +4,8 @@ export type FitnessGoal = 'fat_loss' | 'muscle_gain' | 'maintain'
 
 export interface UserProfile {
   user_id?: string
+  /** Data URL or remote URL; synced via cloud user data */
+  avatar_url?: string
   nickname?: string
   goal?: FitnessGoal
   sex?: 'male' | 'female'

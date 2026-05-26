@@ -113,6 +113,66 @@ authRouter.post('/login', (req, res) => {
   })
 })
 
+authRouter.patch('/profile', requireAuth, (req, res) => {
+  const displayName = String(req.body?.displayName ?? '').trim() || null
+  const now = Date.now()
+
+  db.prepare('UPDATE users SET display_name = ?, updated_at = ? WHERE id = ?').run(
+    displayName,
+    now,
+    req.auth!.sub,
+  )
+
+  const user = db.prepare('SELECT id, email, display_name FROM users WHERE id = ?').get(
+    req.auth!.sub,
+  ) as Pick<UserRow, 'id' | 'email' | 'display_name'> | undefined
+
+  if (!user) {
+    res.status(404).json({ error: 'User not found' })
+    return
+  }
+
+  res.json({
+    user: {
+      id: user.id,
+      email: user.email,
+      displayName: user.display_name,
+    },
+  })
+})
+
+authRouter.post('/change-password', requireAuth, (req, res) => {
+  const currentPassword = String(req.body?.currentPassword ?? '')
+  const newPassword = String(req.body?.newPassword ?? '')
+
+  if (!currentPassword || !newPassword) {
+    res.status(400).json({ error: 'Current and new password are required' })
+    return
+  }
+  if (newPassword.length < 6) {
+    res.status(400).json({ error: 'Password must be at least 6 characters' })
+    return
+  }
+
+  const user = db.prepare('SELECT password_hash FROM users WHERE id = ?').get(req.auth!.sub) as
+    | Pick<UserRow, 'password_hash'>
+    | undefined
+
+  if (!user || !bcrypt.compareSync(currentPassword, user.password_hash)) {
+    res.status(401).json({ error: 'Current password is incorrect' })
+    return
+  }
+
+  const passwordHash = bcrypt.hashSync(newPassword, 10)
+  db.prepare('UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?').run(
+    passwordHash,
+    Date.now(),
+    req.auth!.sub,
+  )
+
+  res.json({ ok: true })
+})
+
 authRouter.get('/me', requireAuth, (req, res) => {
   const user = db.prepare('SELECT id, email, display_name, created_at FROM users WHERE id = ?').get(
     req.auth!.sub,

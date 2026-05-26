@@ -10,6 +10,7 @@ import {
 import {
   clearAuthSession,
   ApiError,
+  changeAccountPassword,
   fetchMe,
   fetchRemoteUserData,
   getStoredToken,
@@ -18,6 +19,7 @@ import {
   pushRemoteUserData,
   registerAccount,
   saveAuthSession,
+  updateAccountProfile,
 } from '../lib/api/client'
 import {
   applyUserDataSnapshot,
@@ -36,6 +38,8 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<void>
   register: (email: string, password: string, verificationCode: string, displayName?: string) => Promise<void>
   logout: () => void
+  updateDisplayName: (displayName: string) => Promise<void>
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>
   pushNow: () => Promise<void>
   refreshFromServer: () => Promise<void>
 }
@@ -129,6 +133,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null)
   }, [])
 
+  const updateDisplayName = useCallback(
+    async (displayName: string) => {
+      if (!token || !user) return
+      const trimmed = displayName.trim()
+      const result = await updateAccountProfile(token, { displayName: trimmed || null })
+      const nextUser = result.user
+      saveAuthSession(token, nextUser)
+      setUser(nextUser)
+    },
+    [token, user],
+  )
+
+  const changePassword = useCallback(
+    async (currentPassword: string, newPassword: string) => {
+      if (!token) return
+      await changeAccountPassword(token, { currentPassword, newPassword })
+    },
+    [token],
+  )
+
   useEffect(() => {
     const storedToken = getStoredToken()
     if (!storedToken) {
@@ -195,10 +219,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login,
       register,
       logout,
+      updateDisplayName,
+      changePassword,
       pushNow,
       refreshFromServer,
     }),
-    [user, token, loading, syncing, login, register, logout, pushNow, refreshFromServer],
+    [
+      user,
+      token,
+      loading,
+      syncing,
+      login,
+      register,
+      logout,
+      updateDisplayName,
+      changePassword,
+      pushNow,
+      refreshFromServer,
+    ],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

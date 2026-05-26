@@ -7,7 +7,25 @@ export type MessageKey =
   | 'about.version'
   | 'auth.backendUnavailable'
   | 'auth.accountMenu'
+  | 'auth.avatarInvalidType'
+  | 'auth.avatarRemoved'
+  | 'auth.avatarTooLarge'
+  | 'auth.avatarUpdated'
   | 'auth.backToChat'
+  | 'auth.changeAvatar'
+  | 'auth.changePassword'
+  | 'auth.confirmPassword'
+  | 'auth.currentPassword'
+  | 'auth.guestLabel'
+  | 'auth.guestLimited'
+  | 'auth.newPassword'
+  | 'auth.passwordChanged'
+  | 'auth.passwordMinLength'
+  | 'auth.passwordMismatch'
+  | 'auth.profileSaved'
+  | 'auth.removeAvatar'
+  | 'auth.saveProfile'
+  | 'auth.signInOrRegister'
   | 'auth.codeRequired'
   | 'auth.codeHint'
   | 'auth.codeSent'
@@ -346,6 +364,24 @@ const ZH: Record<MessageKey, string> = {
   'about.version': 'BurnPal v1.0',
   'auth.backToChat': '返回对话',
   'auth.accountMenu': '账户管理',
+  'auth.avatarInvalidType': '请选择图片文件',
+  'auth.avatarRemoved': '已移除头像',
+  'auth.avatarTooLarge': '图片请小于 500KB',
+  'auth.avatarUpdated': '头像已更新',
+  'auth.changeAvatar': '更换头像',
+  'auth.changePassword': '修改密码',
+  'auth.confirmPassword': '确认新密码',
+  'auth.currentPassword': '当前密码',
+  'auth.guestLabel': '未登录',
+  'auth.guestLimited': '登录后可云端同步；未登录时部分对话能力受限',
+  'auth.newPassword': '新密码',
+  'auth.passwordChanged': '密码已更新',
+  'auth.passwordMinLength': '新密码至少 6 位',
+  'auth.passwordMismatch': '两次输入的新密码不一致',
+  'auth.profileSaved': '账户信息已保存',
+  'auth.removeAvatar': '移除头像',
+  'auth.saveProfile': '保存',
+  'auth.signInOrRegister': '登录 / 注册',
   'auth.backendUnavailable': '无法连接后端服务，请先启动 backend（npm run dev）',
   'auth.codeRequired': '请输入验证码',
   'auth.codeHint': '填写邮箱后将自动向该邮箱发送 6 位验证码',
@@ -686,6 +722,24 @@ const EN: Record<MessageKey, string> = {
   'about.version': 'BurnPal v1.0',
   'auth.backToChat': 'Back to chat',
   'auth.accountMenu': 'Account',
+  'auth.avatarInvalidType': 'Please choose an image file',
+  'auth.avatarRemoved': 'Avatar removed',
+  'auth.avatarTooLarge': 'Image must be under 500KB',
+  'auth.avatarUpdated': 'Avatar updated',
+  'auth.changeAvatar': 'Change avatar',
+  'auth.changePassword': 'Change password',
+  'auth.confirmPassword': 'Confirm new password',
+  'auth.currentPassword': 'Current password',
+  'auth.guestLabel': 'Not signed in',
+  'auth.guestLimited': 'Sign in for cloud sync; some chat features are limited while signed out',
+  'auth.newPassword': 'New password',
+  'auth.passwordChanged': 'Password updated',
+  'auth.passwordMinLength': 'New password must be at least 6 characters',
+  'auth.passwordMismatch': 'New passwords do not match',
+  'auth.profileSaved': 'Account updated',
+  'auth.removeAvatar': 'Remove avatar',
+  'auth.saveProfile': 'Save',
+  'auth.signInOrRegister': 'Sign in / Sign up',
   'auth.backendUnavailable': 'Cannot reach the backend. Start it with: cd backend && npm run dev',
   'auth.codeRequired': 'Enter the verification code',
   'auth.codeHint': 'A 6-digit code will be sent to this email automatically',
@@ -1026,6 +1080,24 @@ const JA: Record<MessageKey, string> = {
   'about.version': 'BurnPal v1.0',
   'auth.backToChat': 'チャットに戻る',
   'auth.accountMenu': 'アカウント管理',
+  'auth.avatarInvalidType': '画像ファイルを選択してください',
+  'auth.avatarRemoved': 'アバターを削除しました',
+  'auth.avatarTooLarge': '画像は 500KB 未満にしてください',
+  'auth.avatarUpdated': 'アバターを更新しました',
+  'auth.changeAvatar': 'アバターを変更',
+  'auth.changePassword': 'パスワードを変更',
+  'auth.confirmPassword': '新しいパスワード（確認）',
+  'auth.currentPassword': '現在のパスワード',
+  'auth.guestLabel': '未ログイン',
+  'auth.guestLimited': 'ログインでクラウド同期。未ログイン時は一部機能が制限されます',
+  'auth.newPassword': '新しいパスワード',
+  'auth.passwordChanged': 'パスワードを更新しました',
+  'auth.passwordMinLength': '新しいパスワードは6文字以上',
+  'auth.passwordMismatch': '新しいパスワードが一致しません',
+  'auth.profileSaved': 'アカウント情報を保存しました',
+  'auth.removeAvatar': 'アバターを削除',
+  'auth.saveProfile': '保存',
+  'auth.signInOrRegister': 'ログイン / 登録',
   'auth.backendUnavailable': 'バックエンドに接続できません。backend で npm run dev を実行してください',
   'auth.codeRequired': '認証コードを入力してください',
   'auth.codeHint': 'メールアドレス入力後、このアドレスに6桁コードを自動送信します',
@@ -1366,6 +1438,24 @@ const KO: Record<MessageKey, string> = {
   'about.version': 'BurnPal v1.0',
   'auth.backToChat': '채팅으로',
   'auth.accountMenu': '계정 관리',
+  'auth.avatarInvalidType': '이미지 파일을 선택하세요',
+  'auth.avatarRemoved': '아바타를 제거했습니다',
+  'auth.avatarTooLarge': '이미지는 500KB 미만이어야 합니다',
+  'auth.avatarUpdated': '아바타가 업데이트되었습니다',
+  'auth.changeAvatar': '아바타 변경',
+  'auth.changePassword': '비밀번호 변경',
+  'auth.confirmPassword': '새 비밀번호 확인',
+  'auth.currentPassword': '현재 비밀번호',
+  'auth.guestLabel': '로그인 안 됨',
+  'auth.guestLimited': '로그인 시 클라우드 동기화; 미로그인 시 일부 기능 제한',
+  'auth.newPassword': '새 비밀번호',
+  'auth.passwordChanged': '비밀번호가 변경되었습니다',
+  'auth.passwordMinLength': '새 비밀번호는 6자 이상',
+  'auth.passwordMismatch': '새 비밀번호가 일치하지 않습니다',
+  'auth.profileSaved': '계정 정보가 저장되었습니다',
+  'auth.removeAvatar': '아바타 제거',
+  'auth.saveProfile': '저장',
+  'auth.signInOrRegister': '로그인 / 가입',
   'auth.backendUnavailable': '백엔드에 연결할 수 없습니다. backend에서 npm run dev를 실행하세요',
   'auth.codeRequired': '인증 코드를 입력하세요',
   'auth.codeHint': '이메일 입력 후 해당 주소로 6자리 코드가 자동 전송됩니다',

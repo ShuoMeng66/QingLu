@@ -4,6 +4,7 @@ import type { Conversation } from '../../types/conversation'
 import { formatConversationTime } from '../../types/conversation'
 import { useI18n } from '../../hooks/useI18n'
 import { displayConversationTitle } from '../../lib/i18n/chatCopy'
+import { UserAccountMenu } from '../auth/UserAccountMenu'
 import { BurnPalLogo } from './BurnPalLogo'
 
 interface ChatHistorySidebarProps {
@@ -92,10 +93,11 @@ export function ChatHistorySidebar({
     <aside
       className={`flex h-full w-[280px] shrink-0 flex-col overflow-hidden burnpal-shell-panel ${className}`}
     >
-      <div className="px-4 py-4">
-        <Link to="/chat">
+      <div className="flex items-center justify-between gap-2 px-4 py-4">
+        <Link to="/chat" className="min-w-0 flex-1">
           <BurnPalLogo compact />
         </Link>
+        <UserAccountMenu showLabel={false} menuAlign="left" />
       </div>
 
       <div className="burnpal-shell-divider" aria-hidden="true" />

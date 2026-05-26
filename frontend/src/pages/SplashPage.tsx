@@ -21,7 +21,7 @@ export function SplashPage() {
     }
   }, [loading, user, navigate])
 
-  if (loading || user) {
+  if (user && !loading) {
     return (
       <AppShell scrollable>
         <PageTransition className="flex min-h-dvh flex-1 items-center justify-center">
