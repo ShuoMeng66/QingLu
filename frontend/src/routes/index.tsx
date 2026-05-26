@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Outlet, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 
 import { AppProvider } from '../context/AppProvider'
 import { AuthProvider } from '../context/AuthContext'
@@ -22,6 +22,14 @@ function AppProviderLayout() {
   )
 }
 
+function SpaFallback() {
+  const { pathname } = useLocation()
+  if (pathname.startsWith('/api/') || pathname.startsWith('/openclaw-api')) {
+    return null
+  }
+  return <Navigate to="/" replace />
+}
+
 function AppRoutesInner() {
   return (
     <Routes>
@@ -33,7 +41,7 @@ function AppRoutesInner() {
         <Route path="chat" element={<ChatPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<SpaFallback />} />
     </Routes>
   )
 }

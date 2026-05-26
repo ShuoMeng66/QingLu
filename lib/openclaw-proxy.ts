@@ -1,10 +1,17 @@
-export const config = { runtime: 'edge' }
+function resolveToken(): string | undefined {
+  return process.env.OPENCLAW_TOKEN?.trim() || process.env.DASHSCOPE_API_KEY?.trim() || undefined
+}
 
-function subpathFromRequest(request: Request): string {
-  const pathname = new URL(request.url).pathname
-  const prefix = '/api/openclaw/'
-  if (!pathname.startsWith(prefix)) return ''
-  return pathname.slice(prefix.length)
+export function subpathFromPathname(pathname: string): string {
+  if (pathname.startsWith('/api/openclaw/')) {
+    return pathname.slice('/api/openclaw/'.length)
+  }
+  if (pathname === '/api/openclaw') return ''
+  if (pathname.startsWith('/openclaw-api/')) {
+    return pathname.slice('/openclaw-api/'.length)
+  }
+  if (pathname === '/openclaw-api') return ''
+  return ''
 }
 
 function buildUpstreamUrl(request: Request, subpath: string): string {
@@ -18,20 +25,15 @@ function buildUpstreamUrl(request: Request, subpath: string): string {
   return `${targetBase}${prefix}${path}${search}`
 }
 
-function resolveToken(): string | undefined {
-  return process.env.OPENCLAW_TOKEN?.trim() || process.env.DASHSCOPE_API_KEY?.trim() || undefined
-}
-
-export default async function handler(request: Request): Promise<Response> {
-  const subpath = subpathFromRequest(request)
+export async function handleOpenClawProxy(request: Request): Promise<Response> {
+  const subpath = subpathFromPathname(new URL(request.url).pathname)
 
   if (subpath === 'health') {
-    const token = resolveToken()
     return Response.json({
       ok: true,
       service: 'openclaw-proxy',
-      runtime: 'edge',
-      hasToken: Boolean(token),
+      runtime: 'edge-middleware',
+      hasToken: Boolean(resolveToken()),
       proxyTarget: process.env.OPENCLAW_PROXY_TARGET || 'https://dashscope.aliyuncs.com',
       proxyPath: process.env.OPENCLAW_PROXY_PATH || '/compatible-mode',
     })

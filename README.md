@@ -85,7 +85,7 @@ git push -u origin main
 勿在生产设置 `VITE_OPENCLAW_TOKEN`（会打进前端 bundle）。`VITE_OPENCLAW_PROXY_*` 仅本地 Vite 开发代理用，Vercel 上请用 `OPENCLAW_PROXY_*`。
 | `BACKEND_URL` | 已部署的后端公网地址（账户/云同步） | `https://your-api.onrender.com` |
 
-生产环境 OpenClaw 走 Vercel Serverless 代理（`/api/openclaw`），API Key 放在 `OPENCLAW_TOKEN`，不要写进前端 bundle。
+生产环境 OpenClaw 走根目录 **Edge Middleware**（`/api/openclaw`、`/openclaw-api`），API Key 放在 `OPENCLAW_TOKEN`，不要写进前端 bundle。
 
 ### 部署后自检（OpenClaw）
 
@@ -93,7 +93,7 @@ git push -u origin main
 
 | URL | 期望 |
 |-----|------|
-| `https://你的域名/api/openclaw/health` | JSON：`ok: true`，`runtime: edge`，`hasToken: true` |
+| `https://你的域名/api/openclaw/health` | JSON：`ok: true`，`runtime: edge-middleware`，`hasToken: true` |
 | `https://你的域名/api/openclaw/v1/models` | JSON：`data` 模型列表（200） |
 | `https://你的域名/openclaw-api/v1/models` | 同上（兼容别名，经 rewrite） |
 

@@ -6,20 +6,16 @@
   "framework": null,
   "rewrites": [
     {
-      "source": "/openclaw-api/:path*",
-      "destination": "/api/openclaw/:path*"
-    },
-    {
       "source": "/api/auth/:path*",
       "destination": "/api/backend/auth/:path*"
     },
     {
       "source": "/api/user/:path*",
       "destination": "/api/backend/user/:path*"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
     }
+  ],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

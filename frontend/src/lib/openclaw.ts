@@ -68,7 +68,7 @@ export async function testConnection(config: OpenClawConfig): Promise<Connection
         ok: false,
         models: [],
         message:
-          '接口返回了网页而非 JSON，请检查 Vercel 部署是否包含 api/openclaw 且路由未把 /openclaw-api 转到 index.html。',
+          '接口返回了网页而非 JSON，请确认 Vercel 已部署 middleware.ts 且未用 SPA rewrite 吞掉 /api/openclaw。',
       }
     }
 
