@@ -57,30 +57,25 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
     )
   }
 
+  const dashCard =
+    'rounded-2xl border border-lime-400/35 bg-[#b8e0b0] p-3 text-left text-slate-900 shadow-sm transition hover:bg-[#a8d6a0] active:scale-[0.99]'
+
   return (
     <div className="burnpal-chat-column px-5 pb-3 pt-1">
-      <div className="relative overflow-hidden rounded-[22px] border border-white/80 bg-white/70 p-4 shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-[#2a2e28]/90">
-        <div
-          className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-lime-200/45 blur-2xl"
-          aria-hidden="true"
-        />
+      <div className="burnpal-dashboard-strip relative overflow-hidden rounded-[22px] border border-lime-400/40 bg-[#d0ebd0] p-4 shadow-sm">
         <div className="relative grid grid-cols-3 gap-3">
-          <button
-            type="button"
-            className="rounded-2xl bg-white/70 p-3 text-left transition hover:bg-white/90 dark:bg-slate-800/60 dark:hover:bg-slate-800/80"
-            onClick={onOpenProfile}
-          >
-            <div className="mb-2 flex items-center gap-1.5 text-lime-600">
+          <button type="button" className={dashCard} onClick={onOpenProfile}>
+            <div className="mb-2 flex items-center gap-1.5 text-lime-800">
               <Flame className="h-4 w-4" />
               <span className="text-[11px] font-semibold uppercase tracking-wide">
                 {t('dashboard.calories')}
               </span>
             </div>
-            <p className="text-xl font-bold tabular-nums text-body-primary">{remaining}</p>
-            <p className="text-[11px] text-body-secondary">
+            <p className="text-xl font-bold tabular-nums text-slate-900">{remaining}</p>
+            <p className="text-[11px] text-slate-800">
               {t('dashboard.remaining')} · {consumed} {t('dashboard.consumed')}
             </p>
-            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-lime-100 dark:bg-lime-950/50">
+            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-lime-300/70">
               <motion.div
                 className="h-full rounded-full gradient-vitality"
                 initial={{ width: 0 }}
@@ -90,41 +85,33 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
             </div>
           </button>
 
-          <button
-            type="button"
-            className="rounded-2xl bg-white/70 p-3 text-left transition hover:bg-white/90 dark:bg-slate-800/60 dark:hover:bg-slate-800/80"
-            onClick={onOpenProfile}
-          >
-            <div className="mb-2 flex items-center gap-1.5 text-yellow-600">
+          <button type="button" className={dashCard} onClick={onOpenProfile}>
+            <div className="mb-2 flex items-center gap-1.5 text-amber-800">
               <Dumbbell className="h-4 w-4" />
               <span className="text-[11px] font-semibold uppercase tracking-wide">
                 {t('dashboard.training')}
               </span>
             </div>
-            <p className="line-clamp-2 text-sm font-semibold leading-snug text-body-primary">
+            <p className="line-clamp-2 text-sm font-semibold leading-snug text-slate-900">
               {userProfile.training?.typical_session ?? '—'}
             </p>
-            <p className="mt-1 text-[11px] text-lime-600">
+            <p className="mt-1 text-[11px] font-medium text-lime-900">
               {userProfile.training?.next_session ?? ''}
             </p>
           </button>
 
-          <button
-            type="button"
-            className="flex flex-col justify-between rounded-2xl bg-gradient-to-br from-lime-200/35 to-green-100/30 p-3 text-left transition hover:from-lime-200/45 hover:to-yellow-50/25"
-            onClick={onOpenProfile}
-          >
+          <button type="button" className={dashCard} onClick={onOpenProfile}>
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-[11px] font-semibold uppercase tracking-wide text-lime-700 dark:text-lime-400">
+              <span className="text-[11px] font-semibold uppercase tracking-wide text-lime-800">
                 {t('dashboard.weekly')}
               </span>
-              <ChevronRight className="h-4 w-4 text-lime-600" />
+              <ChevronRight className="h-4 w-4 text-lime-800" />
             </div>
-            <p className="text-3xl font-bold tabular-nums text-body-primary">
+            <p className="text-3xl font-bold tabular-nums text-slate-900">
               {userProfile.training?.frequency_per_week ?? '—'}
-              <span className="ml-0.5 text-base font-medium text-body-secondary">×</span>
+              <span className="ml-0.5 text-base font-medium text-slate-700">×</span>
             </p>
-            <p className="text-[11px] text-body-secondary">{budget} kcal / day</p>
+            <p className="text-[11px] text-slate-800">{budget} kcal / day</p>
           </button>
         </div>
       </div>

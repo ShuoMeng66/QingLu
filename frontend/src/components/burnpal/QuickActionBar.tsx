@@ -41,7 +41,9 @@ export function QuickActionBar({
             key={action.id}
             type="button"
             disabled={disabled}
-            className="quick-action-card glass-panel flex min-w-0 flex-col items-center gap-1.5 rounded-[20px] px-2 py-3 text-center shadow-glass transition-transform duration-200 hover:-translate-y-0.5 disabled:opacity-40"
+            className="quick-action-card glass-panel flex min-w-0 flex-col items-center gap-1.5 rounded-[20px] px-2 py-3 text-center shadow-glass transition-[transform,opacity] duration-200 hover:-translate-y-0.5 disabled:opacity-40"
+            drag={false}
+            dragConstraints={false}
             whileTap={{ scale: 0.97 }}
             onClick={() => onSelect(action.prompt)}
           >

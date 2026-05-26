@@ -140,6 +140,20 @@
   height: 0;
 }
 
+/* Empty chat welcome — fixed in layout, not inside scroll area */
+.burnpal-chat-empty-hero {
+  flex: 1 1 auto;
+  min-height: 0;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.burnpal-chat-empty-hero h2,
+.burnpal-chat-empty-hero p {
+  transform: none !important;
+}
+
 .burnpal-float-dock {
   margin: 0 auto;
   width: 100%;
@@ -156,6 +170,17 @@
   box-shadow:
     var(--shadow-glass-inner),
     var(--shadow-soft);
+}
+
+/* Chat dashboard strip — mint panels + dark text (readable on light page bg) */
+.burnpal-dashboard-strip {
+  color: #0f172a;
+}
+
+[data-theme='dark'] .burnpal-dashboard-strip,
+[data-theme='dark'] .burnpal-dashboard-strip button {
+  background-color: #b8e0b0;
+  color: #0f172a;
 }
 
 .burnpal-shell-divider {

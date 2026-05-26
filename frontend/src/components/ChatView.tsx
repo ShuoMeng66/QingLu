@@ -439,23 +439,22 @@ export function ChatView({
           <ChatDashboardBar onOpenProfile={() => setProfileSheetOpen(true)} />
 
           <div className="relative z-0 flex min-h-0 flex-1 flex-col overflow-hidden">
-            <div
-              className="burnpal-scroll-hidden min-h-0 flex-1 overflow-y-auto"
-              ref={scrollRef}
-              onScroll={handleScroll}
-            >
-              <div className="burnpal-chat-column">
-              {isEmpty ? (
-                <div className="flex min-h-[calc(100dvh-12rem)] flex-col items-center justify-center px-2 py-10 text-center">
-                  <h2 className="font-display-serif text-3xl font-semibold text-body-primary sm:text-[2.5rem]">
-                    {t('chat.emptyTitle')}
-                  </h2>
-                  <p className="mt-3 max-w-xl text-base leading-relaxed text-body-secondary">
-                    {t('chat.emptyHint')}
-                  </p>
-                </div>
-              ) : (
-                <div className="w-full py-4">
+            {isEmpty ? (
+              <div className="burnpal-chat-empty-hero burnpal-chat-column flex min-h-0 flex-1 flex-col items-center justify-center overflow-hidden px-4 py-6 text-center">
+                <h2 className="font-display-serif text-3xl font-semibold text-body-primary sm:text-[2.5rem]">
+                  {t('chat.emptyTitle')}
+                </h2>
+                <p className="mt-3 max-w-xl text-base leading-relaxed text-body-secondary">
+                  {t('chat.emptyHint')}
+                </p>
+              </div>
+            ) : (
+              <div
+                className="burnpal-scroll-hidden min-h-0 flex-1 overflow-y-auto"
+                ref={scrollRef}
+                onScroll={handleScroll}
+              >
+                <div className="burnpal-chat-column w-full py-4">
                   {!useDemo && (
                     <AgentPhaseRail
                       phase={clusterTurn.phase}
@@ -515,13 +514,12 @@ export function ChatView({
                       <ChatBubble key="__typing__" message={typingBubble} loading={isBusy} />
                     )}
                   </AnimatePresence>
+                  <div ref={bottomRef} className="h-4" />
                 </div>
-              )}
-              <div ref={bottomRef} className="h-4" />
               </div>
-            </div>
+            )}
 
-            {showScrollFab && (
+            {showScrollFab && !isEmpty && (
               <button
                 type="button"
                 className="glass-panel fixed bottom-40 right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full text-lime-600 shadow-glass"
