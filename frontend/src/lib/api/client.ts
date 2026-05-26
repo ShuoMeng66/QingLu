@@ -82,6 +82,7 @@ export async function pingAuthHealth() {
   return request<{
     ok: boolean
     emailProvider?: 'resend' | 'smtp' | 'none'
+    emailConfigured?: boolean
     emailReachable?: boolean
     smtp?: boolean
     smtpReachable?: boolean
