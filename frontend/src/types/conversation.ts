@@ -1,6 +1,52 @@
+import { getStoredUser } from '../lib/api/client'
 import type { ChatMessage } from './openclaw'
 import { STORAGE_KEYS } from './openclaw'
 import { notifyUserDataChanged } from '../lib/userDataSync'
+
+const LEGACY_CONVERSATIONS_KEY = STORAGE_KEYS.conversations
+
+function conversationsStorageKey(): string {
+  const userId = getStoredUser()?.id
+  return userId ? `${STORAGE_KEYS.conversations}::${userId}` : LEGACY_CONVERSATIONS_KEY
+}
+
+export function activeIdStorageKey(): string {
+  const userId = getStoredUser()?.id
+  return userId
+    ? `${STORAGE_KEYS.activeConversationId}::${userId}`
+    : STORAGE_KEYS.activeConversationId
+}
+
+function primaryIdStorageKey(): string {
+  const userId = getStoredUser()?.id
+  return userId
+    ? `${STORAGE_KEYS.primaryConversationId}::${userId}`
+    : STORAGE_KEYS.primaryConversationId
+}
+
+/** 登录后把未登录时写在全局 key 里的对话迁到当前账号 */
+export function migrateLegacyConversationsForCurrentUser(): void {
+  const userId = getStoredUser()?.id
+  if (!userId) return
+
+  const scopedKey = `${STORAGE_KEYS.conversations}::${userId}`
+  if (localStorage.getItem(scopedKey)) return
+
+  const legacy = localStorage.getItem(LEGACY_CONVERSATIONS_KEY)
+  if (!legacy) return
+
+  localStorage.setItem(scopedKey, legacy)
+
+  const legacyActive = localStorage.getItem(STORAGE_KEYS.activeConversationId)
+  if (legacyActive) {
+    localStorage.setItem(`${STORAGE_KEYS.activeConversationId}::${userId}`, legacyActive)
+  }
+
+  const legacyPrimary = localStorage.getItem(STORAGE_KEYS.primaryConversationId)
+  if (legacyPrimary) {
+    localStorage.setItem(`${STORAGE_KEYS.primaryConversationId}::${userId}`, legacyPrimary)
+  }
+}
 
 export interface Conversation {
   id: string
@@ -28,8 +74,9 @@ export function createEmptyConversation(): Conversation {
 }
 
 export function loadConversations(): Conversation[] {
+  migrateLegacyConversationsForCurrentUser()
   try {
-    const raw = localStorage.getItem(STORAGE_KEYS.conversations)
+    const raw = localStorage.getItem(conversationsStorageKey())
     if (!raw) return []
 
     const parsed = JSON.parse(raw) as Conversation[]
@@ -42,14 +89,14 @@ export function loadConversations(): Conversation[] {
 }
 
 export function saveConversations(conversations: Conversation[]): void {
-  localStorage.setItem(STORAGE_KEYS.conversations, JSON.stringify(conversations))
+  localStorage.setItem(conversationsStorageKey(), JSON.stringify(conversations))
   notifyUserDataChanged()
 }
 
 /** Seed local storage on first visit without triggering cloud sync. */
 export function seedConversationsIfEmpty(conversations: Conversation[]): void {
   if (loadConversations().length > 0) return
-  localStorage.setItem(STORAGE_KEYS.conversations, JSON.stringify(conversations))
+  localStorage.setItem(conversationsStorageKey(), JSON.stringify(conversations))
 }
 
 export interface ConversationSyncState {
@@ -62,8 +109,62 @@ export function exportConversationSyncState(): ConversationSyncState {
   const conversations = loadConversations()
   return {
     conversations,
-    activeConversationId: localStorage.getItem(STORAGE_KEYS.activeConversationId),
-    primaryConversationId: localStorage.getItem(STORAGE_KEYS.primaryConversationId),
+    activeConversationId: localStorage.getItem(activeIdStorageKey()),
+    primaryConversationId: localStorage.getItem(primaryIdStorageKey()),
+  }
+}
+
+export function countConversationMessages(state: ConversationSyncState): number {
+  return state.conversations.reduce(
+    (sum, conversation) =>
+      sum + conversation.messages.filter((message) => message.content?.trim()).length,
+    0,
+  )
+}
+
+/** 登录云同步：保留本地与云端里消息更多的那份，避免空云端覆盖聊天记录 */
+export function mergeConversationSyncStates(
+  local: ConversationSyncState,
+  remote: ConversationSyncState,
+): ConversationSyncState {
+  const localCount = countConversationMessages(local)
+  const remoteCount = countConversationMessages(remote)
+
+  if (remoteCount === 0 && localCount > 0) return local
+  if (localCount === 0 && remoteCount > 0) return remote
+
+  const map = new Map<string, Conversation>()
+  for (const conversation of [...local.conversations, ...remote.conversations]) {
+    const existing = map.get(conversation.id)
+    if (!existing) {
+      map.set(conversation.id, conversation)
+      continue
+    }
+    const pick =
+      conversation.messages.length > existing.messages.length ||
+      conversation.updatedAt > existing.updatedAt
+        ? conversation
+        : existing
+    map.set(conversation.id, pick)
+  }
+
+  const conversations = [...map.values()].sort((a, b) => b.updatedAt - a.updatedAt)
+  const fallback = conversations.length > 0 ? conversations : [createEmptyConversation()]
+
+  const activeConversationId =
+    [local.activeConversationId, remote.activeConversationId].find(
+      (id) => id && fallback.some((item) => item.id === id),
+    ) ?? fallback[0].id
+
+  const primaryConversationId =
+    [local.primaryConversationId, remote.primaryConversationId].find(
+      (id) => id && fallback.some((item) => item.id === id),
+    ) ?? null
+
+  return {
+    conversations: fallback,
+    activeConversationId,
+    primaryConversationId,
   }
 }
 
@@ -73,7 +174,7 @@ export function importConversationSyncState(state: ConversationSyncState): strin
       ? state.conversations.filter((item) => item?.id && Array.isArray(item.messages))
       : [createEmptyConversation()]
 
-  localStorage.setItem(STORAGE_KEYS.conversations, JSON.stringify(conversations))
+  localStorage.setItem(conversationsStorageKey(), JSON.stringify(conversations))
 
   const activeId =
     state.activeConversationId &&
@@ -81,13 +182,13 @@ export function importConversationSyncState(state: ConversationSyncState): strin
       ? state.activeConversationId
       : conversations[0].id
 
-  localStorage.setItem(STORAGE_KEYS.activeConversationId, activeId)
+  localStorage.setItem(activeIdStorageKey(), activeId)
 
   if (
     state.primaryConversationId &&
     conversations.some((item) => item.id === state.primaryConversationId)
   ) {
-    localStorage.setItem(STORAGE_KEYS.primaryConversationId, state.primaryConversationId)
+    localStorage.setItem(primaryIdStorageKey(), state.primaryConversationId)
   } else {
     ensurePrimaryConversationId(conversations)
   }
@@ -96,7 +197,7 @@ export function importConversationSyncState(state: ConversationSyncState): strin
 }
 
 export function ensurePrimaryConversationId(conversations: Conversation[]): string {
-  const stored = localStorage.getItem(STORAGE_KEYS.primaryConversationId)
+  const stored = localStorage.getItem(primaryIdStorageKey())
   if (stored && conversations.some((item) => item.id === stored)) {
     return stored
   }
@@ -104,7 +205,7 @@ export function ensurePrimaryConversationId(conversations: Conversation[]): stri
   const oldest = [...conversations].sort((a, b) => a.createdAt - b.createdAt)[0]
   const primaryId = oldest?.id
   if (primaryId) {
-    localStorage.setItem(STORAGE_KEYS.primaryConversationId, primaryId)
+    localStorage.setItem(primaryIdStorageKey(), primaryId)
   }
   return primaryId ?? ''
 }

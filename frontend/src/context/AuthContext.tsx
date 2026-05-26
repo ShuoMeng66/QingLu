@@ -25,8 +25,10 @@ import {
   applyUserDataSnapshot,
   collectUserDataSnapshot,
   isUserDataSnapshot,
+  reconcileUserDataSnapshots,
   scheduleUserDataPush,
 } from '../lib/userDataSync'
+import { migrateLegacyConversationsForCurrentUser } from '../types/conversation'
 
 import type { AuthUser } from '../types/userData'
 
@@ -48,17 +50,22 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 
 async function syncCloudData(token: string, isNewAccount: boolean) {
   try {
+    migrateLegacyConversationsForCurrentUser()
+    const local = collectUserDataSnapshot()
+
     if (isNewAccount) {
-      await pushRemoteUserData(token, collectUserDataSnapshot())
+      await pushRemoteUserData(token, local)
       return
     }
 
     const remote = await fetchRemoteUserData(token)
     if (remote.data && isUserDataSnapshot(remote.data)) {
-      applyUserDataSnapshot(remote.data)
+      const merged = reconcileUserDataSnapshots(local, remote.data)
+      applyUserDataSnapshot(merged)
+      await pushRemoteUserData(token, merged)
       window.dispatchEvent(new CustomEvent('burnpal:user-data-applied'))
     } else {
-      await pushRemoteUserData(token, collectUserDataSnapshot())
+      await pushRemoteUserData(token, local)
     }
   } catch (error) {
     console.warn('[BurnPal] Cloud sync skipped:', error)
@@ -87,9 +94,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!token) return
     setSyncing(true)
     try {
+      migrateLegacyConversationsForCurrentUser()
+      const local = collectUserDataSnapshot()
       const remote = await fetchRemoteUserData(token)
       if (remote.data && isUserDataSnapshot(remote.data)) {
-        applyUserDataSnapshot(remote.data)
+        const merged = reconcileUserDataSnapshots(local, remote.data)
+        applyUserDataSnapshot(merged)
+        await pushRemoteUserData(token, merged)
         window.dispatchEvent(new CustomEvent('burnpal:user-data-applied'))
       }
     } catch (error) {

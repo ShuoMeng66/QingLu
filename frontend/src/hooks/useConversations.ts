@@ -2,25 +2,28 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { isDefaultConversationTitle } from '../lib/i18n/chatCopy'
 import { notifyUserDataChanged } from '../lib/userDataSync'
 import {
+  activeIdStorageKey,
   createEmptyConversation,
   deriveConversationTitle,
   loadConversations,
+  migrateLegacyConversationsForCurrentUser,
   saveConversations,
   seedConversationsIfEmpty,
 } from '../types/conversation'
 import type { Conversation } from '../types/conversation'
 import type { ChatMessage } from '../types/openclaw'
-import { STORAGE_KEYS } from '../types/openclaw'
 
 function reloadConversationState(): { conversations: Conversation[]; activeId: string } {
+  migrateLegacyConversationsForCurrentUser()
   const stored = loadConversations()
   const conversations = stored.length > 0 ? stored : [createEmptyConversation()]
-  const savedActiveId = localStorage.getItem(STORAGE_KEYS.activeConversationId)
+  const activeKey = activeIdStorageKey()
+  const savedActiveId = localStorage.getItem(activeKey)
   const activeId =
     savedActiveId && conversations.some((item) => item.id === savedActiveId)
       ? savedActiveId
       : conversations[0].id
-  localStorage.setItem(STORAGE_KEYS.activeConversationId, activeId)
+  localStorage.setItem(activeKey, activeId)
   return { conversations, activeId }
 }
 
@@ -71,7 +74,7 @@ export function useConversations() {
   const selectConversation = useCallback((id: string) => {
     setActiveId((current) => {
       if (current === id) return current
-      localStorage.setItem(STORAGE_KEYS.activeConversationId, id)
+      localStorage.setItem(activeIdStorageKey(), id)
       notifyUserDataChanged()
       return id
     })

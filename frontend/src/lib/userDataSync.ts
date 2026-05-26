@@ -11,6 +11,8 @@ import { loadUserProfile, replaceUserProfile } from './userProfile'
 import {
   exportConversationSyncState,
   importConversationSyncState,
+  mergeConversationSyncStates,
+  migrateLegacyConversationsForCurrentUser,
 } from '../types/conversation'
 import type { LegacyUserDataSnapshot, UserDataSnapshot } from '../types/userData'
 import { USER_DATA_VERSION } from '../types/userData'
@@ -30,7 +32,33 @@ export function collectUserDataSnapshot(): UserDataSnapshot {
   }
 }
 
+export function reconcileUserDataSnapshots(
+  local: UserDataSnapshot,
+  remote: UserDataSnapshot | LegacyUserDataSnapshot,
+): UserDataSnapshot {
+  const remoteConversations =
+    remote.version === USER_DATA_VERSION && remote.conversations
+      ? remote.conversations
+      : null
+
+  const conversations = remoteConversations
+    ? mergeConversationSyncStates(local.conversations, remoteConversations)
+    : local.conversations
+
+  return {
+    version: USER_DATA_VERSION,
+    profile: { ...local.profile, ...remote.profile },
+    yiqidong: { ...local.yiqidong, ...remote.yiqidong },
+    mealLogs: { ...local.mealLogs, ...(remote.mealLogs ?? {}) },
+    mealRemindersEnabled: remote.mealRemindersEnabled ?? local.mealRemindersEnabled,
+    preferences: remote.preferences ?? local.preferences,
+    yiqidongLetters: remote.yiqidongLetters ?? local.yiqidongLetters,
+    conversations,
+  }
+}
+
 export function applyUserDataSnapshot(snapshot: UserDataSnapshot | LegacyUserDataSnapshot) {
+  migrateLegacyConversationsForCurrentUser()
   applyingRemote = true
   try {
     replaceUserProfile(snapshot.profile)
