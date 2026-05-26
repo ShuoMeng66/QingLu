@@ -1,7 +1,7 @@
 /* BurnPal 轻鹭 · Morning Mint Vitality design system */
 
 .bg-surface {
-  background-color: #f0fdf4;
+  background-color: #f7fee7;
 }
 
 /* Frosted glass panel — cards, panels, dock */
@@ -12,13 +12,13 @@
   border: 1px solid rgba(255, 255, 255, 0.8);
   box-shadow:
     var(--shadow-glass-inner),
-    0 8px 32px rgba(16, 185, 129, 0.06);
+    0 8px 32px rgba(163, 230, 53, 0.08);
 }
 
 .shadow-glass {
   box-shadow:
     var(--shadow-glass-inner),
-    0 8px 32px rgba(16, 185, 129, 0.06);
+    0 8px 32px rgba(163, 230, 53, 0.08);
 }
 
 .shadow-glow-emerald {
@@ -32,13 +32,13 @@
   border: 1px solid rgba(255, 255, 255, 0.85);
   box-shadow:
     var(--shadow-glass-inner),
-    0 8px 32px rgba(16, 185, 129, 0.06);
+    0 8px 32px rgba(163, 230, 53, 0.08);
 }
 
 /* Primary CTA — vibrant mint → teal gradient */
 .btn-vitality {
   background: var(--gradient-primary);
-  color: #ffffff;
+  color: var(--on-primary);
   box-shadow: var(--shadow-vitality-btn);
 }
 
@@ -52,7 +52,7 @@
 
 .bubble-user {
   background: var(--gradient-primary);
-  color: #ffffff;
+  color: var(--on-primary);
   box-shadow: var(--shadow-vitality-btn);
 }
 
@@ -70,7 +70,7 @@
   color: var(--ink);
   box-shadow:
     var(--shadow-glass-inner),
-    0 8px 32px rgba(16, 185, 129, 0.06);
+    0 8px 32px rgba(163, 230, 53, 0.08);
 }
 
 .btn-glass:disabled {
@@ -85,13 +85,13 @@
   border: 1px solid rgba(255, 255, 255, 0.8);
   box-shadow:
     var(--shadow-glass-inner),
-    0 8px 32px rgba(16, 185, 129, 0.06);
+    0 8px 32px rgba(163, 230, 53, 0.08);
 }
 
 /* Card tag chips */
 .tag-vitality {
-  background-color: #ecfdf5;
-  color: #059669;
+  background-color: #ecfccb;
+  color: #65a30d;
 }
 
 .text-body-primary {
@@ -100,6 +100,15 @@
 
 .text-body-secondary {
   color: var(--body);
+}
+
+.chat-composer-input {
+  color: var(--composer-text);
+}
+
+.chat-composer-input::placeholder {
+  color: var(--composer-placeholder);
+  opacity: 1;
 }
 
 .font-display-serif {

@@ -16,7 +16,7 @@ export function BurnPalLogo({
   return (
     <div className="flex items-center gap-2.5">
       <span
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/60 text-emerald-400 shadow-glass backdrop-blur-md"
+        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/60 text-lime-500 shadow-glass backdrop-blur-md"
         aria-hidden="true"
       >
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
@@ -26,7 +26,7 @@ export function BurnPalLogo({
       {!iconOnly && (
         <div className="min-w-0">
           <p
-            className={`font-semibold leading-tight text-[#1F2937] ${
+            className={`font-semibold leading-tight text-body-primary ${
               enlargeText ? 'text-base' : 'text-sm'
             }`}
           >
@@ -34,7 +34,7 @@ export function BurnPalLogo({
           </p>
           {!compact && (
             <p
-              className={`truncate text-gray-600 ${enlargeText ? 'text-sm' : 'text-xs'}`}
+              className={`truncate text-body-secondary ${enlargeText ? 'text-sm' : 'text-xs'}`}
             >
               {t('brand.tagline')}
             </p>

@@ -4,7 +4,6 @@ import type { Conversation } from '../../types/conversation'
 import { formatConversationTime } from '../../types/conversation'
 import { useI18n } from '../../hooks/useI18n'
 import { displayConversationTitle } from '../../lib/i18n/chatCopy'
-import { UserAccountMenu } from '../auth/UserAccountMenu'
 import { BurnPalLogo } from './BurnPalLogo'
 
 interface ChatHistorySidebarProps {
@@ -41,8 +40,8 @@ function HistoryItem({
 
   return (
     <div
-      className={`group flex items-start gap-1 rounded-2xl px-2 py-1.5 transition-colors ${
-        active ? 'bg-white/70' : 'hover:bg-white/50'
+      className={`sidebar-history-item group flex items-start gap-1 rounded-2xl px-2 py-1.5 transition-colors ${
+        active ? 'sidebar-history-item--active bg-white/70' : 'sidebar-history-item--idle hover:bg-white/50'
       }`}
     >
       <button
@@ -51,15 +50,15 @@ function HistoryItem({
         onClick={() => onSelect(conversation.id)}
       >
         <div className="flex items-center gap-2">
-          <p className="truncate text-sm font-medium text-slate-800">{title}</p>
+          <p className="truncate text-sm font-medium text-body-primary">{title}</p>
           {current && (
-            <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+            <span className="shrink-0 rounded-full bg-lime-100 px-2 py-0.5 text-[10px] font-semibold text-lime-700">
               {t('sidebar.badgeCurrent')}
             </span>
           )}
         </div>
-        <p className="mt-0.5 line-clamp-1 text-xs text-slate-500">{preview}</p>
-        <p className="mt-1 text-[10px] text-slate-400">
+        <p className="mt-0.5 line-clamp-1 text-xs text-body-secondary">{preview}</p>
+        <p className="mt-1 text-[10px] text-body-secondary/80">
           {formatConversationTime(conversation.updatedAt)}
         </p>
       </button>
@@ -93,11 +92,10 @@ export function ChatHistorySidebar({
     <aside
       className={`flex h-full w-[280px] shrink-0 flex-col overflow-hidden burnpal-shell-panel ${className}`}
     >
-      <div className="flex items-center justify-between gap-2 px-4 py-4">
-        <Link to="/chat" className="min-w-0 flex-1">
+      <div className="px-4 py-4">
+        <Link to="/chat">
           <BurnPalLogo compact />
         </Link>
-        <UserAccountMenu showLabel={false} menuAlign="left" />
       </div>
 
       <div className="burnpal-shell-divider" aria-hidden="true" />
@@ -114,7 +112,7 @@ export function ChatHistorySidebar({
         </button>
 
         <div>
-          <p className="px-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+          <p className="px-2 text-[11px] font-semibold uppercase tracking-wide text-body-secondary/70">
             {t('sidebar.current')}
           </p>
           <div className="mt-1">
@@ -127,18 +125,18 @@ export function ChatHistorySidebar({
                 onDelete={onDelete}
               />
             ) : (
-              <p className="px-3 py-2 text-xs text-slate-500">{t('sidebar.noConversation')}</p>
+              <p className="px-3 py-2 text-xs text-body-secondary">{t('sidebar.noConversation')}</p>
             )}
           </div>
         </div>
 
         <div className="flex min-h-0 flex-1 flex-col">
-          <p className="px-2 text-[11px] font-semibold uppercase tracking-wide text-slate-400">
+          <p className="px-2 text-[11px] font-semibold uppercase tracking-wide text-body-secondary/70">
             {t('sidebar.history')}
           </p>
           <div className="burnpal-scroll-hidden mt-1 min-h-0 flex-1 overflow-y-auto">
             {historyConversations.length === 0 ? (
-              <p className="px-3 py-2 text-xs text-slate-500">{t('sidebar.noHistory')}</p>
+              <p className="px-3 py-2 text-xs text-body-secondary">{t('sidebar.noHistory')}</p>
             ) : (
               historyConversations.map((conversation) => (
                 <HistoryItem
@@ -161,13 +159,13 @@ export function ChatHistorySidebar({
           {onOpenYiqidong && (
             <button
               type="button"
-              className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-600 hover:bg-white/50"
+              className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-body-secondary hover:bg-white/50 dark:hover:bg-white/5"
               onClick={onOpenYiqidong}
             >
               <Zap className="h-4 w-4" />
               {t('sidebar.yiqidong')}
               {yiqidongUnread > 0 && (
-                <span className="ml-auto rounded-full bg-emerald-500 px-1.5 py-0.5 text-[10px] font-semibold text-white">
+                <span className="ml-auto rounded-full bg-lime-500 px-1.5 py-0.5 text-[10px] font-semibold text-white">
                   {yiqidongUnread}
                 </span>
               )}
@@ -175,14 +173,14 @@ export function ChatHistorySidebar({
           )}
           <Link
             to="/settings"
-            className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-600 hover:bg-white/50"
+            className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-body-secondary hover:bg-white/50 dark:hover:bg-white/5"
           >
             <Settings className="h-4 w-4" />
             {t('sidebar.settings')}
           </Link>
           <Link
             to="/about"
-            className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-slate-600 hover:bg-white/50"
+            className="flex items-center gap-2 rounded-xl px-3 py-2 text-sm text-body-secondary hover:bg-white/50 dark:hover:bg-white/5"
           >
             <Info className="h-4 w-4" />
             {t('sidebar.about')}

@@ -52,7 +52,10 @@ export async function requestVerificationCode(email: string): Promise<void> {
        attempts = 0`,
   ).run(normalized, codeHash, expiresAt, now)
 
-  await sendVerificationEmail(normalized, code)
+  // Respond to API immediately; SMTP can take several seconds on Render.
+  void sendVerificationEmail(normalized, code).catch((error) => {
+    console.error('[BurnPal] Verification email delivery failed:', error)
+  })
 }
 
 export function verifyRegistrationCode(email: string, code: string): void {

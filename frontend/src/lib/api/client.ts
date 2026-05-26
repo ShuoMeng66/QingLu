@@ -67,11 +67,34 @@ export function clearAuthSession() {
   localStorage.removeItem(AUTH_USER_KEY)
 }
 
+function sleep(ms: number) {
+  return new Promise<void>((resolve) => window.setTimeout(resolve, ms))
+}
+
+export async function pingAuthHealth() {
+  return request<{ ok: boolean; smtp: boolean }>('/auth/health')
+}
+
 export async function sendVerificationCode(email: string) {
-  return request<{ ok: boolean }>('/auth/send-verification-code', {
-    method: 'POST',
-    body: JSON.stringify({ email }),
-  })
+  const maxAttempts = 3
+  let lastError: unknown
+
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    try {
+      return await request<{ ok: boolean }>('/auth/send-verification-code', {
+        method: 'POST',
+        body: JSON.stringify({ email }),
+      })
+    } catch (error) {
+      lastError = error
+      const retryable =
+        error instanceof ApiError && [502, 503, 504].includes(error.status) && attempt < maxAttempts - 1
+      if (!retryable) break
+      await sleep(1500 * (attempt + 1))
+    }
+  }
+
+  throw lastError
 }
 
 export async function registerAccount(input: {

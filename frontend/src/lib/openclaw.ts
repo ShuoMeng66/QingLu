@@ -21,6 +21,35 @@ function usesServerProxy(baseUrl: string): boolean {
   return baseUrl.startsWith('/')
 }
 
+function openClawHealthUrl(baseUrl: string): string {
+  const normalized = normalizeBaseUrl(baseUrl)
+  if (normalized.endsWith('/v1')) {
+    return `${normalized.slice(0, -3)}health`
+  }
+  return `${normalized}/health`
+}
+
+async function tryProxyHealth(baseUrl: string): Promise<ConnectionResult | null> {
+  try {
+    const response = await fetch(openClawHealthUrl(baseUrl))
+    const raw = await response.text()
+    if (!response.ok) return null
+
+    const payload = JSON.parse(raw) as { ok?: boolean; hasToken?: boolean }
+    if (!payload.ok) return null
+
+    return {
+      ok: true,
+      models: [],
+      message: payload.hasToken
+        ? 'OpenClaw 代理已就绪'
+        : 'OpenClaw 代理可达（请在 Vercel 配置 OPENCLAW_TOKEN）',
+    }
+  } catch {
+    return null
+  }
+}
+
 export async function testConnection(config: OpenClawConfig): Promise<ConnectionResult> {
   const baseUrl = normalizeBaseUrl(config.baseUrl)
   const proxied = usesServerProxy(baseUrl)
@@ -42,6 +71,11 @@ export async function testConnection(config: OpenClawConfig): Promise<Connection
     const raw = await response.text()
 
     if (!response.ok) {
+      if (proxied) {
+        const health = await tryProxyHealth(baseUrl)
+        if (health?.ok) return health
+      }
+
       const isHtml = contentType.includes('text/html') || raw.trimStart().startsWith('<!')
       const detail = isHtml
         ? '接口返回了网页而非 JSON，请检查 Vercel 路由（vercel.json）是否把 API 转到了首页。'
@@ -64,6 +98,10 @@ export async function testConnection(config: OpenClawConfig): Promise<Connection
     }
 
     if (contentType.includes('text/html') || raw.trimStart().startsWith('<!')) {
+      if (proxied) {
+        const health = await tryProxyHealth(baseUrl)
+        if (health?.ok) return health
+      }
       return {
         ok: false,
         models: [],
@@ -92,6 +130,11 @@ export async function testConnection(config: OpenClawConfig): Promise<Connection
         : '连接成功，服务已就绪',
     }
   } catch (error) {
+    if (usesServerProxy(normalizeBaseUrl(config.baseUrl))) {
+      const health = await tryProxyHealth(normalizeBaseUrl(config.baseUrl))
+      if (health?.ok) return health
+    }
+
     const message = error instanceof Error ? error.message : '未知错误'
     const corsHint =
       message === 'Failed to fetch'

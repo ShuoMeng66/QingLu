@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
 import { useI18n } from '../../hooks/useI18n'
-import { sendVerificationCode, ApiError } from '../../lib/api/client'
+import { pingAuthHealth, sendVerificationCode, ApiError } from '../../lib/api/client'
 
 interface AccountAuthPanelProps {
   defaultMode?: 'login' | 'register'
@@ -45,6 +45,13 @@ export function AccountAuthPanel({
   const compact = variant === 'compact'
 
   useEffect(() => {
+    if (mode !== 'register') return
+    void pingAuthHealth().catch(() => {
+      /* warm Render backend; ignore failures */
+    })
+  }, [mode])
+
+  useEffect(() => {
     if (countdown <= 0) return
 
     const timer = window.setInterval(() => {
@@ -76,9 +83,17 @@ export function AccountAuthPanel({
         const message =
           error instanceof ApiError && error.status === 502
             ? t('auth.backendUnavailable')
-            : error instanceof Error
-              ? error.message
-              : t('auth.failed')
+            : error instanceof ApiError && error.status === 503
+              ? t('auth.smtpUnavailable')
+              : error instanceof ApiError && error.status === 504
+                ? t('auth.backendWaking')
+                : error instanceof ApiError && error.status === 409
+                  ? t('auth.emailAlreadyRegistered')
+                  : error instanceof ApiError && error.status === 429
+                    ? error.message
+                    : error instanceof Error
+                      ? error.message
+                      : t('auth.failed')
         toast(message, 'error')
         return false
       } finally {

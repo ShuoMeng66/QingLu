@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs'
 import { Router } from 'express'
 import { db, type UserRow } from '../db.js'
 import { requireAuth, signToken } from '../middleware/auth.js'
+import { isSmtpConfigured } from '../mail.js'
 import {
   normalizeEmail,
   requestVerificationCode,
@@ -11,6 +12,13 @@ import {
 } from '../verification.js'
 
 export const authRouter = Router()
+
+authRouter.get('/health', (_req, res) => {
+  res.json({
+    ok: true,
+    smtp: isSmtpConfigured(),
+  })
+})
 
 authRouter.post('/send-verification-code', async (req, res) => {
   const email = normalizeEmail(String(req.body?.email ?? ''))
@@ -35,7 +43,13 @@ authRouter.post('/send-verification-code', async (req, res) => {
       return
     }
     console.error('Failed to send verification code:', err)
-    res.status(500).json({ error: 'Failed to send verification code' })
+    const detail = err instanceof Error ? err.message : String(err)
+    const smtpIssue = /SMTP|timeout|ETIMEDOUT|ECONNREFUSED|ENOTFOUND|EAUTH/i.test(detail)
+    res.status(smtpIssue ? 503 : 500).json({
+      error: smtpIssue
+        ? '邮件服务暂时不可用，请稍后重试或联系管理员检查 SMTP 配置'
+        : 'Failed to send verification code',
+    })
   }
 })
 

@@ -40,8 +40,8 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
           onClick={onOpenProfile}
         >
           <div className="absolute inset-0 gradient-vitality opacity-90" />
-          <div className="relative flex items-center gap-4 rounded-[21px] bg-gradient-to-br from-emerald-50/95 to-white/90 px-4 py-4 dark:from-emerald-950/90 dark:to-slate-900/90">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl gradient-vitality-br text-white shadow-glow-emerald">
+          <div className="profile-setup-banner__inner relative flex items-center gap-4 rounded-[21px] bg-gradient-to-br from-yellow-50 to-lime-50/90 px-4 py-4">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl gradient-vitality-br text-lime-950 shadow-glow-emerald">
               <Sparkles className="h-6 w-6" />
             </div>
             <div className="min-w-0 flex-1">
@@ -59,9 +59,9 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
 
   return (
     <div className="burnpal-chat-column px-5 pb-3 pt-1">
-      <div className="relative overflow-hidden rounded-[22px] border border-white/80 bg-white/55 p-4 shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/55">
+      <div className="relative overflow-hidden rounded-[22px] border border-white/80 bg-white/70 p-4 shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-[#2a2e28]/90">
         <div
-          className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-emerald-300/25 blur-2xl"
+          className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-yellow-200/40 blur-2xl"
           aria-hidden="true"
         />
         <div className="relative grid grid-cols-3 gap-3">
@@ -70,7 +70,7 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
             className="rounded-2xl bg-white/70 p-3 text-left transition hover:bg-white/90 dark:bg-slate-800/60 dark:hover:bg-slate-800/80"
             onClick={onOpenProfile}
           >
-            <div className="mb-2 flex items-center gap-1.5 text-emerald-500">
+            <div className="mb-2 flex items-center gap-1.5 text-lime-600">
               <Flame className="h-4 w-4" />
               <span className="text-[11px] font-semibold uppercase tracking-wide">
                 {t('dashboard.calories')}
@@ -80,7 +80,7 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
             <p className="text-[11px] text-body-secondary">
               {t('dashboard.remaining')} · {consumed} {t('dashboard.consumed')}
             </p>
-            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-emerald-100 dark:bg-emerald-950">
+            <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-lime-100 dark:bg-lime-950/50">
               <motion.div
                 className="h-full rounded-full gradient-vitality"
                 initial={{ width: 0 }}
@@ -95,7 +95,7 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
             className="rounded-2xl bg-white/70 p-3 text-left transition hover:bg-white/90 dark:bg-slate-800/60 dark:hover:bg-slate-800/80"
             onClick={onOpenProfile}
           >
-            <div className="mb-2 flex items-center gap-1.5 text-teal-500">
+            <div className="mb-2 flex items-center gap-1.5 text-yellow-600">
               <Dumbbell className="h-4 w-4" />
               <span className="text-[11px] font-semibold uppercase tracking-wide">
                 {t('dashboard.training')}
@@ -104,21 +104,21 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
             <p className="line-clamp-2 text-sm font-semibold leading-snug text-body-primary">
               {userProfile.training?.typical_session ?? '—'}
             </p>
-            <p className="mt-1 text-[11px] text-emerald-500">
+            <p className="mt-1 text-[11px] text-lime-600">
               {userProfile.training?.next_session ?? ''}
             </p>
           </button>
 
           <button
             type="button"
-            className="flex flex-col justify-between rounded-2xl bg-gradient-to-br from-emerald-400/15 to-teal-400/10 p-3 text-left transition hover:from-emerald-400/20 hover:to-teal-400/15"
+            className="flex flex-col justify-between rounded-2xl bg-gradient-to-br from-lime-300/20 to-yellow-200/25 p-3 text-left transition hover:from-lime-300/30 hover:to-yellow-200/35"
             onClick={onOpenProfile}
           >
             <div className="mb-2 flex items-center justify-between">
-              <span className="text-[11px] font-semibold uppercase tracking-wide text-emerald-600 dark:text-emerald-400">
+              <span className="text-[11px] font-semibold uppercase tracking-wide text-lime-700 dark:text-lime-400">
                 {t('dashboard.weekly')}
               </span>
-              <ChevronRight className="h-4 w-4 text-emerald-500" />
+              <ChevronRight className="h-4 w-4 text-lime-600" />
             </div>
             <p className="text-3xl font-bold tabular-nums text-body-primary">
               {userProfile.training?.frequency_per_week ?? '—'}

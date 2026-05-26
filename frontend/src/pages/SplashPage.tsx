@@ -36,13 +36,13 @@ export function SplashPage() {
       <PageTransition className="relative flex min-h-dvh flex-1 flex-col overflow-x-hidden">
         {/* Splash-only richer background accents */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-          <div className="absolute -left-16 top-[5%] h-[480px] w-[480px] rounded-full bg-emerald-200/45 blur-[110px]" />
-          <div className="absolute right-0 top-[18%] h-[520px] w-[520px] rounded-full bg-lime-200/40 blur-[120px]" />
-          <div className="absolute bottom-[5%] right-[20%] h-[380px] w-[380px] rounded-full bg-yellow-100/50 blur-[95px]" />
-          <div className="absolute bottom-0 left-[30%] h-[300px] w-[300px] rounded-full bg-green-200/35 blur-[85px]" />
-          <div className="absolute inset-0 bg-gradient-to-br from-emerald-50/70 via-[#f0fdf4]/30 to-lime-100/45" />
-          <div className="absolute inset-y-0 left-0 w-[58%] bg-gradient-to-r from-emerald-50/85 via-[#f0fdf4]/50 to-transparent" />
-          <div className="absolute inset-y-0 right-0 w-[45%] bg-gradient-to-l from-lime-100/35 via-yellow-50/15 to-transparent" />
+          <div className="absolute -left-16 top-[5%] h-[480px] w-[480px] rounded-full bg-yellow-200/50 blur-[110px]" />
+          <div className="absolute right-0 top-[18%] h-[520px] w-[520px] rounded-full bg-lime-200/45 blur-[120px]" />
+          <div className="absolute bottom-[5%] right-[20%] h-[380px] w-[380px] rounded-full bg-yellow-100/55 blur-[95px]" />
+          <div className="absolute bottom-0 left-[30%] h-[300px] w-[300px] rounded-full bg-lime-100/45 blur-[85px]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-yellow-50/75 via-[#f7fee7]/40 to-lime-100/50" />
+          <div className="absolute inset-y-0 left-0 w-[58%] bg-gradient-to-r from-yellow-50/80 via-[#f7fee7]/55 to-transparent" />
+          <div className="absolute inset-y-0 right-0 w-[45%] bg-gradient-to-l from-lime-100/40 via-yellow-50/25 to-transparent" />
         </div>
 
         <header className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-5 pt-5 sm:px-8 sm:pt-6">

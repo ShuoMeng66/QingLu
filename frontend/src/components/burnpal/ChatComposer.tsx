@@ -82,7 +82,7 @@ export function ChatComposer({
 
   return (
     <form
-      className="glass-input flex min-h-[3.75rem] w-full items-end gap-3 rounded-[28px] px-5 py-3.5 shadow-glass"
+      className="chat-composer glass-input flex min-h-[3.75rem] w-full items-end gap-3 rounded-[28px] px-5 py-3.5 shadow-glass"
       onSubmit={(event) => {
         event.preventDefault()
         if (loading) {
@@ -95,10 +95,10 @@ export function ChatComposer({
     >
       <button
         type="button"
-        className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
+        className={`composer-icon-btn relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
           listening
             ? 'bg-red-100 text-red-500 ring-2 ring-red-300/60 dark:bg-red-950/40 dark:text-red-400'
-            : 'text-body-secondary hover:bg-white/40'
+            : 'text-body-secondary hover:bg-black/5 dark:hover:bg-white/10'
         }`}
         aria-label={listening ? t('composer.voiceStop') : t('composer.voiceStart')}
         aria-pressed={listening}
@@ -128,7 +128,7 @@ export function ChatComposer({
               : t('chat.placeholderOffline')
         }
         disabled={!inputEnabled}
-        className="min-h-[28px] max-h-[200px] flex-1 resize-none border-0 bg-transparent py-1.5 text-base leading-relaxed text-body-primary outline-none placeholder:text-body-secondary"
+        className="chat-composer-input min-h-[28px] max-h-[200px] flex-1 resize-none border-0 bg-transparent py-1.5 text-base leading-relaxed text-body-primary outline-none"
         onChange={(event) => {
           if (listening) stop()
           onInputChange(event.target.value)

@@ -1,4 +1,8 @@
-export const config = { runtime: 'edge' }
+/** Node runtime: longer timeout for Render cold start + SMTP (Edge middleware times out) */
+export const config = {
+  runtime: 'nodejs',
+  maxDuration: 60,
+}
 
 function subpathFromRequest(request: Request): string {
   const pathname = new URL(request.url).pathname
@@ -43,6 +47,7 @@ export default async function handler(request: Request): Promise<Response> {
       method: request.method,
       headers,
       body,
+      signal: AbortSignal.timeout(55_000),
     })
 
     return new Response(upstream.body, {
@@ -51,12 +56,15 @@ export default async function handler(request: Request): Promise<Response> {
     })
   } catch (error) {
     console.error('[backend proxy]', error)
+    const timedOut = error instanceof Error && error.name === 'TimeoutError'
     return Response.json(
       {
-        error: 'Backend proxy failed',
+        error: timedOut
+          ? 'Backend request timed out (service may be waking up — try again)'
+          : 'Backend proxy failed',
         detail: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 502 },
+      { status: timedOut ? 504 : 502 },
     )
   }
 }

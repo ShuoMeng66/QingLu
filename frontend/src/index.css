@@ -1,21 +1,22 @@
 @import "tailwindcss";
 @import "./styles/tokens.css";
+@import "./styles/theme-light.css";
 @import "./styles/theme-dark.css";
 
 @theme {
-  --color-background: #f0fdf4;
-  --color-surface: #f0fdf4;
+  --color-background: #f7fee7;
+  --color-surface: #f7fee7;
   --color-foreground: #1a202c;
-  --color-primary: #4ade80;
-  --color-primary-foreground: #ffffff;
-  --color-secondary: #20c997;
-  --color-secondary-foreground: #ffffff;
+  --color-primary: #a3e635;
+  --color-primary-foreground: #1a2e05;
+  --color-secondary: #facc15;
+  --color-secondary-foreground: #422006;
   --color-card: #ffffff;
-  --color-accent: #20c997;
-  --color-accent-foreground: #1a202c;
-  --color-muted: rgba(255, 255, 255, 0.65);
+  --color-accent: #bef264;
+  --color-accent-foreground: #1a2e05;
+  --color-muted: rgba(255, 255, 255, 0.72);
   --color-muted-foreground: #4a5568;
-  --color-border: rgba(255, 255, 255, 0.8);
+  --color-border: rgba(255, 255, 255, 0.85);
   --color-destructive: #ef4444;
   --color-gray-900: #1a202c;
   --color-gray-600: #4a5568;
@@ -26,7 +27,7 @@
   --font-display: "Inter", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
   --font-body: "Inter", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
   --radius-2xl: 24px;
-  --shadow-glass: inset 0 1px 0 rgba(255, 255, 255, 0.8), 0 8px 32px rgba(16, 185, 129, 0.06);
+  --shadow-glass: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 8px 32px rgba(163, 230, 53, 0.08);
 }
 
 *,
@@ -44,7 +45,7 @@ body,
 
 body {
   margin: 0;
-  background-color: #f0fdf4;
+  background-color: #f7fee7;
   color: #1a202c;
 }
 

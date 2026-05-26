@@ -6,6 +6,9 @@ export type MessageKey =
   | 'about.title'
   | 'about.version'
   | 'auth.backendUnavailable'
+  | 'auth.backendWaking'
+  | 'auth.emailAlreadyRegistered'
+  | 'auth.smtpUnavailable'
   | 'auth.accountMenu'
   | 'auth.avatarInvalidType'
   | 'auth.avatarRemoved'
@@ -383,6 +386,9 @@ const ZH: Record<MessageKey, string> = {
   'auth.saveProfile': '保存',
   'auth.signInOrRegister': '登录 / 注册',
   'auth.backendUnavailable': '无法连接后端服务，请先启动 backend（npm run dev）',
+  'auth.backendWaking': '后端正在唤醒，请稍后再试发送验证码',
+  'auth.emailAlreadyRegistered': '该邮箱已注册，请直接登录',
+  'auth.smtpUnavailable': '邮件服务暂时不可用，请稍后重试',
   'auth.codeRequired': '请输入验证码',
   'auth.codeHint': '填写邮箱后将自动向该邮箱发送 6 位验证码',
   'auth.codeSent': '验证码已发送，请查收邮件',
@@ -741,6 +747,9 @@ const EN: Record<MessageKey, string> = {
   'auth.saveProfile': 'Save',
   'auth.signInOrRegister': 'Sign in / Sign up',
   'auth.backendUnavailable': 'Cannot reach the backend. Start it with: cd backend && npm run dev',
+  'auth.backendWaking': 'Backend is waking up — try sending the code again in a moment',
+  'auth.emailAlreadyRegistered': 'This email is already registered — please log in',
+  'auth.smtpUnavailable': 'Email service is temporarily unavailable — try again later',
   'auth.codeRequired': 'Enter the verification code',
   'auth.codeHint': 'A 6-digit code will be sent to this email automatically',
   'auth.codeSent': 'Verification code sent — check your email',
@@ -1099,6 +1108,9 @@ const JA: Record<MessageKey, string> = {
   'auth.saveProfile': '保存',
   'auth.signInOrRegister': 'ログイン / 登録',
   'auth.backendUnavailable': 'バックエンドに接続できません。backend で npm run dev を実行してください',
+  'auth.backendWaking': 'バックエンド起動中です。しばらくしてから再送してください',
+  'auth.emailAlreadyRegistered': 'このメールは登録済みです。ログインしてください',
+  'auth.smtpUnavailable': 'メール送信が一時的に利用できません。後でもう一度お試しください',
   'auth.codeRequired': '認証コードを入力してください',
   'auth.codeHint': 'メールアドレス入力後、このアドレスに6桁コードを自動送信します',
   'auth.codeSent': '認証コードを送信しました。メールをご確認ください',
@@ -1457,6 +1469,9 @@ const KO: Record<MessageKey, string> = {
   'auth.saveProfile': '저장',
   'auth.signInOrRegister': '로그인 / 가입',
   'auth.backendUnavailable': '백엔드에 연결할 수 없습니다. backend에서 npm run dev를 실행하세요',
+  'auth.backendWaking': '백엔드가 깨어나는 중입니다. 잠시 후 다시 시도하세요',
+  'auth.emailAlreadyRegistered': '이미 등록된 이메일입니다. 로그인하세요',
+  'auth.smtpUnavailable': '메일 서비스를 일시적으로 사용할 수 없습니다. 나중에 다시 시도하세요',
   'auth.codeRequired': '인증 코드를 입력하세요',
   'auth.codeHint': '이메일 입력 후 해당 주소로 6자리 코드가 자동 전송됩니다',
   'auth.codeSent': '인증 코드를 보냈습니다. 이메일을 확인하세요',

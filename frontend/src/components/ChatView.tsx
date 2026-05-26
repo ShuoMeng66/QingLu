@@ -1,7 +1,7 @@
 import { AnimatePresence } from 'framer-motion'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Menu, X } from 'lucide-react'
-import { Link, useLocation as useRouteLocation } from 'react-router-dom'
+import { useLocation as useRouteLocation } from 'react-router-dom'
 import type { ChatMessage } from '../types/openclaw'
 import type { ConnectionStatus } from '../types/openclaw'
 import type { Conversation } from '../types/conversation'
@@ -101,7 +101,6 @@ export function ChatView({
   input,
   loading,
   connected,
-  statusMessage = '',
   clusterTurn,
   activeConversation,
   historyConversations,
@@ -381,7 +380,7 @@ export function ChatView({
             <>
               <button
                 type="button"
-                className="fixed inset-0 z-40 bg-emerald-950/10 backdrop-blur-sm lg:hidden"
+                className="fixed inset-0 z-40 bg-lime-950/10 backdrop-blur-sm lg:hidden"
                 aria-label={t('chat.closeSidebar')}
                 onClick={() => setSidebarOpen(false)}
               />
@@ -403,8 +402,8 @@ export function ChatView({
             </>
           )}
 
-          <div className="burnpal-shell-panel relative flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-          <header className="relative z-10 shrink-0 px-4 pt-4 pb-2 lg:px-6">
+          <div className="burnpal-shell-panel relative flex min-h-0 min-w-0 flex-1 flex-col">
+          <header className="relative z-50 shrink-0 overflow-visible px-4 pt-4 pb-2 lg:px-6">
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -420,7 +419,7 @@ export function ChatView({
               <div className="ml-auto flex items-center gap-3">
                 <UserAccountAvatar showLabel={false} />
                 <span
-                  className={`text-xs font-medium ${connected ? 'text-emerald-500' : 'text-body-secondary'}`}
+                  className={`text-xs font-medium ${connected ? 'text-lime-600' : 'text-body-secondary'}`}
                 >
                   {connected
                     ? loading
@@ -439,22 +438,7 @@ export function ChatView({
 
           <ChatDashboardBar onOpenProfile={() => setProfileSheetOpen(true)} />
 
-          {useDemo && (
-            <div className="burnpal-chat-column px-5 pb-2">
-              <p className="rounded-2xl border border-amber-200/80 bg-amber-50/90 px-4 py-2 text-center text-xs leading-relaxed text-amber-800 dark:border-amber-900/40 dark:bg-amber-950/30 dark:text-amber-200">
-                {t('chat.demoBanner')}
-                <Link to="/settings" className="ml-1 font-semibold underline">
-                  {t('chat.demoBannerLink')}
-                </Link>
-                {t('chat.demoBannerExtra')}
-                {statusMessage ? (
-                  <span className="mt-1 block text-[11px] font-medium opacity-90">{statusMessage}</span>
-                ) : null}
-              </p>
-            </div>
-          )}
-
-          <div className="relative z-10 flex min-h-0 flex-1 flex-col">
+          <div className="relative z-0 flex min-h-0 flex-1 flex-col overflow-hidden">
             <div
               className="burnpal-scroll-hidden min-h-0 flex-1 overflow-y-auto"
               ref={scrollRef}
@@ -540,7 +524,7 @@ export function ChatView({
             {showScrollFab && (
               <button
                 type="button"
-                className="glass-panel fixed bottom-40 right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full text-emerald-500 shadow-glass"
+                className="glass-panel fixed bottom-40 right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full text-lime-600 shadow-glass"
                 aria-label={t('chat.scrollToBottom')}
                 onClick={() => {
                   pinnedToBottomRef.current = true

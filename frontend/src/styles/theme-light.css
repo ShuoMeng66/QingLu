@@ -1,0 +1,57 @@
+/* Light theme — higher contrast on yellow-lime backgrounds */
+[data-theme='light'] {
+  color-scheme: light;
+
+  --ink: #0f172a;
+  --body: #334155;
+  --body-strong: #1e293b;
+  --ink-soft: #475569;
+  --muted-foreground: #475569;
+  --foreground: #0f172a;
+
+  --text-on-surface: #0f172a;
+  --text-on-surface-muted: #475569;
+  --text-on-accent: #1a2e05;
+  --text-on-banner: #0f172a;
+  --text-on-banner-muted: #334155;
+
+  --composer-bg: rgba(255, 255, 255, 0.88);
+  --composer-border: rgba(163, 230, 53, 0.35);
+  --composer-text: #0f172a;
+  --composer-placeholder: #64748b;
+
+  --sidebar-item-active: rgba(255, 255, 255, 0.92);
+  --sidebar-item-hover: rgba(255, 255, 255, 0.65);
+}
+
+[data-theme='light'] .text-slate-800 {
+  color: var(--ink);
+}
+
+[data-theme='light'] .text-slate-700 {
+  color: #1e293b;
+}
+
+[data-theme='light'] .text-slate-600,
+[data-theme='light'] .text-slate-500 {
+  color: var(--body);
+}
+
+[data-theme='light'] .text-slate-400 {
+  color: #64748b;
+}
+
+[data-theme='light'] .glass-input,
+[data-theme='light'] .chat-composer {
+  background: var(--composer-bg);
+  border-color: var(--composer-border);
+}
+
+[data-theme='light'] .chat-composer textarea,
+[data-theme='light'] .chat-composer-input {
+  color: var(--composer-text);
+}
+
+[data-theme='light'] .profile-setup-banner__inner {
+  background: linear-gradient(135deg, #fef9c3 0%, #ecfccb 100%);
+}

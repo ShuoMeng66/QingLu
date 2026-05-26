@@ -68,7 +68,7 @@ function UserEditPanel({
           value={draft}
           rows={Math.min(8, Math.max(3, draft.split('\n').length + 1))}
           disabled={disabled}
-          className="w-full resize-y rounded-2xl border border-emerald-100/80 bg-white/70 px-3 py-2.5 text-sm leading-relaxed text-slate-800 outline-none transition-shadow focus:border-emerald-300 focus:shadow-[0_0_0_3px_rgba(52,211,153,0.15)] disabled:opacity-60 dark:border-white/10 dark:bg-slate-900/60"
+          className="w-full resize-y rounded-2xl border border-lime-100/80 bg-white/70 px-3 py-2.5 text-sm leading-relaxed text-slate-800 outline-none transition-shadow focus:border-lime-300 focus:shadow-[0_0_0_3px_rgba(190,242,100,0.25)] disabled:opacity-60 dark:border-white/10 dark:bg-slate-900/60"
           onChange={(event) => onChange(event.target.value)}
           onKeyDown={(event) => {
             if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
@@ -252,7 +252,7 @@ export function ChatBubble({
             {showAssistantActions && isError && (
               <button
                 type="button"
-                className="rounded-full px-2 py-0.5 text-[11px] text-emerald-500 transition hover:bg-emerald-50 disabled:opacity-40 dark:hover:bg-emerald-950/40"
+                className="rounded-full px-2 py-0.5 text-[11px] text-lime-600 transition hover:bg-lime-50 disabled:opacity-40 dark:hover:bg-lime-950/40"
                 disabled={loading}
                 onClick={onRetry}
               >
@@ -266,7 +266,7 @@ export function ChatBubble({
                   aria-pressed={feedback === 'up'}
                   className={`rounded-full px-2.5 py-0.5 text-[11px] transition ${
                     feedback === 'up'
-                      ? 'bg-emerald-100 font-medium text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400'
+                      ? 'bg-lime-100 font-medium text-lime-700 dark:bg-lime-950/50 dark:text-lime-400'
                       : 'text-slate-500 hover:bg-white/50 hover:text-slate-700'
                   }`}
                   onClick={() => onFeedback?.('up')}

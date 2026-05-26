@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useId, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Link, useNavigate } from 'react-router-dom'
 import { Camera, LogOut, Settings, User } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
@@ -31,8 +32,10 @@ export function UserAccountMenu({
   const navigate = useNavigate()
   const menuId = useId()
   const rootRef = useRef<HTMLDivElement>(null)
+  const menuRef = useRef<HTMLDivElement>(null)
   const fileRef = useRef<HTMLInputElement>(null)
   const [open, setOpen] = useState(false)
+  const [menuAnchor, setMenuAnchor] = useState<DOMRect | null>(null)
   const [avatarUrl, setAvatarUrl] = useState<string | undefined>(() => loadUserProfile().avatar_url)
   const [showPasswordForm, setShowPasswordForm] = useState(false)
   const [displayNameDraft, setDisplayNameDraft] = useState('')
@@ -61,14 +64,26 @@ export function UserAccountMenu({
     }
   }, [user])
 
+  const updateMenuAnchor = useCallback(() => {
+    if (!rootRef.current) return
+    setMenuAnchor(rootRef.current.getBoundingClientRect())
+  }, [])
+
   useEffect(() => {
-    if (!open) return
+    if (!open) {
+      setMenuAnchor(null)
+      return
+    }
+
+    updateMenuAnchor()
+    window.addEventListener('resize', updateMenuAnchor)
+    window.addEventListener('scroll', updateMenuAnchor, true)
 
     const onPointerDown = (event: MouseEvent) => {
-      if (!rootRef.current?.contains(event.target as Node)) {
-        setOpen(false)
-        setShowPasswordForm(false)
-      }
+      const target = event.target as Node
+      if (rootRef.current?.contains(target) || menuRef.current?.contains(target)) return
+      setOpen(false)
+      setShowPasswordForm(false)
     }
 
     const onKeyDown = (event: KeyboardEvent) => {
@@ -81,10 +96,12 @@ export function UserAccountMenu({
     document.addEventListener('mousedown', onPointerDown)
     document.addEventListener('keydown', onKeyDown)
     return () => {
+      window.removeEventListener('resize', updateMenuAnchor)
+      window.removeEventListener('scroll', updateMenuAnchor, true)
       document.removeEventListener('mousedown', onPointerDown)
       document.removeEventListener('keydown', onKeyDown)
     }
-  }, [open])
+  }, [open, updateMenuAnchor])
 
   const loggedIn = Boolean(user)
   const label = user
@@ -161,7 +178,7 @@ export function UserAccountMenu({
   const avatarButton = (
     <button
       type="button"
-      className={`group flex shrink-0 items-center gap-2 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/80 ${className}`}
+      className={`group flex shrink-0 items-center gap-2 rounded-full transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lime-400/80 ${className}`}
       aria-label={t('auth.accountMenu')}
       aria-expanded={open}
       aria-haspopup="menu"
@@ -214,14 +231,21 @@ export function UserAccountMenu({
         }}
       />
 
-      {open && (
-        <div
-          id={menuId}
-          role="menu"
-          className={`absolute top-[calc(100%+0.5rem)] z-[60] w-[min(18rem,calc(100vw-2rem))] rounded-2xl border border-white/80 bg-white/95 p-3 shadow-glass backdrop-blur-md ${
-            menuAlign === 'left' ? 'left-0' : 'right-0'
-          }`}
-        >
+      {open &&
+        menuAnchor &&
+        createPortal(
+          <div
+            ref={menuRef}
+            id={menuId}
+            role="menu"
+            className="fixed z-[200] w-[min(18rem,calc(100vw-2rem))] rounded-2xl border border-white/90 bg-white/98 p-3 shadow-[0_16px_48px_rgba(163,230,53,0.18)] backdrop-blur-md"
+            style={{
+              top: menuAnchor.bottom + 8,
+              ...(menuAlign === 'left'
+                ? { left: Math.max(12, menuAnchor.left) }
+                : { right: Math.max(12, window.innerWidth - menuAnchor.right) }),
+            }}
+          >
           {loggedIn ? (
             <>
               <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
@@ -234,7 +258,7 @@ export function UserAccountMenu({
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold text-slate-800">{user!.email}</p>
-                  <p className="text-[11px] text-emerald-600">
+                  <p className="text-[11px] text-lime-700">
                     {syncing ? t('auth.syncing') : t('auth.loggedInAs')}
                   </p>
                 </div>
@@ -252,7 +276,7 @@ export function UserAccountMenu({
                   />
                   <button
                     type="button"
-                    className="shrink-0 rounded-xl bg-emerald-500/15 px-3 py-2 text-xs font-semibold text-emerald-700 hover:bg-emerald-500/25 disabled:opacity-50"
+                    className="shrink-0 rounded-xl bg-lime-400/20 px-3 py-2 text-xs font-semibold text-lime-800 hover:bg-lime-400/30 disabled:opacity-50"
                     disabled={saving}
                     onClick={() => void handleSaveDisplayName()}
                   >
@@ -265,10 +289,10 @@ export function UserAccountMenu({
                 <button
                   type="button"
                   role="menuitem"
-                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-slate-700 hover:bg-emerald-50/80"
+                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-slate-700 hover:bg-lime-50/90"
                   onClick={() => fileRef.current?.click()}
                 >
-                  <Camera className="h-4 w-4 text-emerald-600" />
+                  <Camera className="h-4 w-4 text-lime-600" />
                   {t('auth.changeAvatar')}
                 </button>
                 {avatarUrl && (
@@ -288,7 +312,7 @@ export function UserAccountMenu({
                 <button
                   type="button"
                   role="menuitem"
-                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-slate-700 hover:bg-emerald-50/80"
+                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm text-slate-700 hover:bg-lime-50/90"
                   onClick={() => setShowPasswordForm((value) => !value)}
                 >
                   {t('auth.changePassword')}
@@ -332,10 +356,10 @@ export function UserAccountMenu({
                 <Link
                   to="/settings"
                   role="menuitem"
-                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm text-slate-700 hover:bg-emerald-50/80"
+                  className="flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-sm text-slate-700 hover:bg-lime-50/90"
                   onClick={() => setOpen(false)}
                 >
-                  <Settings className="h-4 w-4 text-emerald-600" />
+                  <Settings className="h-4 w-4 text-lime-600" />
                   {t('settings.accountManage')}
                 </Link>
                 <button
@@ -381,8 +405,9 @@ export function UserAccountMenu({
               </button>
             </>
           )}
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </div>
   )
 }

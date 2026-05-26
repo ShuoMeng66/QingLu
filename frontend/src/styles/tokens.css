@@ -1,87 +1,95 @@
-/* BurnPal 轻鹭 · Youthful Fresh Mint design tokens */
+/* BurnPal 轻鹭 · Sunny lime & soft yellow design tokens */
 :root {
   --scroll-y: 0;
 
-  /* Background — soft pale mint gradient */
-  --background: #f0fdf4;
-  --background-soft: #e6f7ef;
+  --background: #f7fee7;
+  --background-soft: #fef9c3;
   --foreground: #1a202c;
-  --primary: #4ade80;
-  --primary-foreground: #ffffff;
-  --secondary: #20c997;
-  --secondary-foreground: #ffffff;
-  --accent: #20c997;
-  --accent-foreground: #1a202c;
-  --muted-bg: rgba(255, 255, 255, 0.65);
-  --muted: rgba(255, 255, 255, 0.65);
-  --border: rgba(255, 255, 255, 0.8);
+  --primary: #a3e635;
+  --primary-foreground: #1a2e05;
+  --secondary: #facc15;
+  --secondary-foreground: #422006;
+  --accent: #bef264;
+  --accent-foreground: #1a2e05;
+  --muted-bg: rgba(255, 255, 255, 0.72);
+  --muted: rgba(255, 255, 255, 0.72);
+  --border: rgba(255, 255, 255, 0.85);
   --destructive: #ef4444;
 
-  --canvas: #f0fdf4;
-  --canvas-base: #f0fdf4;
-  --canvas-morning: linear-gradient(165deg, #d1fae5 0%, #e6f7ef 42%, #f0fdf4 100%);
-  --ink: #1a202c;
-  --body: #4a5568;
-  --body-strong: #2d3436;
-  --ink-soft: #4a5568;
-  --muted-foreground: #4a5568;
-  --hairline: rgba(255, 255, 255, 0.8);
-  --hairline-soft: rgba(255, 255, 255, 0.6);
-  --line: rgba(255, 255, 255, 0.8);
-  --line-strong: rgba(74, 222, 128, 0.25);
+  --canvas: #f7fee7;
+  --canvas-base: #f7fee7;
+  --canvas-morning: linear-gradient(165deg, #fef9c3 0%, #ecfccb 42%, #f7fee7 100%);
+  --ink: #0f172a;
+  --body: #334155;
+  --body-strong: #1e293b;
+  --ink-soft: #475569;
+  --muted-foreground: #475569;
 
-  --accent-from: #4ade80;
-  --accent-to: #20c997;
-  --accent-deep: #00b894;
-  --accent-green: #4ade80;
-  --accent-green-deep: #00b894;
-  --accent-teal: #20c997;
-  --accent-teal-deep: #00b894;
-  --accent-teal-light: #a7f3d0;
+  --text-on-surface: #0f172a;
+  --text-on-surface-muted: #475569;
+  --composer-bg: rgba(255, 255, 255, 0.88);
+  --composer-border: rgba(163, 230, 53, 0.35);
+  --composer-text: #0f172a;
+  --composer-placeholder: #64748b;
+  --sidebar-item-active: rgba(255, 255, 255, 0.92);
+  --sidebar-item-hover: rgba(255, 255, 255, 0.65);
+  --hairline: rgba(255, 255, 255, 0.85);
+  --hairline-soft: rgba(255, 255, 255, 0.65);
+  --line: rgba(255, 255, 255, 0.85);
+  --line-strong: rgba(163, 230, 53, 0.35);
 
-  --on-primary: #ffffff;
+  --accent-from: #bef264;
+  --accent-to: #fde047;
+  --accent-deep: #84cc16;
+  --accent-green: #a3e635;
+  --accent-green-deep: #65a30d;
+  --accent-teal: #eab308;
+  --accent-teal-deep: #ca8a04;
+  --accent-teal-light: #ecfccb;
+
+  --on-primary: #1a2e05;
   --on-dark: #ffffff;
-  --on-dark-soft: rgba(255, 255, 255, 0.82);
+  --on-dark-soft: rgba(255, 255, 255, 0.9);
 
-  --surface: rgba(255, 255, 255, 0.6);
-  --surface-soft: rgba(255, 255, 255, 0.65);
+  --surface: rgba(255, 255, 255, 0.68);
+  --surface-soft: rgba(255, 255, 255, 0.72);
   --surface-card: #ffffff;
-  --surface-cream-strong: rgba(255, 255, 255, 0.7);
-  --surface-strong: rgba(255, 255, 255, 0.8);
-  --sidebar-bg: rgba(255, 255, 255, 0.72);
+  --surface-cream-strong: rgba(254, 252, 232, 0.85);
+  --surface-strong: rgba(255, 255, 255, 0.82);
+  --sidebar-bg: rgba(255, 255, 255, 0.75);
 
-  --bg: #f0fdf4;
-  --bg-deep: #e6f7ef;
-  --bg-soft: rgba(255, 255, 255, 0.65);
+  --bg: #f7fee7;
+  --bg-deep: #ecfccb;
+  --bg-soft: rgba(254, 249, 195, 0.65);
 
-  --brand: var(--accent-teal);
+  --brand: var(--accent-green);
   --brand-bright: var(--secondary);
-  --brand-deep: var(--accent-deep);
-  --brand-muted: rgba(74, 222, 128, 0.12);
-  --success: #4ade80;
+  --brand-deep: var(--accent-green-deep);
+  --brand-muted: rgba(190, 242, 100, 0.35);
+  --success: #84cc16;
   --danger: var(--destructive);
-  --warning: #fcd34d;
+  --warning: #fbbf24;
 
-  --shadow-soft: 0 2px 12px rgba(16, 185, 129, 0.06);
-  --shadow-hover: 0 6px 24px rgba(16, 185, 129, 0.1);
-  --shadow-custom: 0 8px 32px rgba(16, 185, 129, 0.06);
-  --shadow-glass: 0 8px 32px rgba(16, 185, 129, 0.06);
-  --shadow-glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  --shadow-vitality-btn: 0 8px 20px -4px rgba(32, 201, 151, 0.4);
-  --shadow-spot: 0 4px 16px rgba(32, 201, 151, 0.15);
+  --shadow-soft: 0 2px 12px rgba(202, 138, 4, 0.08);
+  --shadow-hover: 0 6px 24px rgba(163, 230, 53, 0.12);
+  --shadow-custom: 0 8px 32px rgba(190, 242, 100, 0.1);
+  --shadow-glass: 0 8px 32px rgba(163, 230, 53, 0.08);
+  --shadow-glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  --shadow-vitality-btn: 0 8px 20px -4px rgba(234, 179, 8, 0.35);
+  --shadow-spot: 0 4px 16px rgba(163, 230, 53, 0.18);
   --shadow-clay: var(--shadow-custom);
 
-  --glass-bg: rgba(255, 255, 255, 0.6);
-  --glass-bg-strong: rgba(255, 255, 255, 0.8);
-  --glass-border: rgba(255, 255, 255, 0.8);
+  --glass-bg: rgba(255, 255, 255, 0.68);
+  --glass-bg-strong: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.85);
   --glass-blur: blur(40px);
   --glass-shadow: var(--shadow-custom);
 
-  --gradient-primary: linear-gradient(to right, #4ade80, #20c997);
-  --gradient-primary-br: linear-gradient(to bottom right, #4ade80, #20c997);
-  --gradient-spot: linear-gradient(135deg, #4ade80 0%, #00b894 100%);
-  --gradient-warm-soft: linear-gradient(155deg, rgba(167, 243, 208, 0.25) 0%, rgba(255, 255, 255, 0.6) 72%);
-  --gradient-soft: linear-gradient(155deg, rgba(167, 243, 208, 0.25) 0%, rgba(255, 255, 255, 0.6) 72%);
+  --gradient-primary: linear-gradient(to right, #bef264, #fde047);
+  --gradient-primary-br: linear-gradient(to bottom right, #d9f99d, #fde68a);
+  --gradient-spot: linear-gradient(135deg, #bef264 0%, #facc15 100%);
+  --gradient-warm-soft: linear-gradient(155deg, rgba(254, 249, 195, 0.55) 0%, rgba(236, 252, 203, 0.75) 72%);
+  --gradient-soft: linear-gradient(155deg, rgba(236, 252, 203, 0.45) 0%, rgba(255, 255, 255, 0.7) 72%);
 
   --font-display: 'Inter', 'PingFang SC', 'Noto Sans SC', system-ui, sans-serif;
   --font-body: 'Inter', 'PingFang SC', 'Noto Sans SC', system-ui, sans-serif;
