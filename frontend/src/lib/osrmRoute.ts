@@ -1,6 +1,10 @@
-/** OSRM 步行路线（公共 demo 服务，开源、免 Key；生产环境建议自托管） */
+/** OSRM 步行路线（海外备用；国内不可用，见 straightLineRoute） */
 
-const OSRM_BASE = 'https://router.project-osrm.org/route/v1/foot'
+import { distanceMeters } from './userLocation'
+
+/** 同源走 Vercel Middleware → OSRM，不依赖用户本机代理 */
+const OSRM_BASE = '/api/osrm/route/v1/foot'
+const OSRM_TIMEOUT_MS = 8_000
 
 export interface LatLon {
   lat: number
@@ -23,6 +27,20 @@ export function formatRouteDuration(seconds: number): string {
   return m > 0 ? `${h}h ${m}m` : `${h}h`
 }
 
+/** 国内预览：不依赖 OSRM，直线距离 + 示意折线 */
+export function straightLineRoute(origin: LatLon, destination: LatLon): OsrmRouteResult {
+  const distanceM = distanceMeters(origin, destination)
+  const durationSec = Math.max(60, Math.round(distanceM / 1.2))
+  return {
+    distanceM,
+    durationSec,
+    polyline: [
+      [origin.lat, origin.lon],
+      [destination.lat, destination.lon],
+    ],
+  }
+}
+
 export async function fetchWalkingRoute(
   origin: LatLon,
   destination: LatLon,
@@ -31,8 +49,17 @@ export async function fetchWalkingRoute(
   const coords = `${origin.lon},${origin.lat};${destination.lon},${destination.lat}`
   const url = `${OSRM_BASE}/${coords}?overview=full&geometries=geojson&steps=false`
 
+  const timeout = AbortSignal.timeout(OSRM_TIMEOUT_MS)
+  const merged =
+    signal && 'any' in AbortSignal
+      ? (AbortSignal as typeof AbortSignal & { any: (signals: AbortSignal[]) => AbortSignal }).any([
+          signal,
+          timeout,
+        ])
+      : timeout
+
   try {
-    const response = await fetch(url, { signal })
+    const response = await fetch(url, { signal: merged })
     if (!response.ok) return null
 
     const payload = (await response.json()) as {

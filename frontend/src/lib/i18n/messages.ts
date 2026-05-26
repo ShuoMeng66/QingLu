@@ -141,6 +141,8 @@ export type MessageKey =
   | 'detail.mapLabel'
   | 'detail.mapLoading'
   | 'detail.routeWalk'
+  | 'detail.routeStraight'
+  | 'detail.useExternalNav'
   | 'detail.routeUnavailable'
   | 'detail.mapNoOrigin'
   | 'detail.youAreHere'
@@ -498,6 +500,8 @@ const ZH: Record<MessageKey, string> = {
   'detail.mapLabel': '路线地图',
   'detail.mapLoading': '正在规划步行路线…',
   'detail.routeWalk': '步行',
+  'detail.routeStraight': '直线约',
+  'detail.useExternalNav': '完整路线请点「一键导航」（Google 地图）',
   'detail.routeUnavailable': '暂时无法规划路线，可查看标记点',
   'detail.mapNoOrigin': '开启位置服务后可显示步行路线',
   'detail.youAreHere': '你的位置',
@@ -861,6 +865,8 @@ const EN: Record<MessageKey, string> = {
   'detail.mapLabel': 'Route map',
   'detail.mapLoading': 'Planning walking route…',
   'detail.routeWalk': 'Walk',
+  'detail.routeStraight': 'Straight-line ~',
+  'detail.useExternalNav': 'Full route: tap Navigate (Google Maps)',
   'detail.routeUnavailable': 'Route unavailable — showing marker only',
   'detail.mapNoOrigin': 'Enable location for walking route',
   'detail.youAreHere': 'You are here',
@@ -1224,6 +1230,8 @@ const JA: Record<MessageKey, string> = {
   'detail.mapLabel': 'ルート地図',
   'detail.mapLoading': '徒歩ルートを計算中…',
   'detail.routeWalk': '徒歩',
+  'detail.routeStraight': '直線約',
+  'detail.useExternalNav': '詳細ルートは「ナビ」から（Google マップ）',
   'detail.routeUnavailable': 'ルート取得不可 — マーカーのみ表示',
   'detail.mapNoOrigin': '位置情報をオンにするとルート表示',
   'detail.youAreHere': '現在地',
@@ -1587,6 +1595,8 @@ const KO: Record<MessageKey, string> = {
   'detail.mapLabel': '경로 지도',
   'detail.mapLoading': '도보 경로 계산 중…',
   'detail.routeWalk': '도보',
+  'detail.routeStraight': '직선 약',
+  'detail.useExternalNav': '전체 경로는 「내비」 버튼(Google 지도) 이용',
   'detail.routeUnavailable': '경로를 가져올 수 없음 — 마커만 표시',
   'detail.mapNoOrigin': '위치 서비스를 켜면 경로 표시',
   'detail.youAreHere': '내 위치',

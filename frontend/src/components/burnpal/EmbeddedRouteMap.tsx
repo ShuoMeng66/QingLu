@@ -5,6 +5,7 @@ import { useI18n } from '../../hooks/useI18n'
 import {
   fetchWalkingRoute,
   formatRouteDuration,
+  straightLineRoute,
   type LatLon,
 } from '../../lib/osrmRoute'
 import { formatDistance } from '../../lib/userLocation'
@@ -25,6 +26,24 @@ function markerIcon(className: string) {
   })
 }
 
+function applyRouteToMap(
+  map: L.Map,
+  layers: L.LayerGroup,
+  route: { polyline: Array<[number, number]> },
+) {
+  if (route.polyline.length < 2) return
+  const line = L.polyline(route.polyline, {
+    color: '#10b981',
+    weight: 5,
+    opacity: 0.88,
+    lineCap: 'round',
+    lineJoin: 'round',
+    dashArray: '8 6',
+  })
+  layers.addLayer(line)
+  map.fitBounds(line.getBounds().pad(0.15), { animate: false, maxZoom: 16 })
+}
+
 export function EmbeddedRouteMap({
   destination,
   origin,
@@ -34,7 +53,6 @@ export function EmbeddedRouteMap({
   const containerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<L.Map | null>(null)
   const layerGroupRef = useRef<L.LayerGroup | null>(null)
-  const [loading, setLoading] = useState(Boolean(origin))
   const [routeSummary, setRouteSummary] = useState<string | null>(null)
 
   useEffect(() => {
@@ -84,32 +102,36 @@ export function EmbeddedRouteMap({
     const controller = new AbortController()
     let cancelled = false
 
-    if (origin) {
-      setLoading(true)
-      setRouteSummary(null)
-      void fetchWalkingRoute(origin, destination, controller.signal).then((route) => {
-        if (cancelled || !mapRef.current || !layerGroupRef.current) return
+    const finish = (summary: string | null, route: { polyline: Array<[number, number]> } | null) => {
+      if (cancelled || !mapRef.current || !layerGroupRef.current) return
+      if (route) applyRouteToMap(mapRef.current, layerGroupRef.current, route)
+      setRouteSummary(summary)
+    }
 
-        if (route && route.polyline.length > 1) {
-          const line = L.polyline(route.polyline, {
-            color: '#10b981',
-            weight: 5,
-            opacity: 0.88,
-            lineCap: 'round',
-            lineJoin: 'round',
-          })
-          layerGroupRef.current.addLayer(line)
-          map.fitBounds(line.getBounds().pad(0.15), { animate: false, maxZoom: 16 })
-          setRouteSummary(
-            `${t('detail.routeWalk')} · ${formatDistance(route.distanceM)} · ${formatRouteDuration(route.durationSec)}`,
+    if (origin) {
+      void fetchWalkingRoute(origin, destination, controller.signal)
+        .then((route) => {
+          if (route && route.polyline.length > 1) {
+            finish(
+              `${t('detail.routeWalk')} · ${formatDistance(route.distanceM)} · ${formatRouteDuration(route.durationSec)}`,
+              route,
+            )
+          } else {
+            const fallback = straightLineRoute(origin, destination)
+            finish(
+              `${t('detail.routeStraight')} · ${formatDistance(fallback.distanceM)} · ${t('detail.useExternalNav')}`,
+              fallback,
+            )
+          }
+        })
+        .catch(() => {
+          const fallback = straightLineRoute(origin, destination)
+          finish(
+            `${t('detail.routeStraight')} · ${formatDistance(fallback.distanceM)} · ${t('detail.useExternalNav')}`,
+            fallback,
           )
-        } else {
-          setRouteSummary(t('detail.routeUnavailable'))
-        }
-        setLoading(false)
-      })
+        })
     } else {
-      setLoading(false)
       setRouteSummary(null)
     }
 
@@ -120,7 +142,14 @@ export function EmbeddedRouteMap({
       mapRef.current = null
       layerGroupRef.current = null
     }
-  }, [destination.lat, destination.lon, destination.label, origin?.lat, origin?.lon, t])
+  }, [
+    destination.lat,
+    destination.lon,
+    destination.label,
+    origin?.lat,
+    origin?.lon,
+    t,
+  ])
 
   return (
     <div
@@ -128,8 +157,7 @@ export function EmbeddedRouteMap({
       aria-label={t('detail.mapLabel')}
     >
       <div ref={containerRef} className="h-full w-full" />
-      {loading && <div className="embedded-route-map__loading">{t('detail.mapLoading')}</div>}
-      {(routeSummary || !origin) && !loading && (
+      {(routeSummary || !origin) && (
         <div className="embedded-route-map__badge">
           {routeSummary && <span className="embedded-route-map__pill">{routeSummary}</span>}
           {!origin && (

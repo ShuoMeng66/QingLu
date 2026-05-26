@@ -49,7 +49,7 @@ export function buildUserContextPrompt(): string {
   const rules: string[] = []
   if (hasLocation) {
     rules.push(
-      '禁止再次询问用户住在哪个区/城市或配送地址；推荐到店选项时写出店名，并提示用户点对话下方卡片的「一键导航」',
+      '禁止再次询问用户住在哪个区/城市或配送地址；推荐到店选项时写出店名，并提示用户点对话下方卡片的「一键导航」（Google 地图步行）',
     )
   }
   if (budget != null && budget > 0) {

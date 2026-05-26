@@ -1,13 +1,8 @@
-/** 打开外部地图导航（优先开源 OSM 路线，移动端用 geo: 唤起系统地图） */
+/** 打开外部地图导航（默认 Google Maps 步行路线；备用 OSM / 高德 / geo） */
 
 export interface NavigationOrigin {
   lat: number
   lon: number
-}
-
-function isMobileDevice(): boolean {
-  if (typeof navigator === 'undefined') return false
-  return /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)
 }
 
 function openUrl(url: string) {
@@ -18,6 +13,25 @@ function openUrl(url: string) {
   document.body.appendChild(anchor)
   anchor.click()
   anchor.remove()
+}
+
+/** Google Maps — 步行导航（需可访问 google.com，与系统/VPN 代理一致） */
+function googleMapsNavigationUrl(
+  lat: number,
+  lon: number,
+  _label?: string,
+  origin?: NavigationOrigin,
+): string {
+  const destination = encodeURIComponent(`${lat},${lon}`)
+  if (origin) {
+    const o = encodeURIComponent(`${origin.lat},${origin.lon}`)
+    return `https://www.google.com/maps/dir/?api=1&origin=${o}&destination=${destination}&travelmode=walking`
+  }
+  return `https://www.google.com/maps/dir/?api=1&destination=${destination}&travelmode=walking`
+}
+
+function googleMapsMarkerUrl(lat: number, lon: number): string {
+  return `https://www.google.com/maps/search/?api=1&query=${lat},${lon}`
 }
 
 /** OSM + OSRM 步行路线（开源，无需 API Key） */
@@ -48,7 +62,7 @@ function amapMarkerUrl(lat: number, lon: number, label?: string): string {
   return `https://uri.amap.com/marker?position=${lon},${lat}&name=${name}&coordinate=gaode&callnative=1`
 }
 
-/** 高德 Web URI — 步行导航（国内推荐） */
+/** 高德 Web URI — 步行导航 */
 function amapNavigationUrl(
   lat: number,
   lon: number,
@@ -75,19 +89,19 @@ export function isChinaRegion(meta?: { country?: string; region?: string } | nul
   )
 }
 
-/** 国内优先高德唤起原生地图，海外沿用 geo / OSM */
+/** 默认 Google Maps 步行导航（适合开代理访问 Google 的场景） */
 export function openSmartNavigation(
   lat: number,
   lon: number,
   label?: string,
   origin?: NavigationOrigin,
-  regionMeta?: { country?: string; region?: string },
+  _regionMeta?: { country?: string; region?: string },
 ) {
-  if (isChinaRegion(regionMeta)) {
-    openUrl(amapNavigationUrl(lat, lon, label, origin))
+  if (origin) {
+    openUrl(googleMapsNavigationUrl(lat, lon, label, origin))
     return
   }
-  openExternalNavigation(lat, lon, label, origin)
+  openUrl(googleMapsMarkerUrl(lat, lon))
 }
 
 export function openExternalNavigation(
@@ -96,21 +110,7 @@ export function openExternalNavigation(
   label?: string,
   origin?: NavigationOrigin,
 ) {
-  const mobile = isMobileDevice()
-
-  // 移动端优先 geo:，会弹出系统地图选择器并支持真导航
-  if (mobile) {
-    openUrl(geoUrl(lat, lon, label))
-    return
-  }
-
-  // 桌面端：OSM 开源路线（有起点则规划步行路线，否则仅标记）
-  if (origin) {
-    openUrl(osmDirectionsUrl(lat, lon, origin))
-    return
-  }
-
-  openUrl(osmMarkerUrl(lat, lon))
+  openSmartNavigation(lat, lon, label, origin)
 }
 
 /** 备用入口：显式选择地图（设置页或长按可用） */
@@ -118,10 +118,13 @@ export function openNavigationWithProvider(
   lat: number,
   lon: number,
   label?: string,
-  provider: 'osm' | 'amap' | 'geo' = 'osm',
+  provider: 'google' | 'osm' | 'amap' | 'geo' = 'google',
   origin?: NavigationOrigin,
 ) {
   const urls: Record<typeof provider, string> = {
+    google: origin
+      ? googleMapsNavigationUrl(lat, lon, label, origin)
+      : googleMapsMarkerUrl(lat, lon),
     osm: origin ? osmDirectionsUrl(lat, lon, origin) : osmMarkerUrl(lat, lon),
     amap: origin
       ? amapNavigationUrl(lat, lon, label, origin)
