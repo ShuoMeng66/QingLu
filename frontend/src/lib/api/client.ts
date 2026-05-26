@@ -79,7 +79,17 @@ function sleep(ms: number) {
 }
 
 export async function pingAuthHealth() {
-  return request<{ ok: boolean; smtp: boolean }>('/auth/health')
+  return request<{
+    ok: boolean
+    emailProvider?: 'resend' | 'smtp' | 'none'
+    emailReachable?: boolean
+    smtp?: boolean
+    smtpReachable?: boolean
+    resend?: boolean
+    resendReachable?: boolean
+    hint?: string
+    verifyError?: string
+  }>('/auth/health')
 }
 
 export async function sendVerificationCode(email: string) {
@@ -88,7 +98,7 @@ export async function sendVerificationCode(email: string) {
 
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     try {
-      return await request<{ ok: boolean; smtp?: boolean }>('/auth/send-verification-code', {
+      return await request<{ ok: boolean; emailProvider?: string }>('/auth/send-verification-code', {
         method: 'POST',
         body: JSON.stringify({ email }),
       })

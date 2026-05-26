@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import cors from 'cors'
 import express from 'express'
+import { getEmailProvider } from './mail.js'
 import { authRouter } from './routes/auth.js'
 import { userDataRouter } from './routes/userData.js'
 
@@ -19,14 +20,19 @@ app.use('/api/auth', authRouter)
 app.use('/api/user/data', userDataRouter)
 
 app.listen(PORT, () => {
-  const smtpReady = Boolean(
-    process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS,
-  )
+  const provider = getEmailProvider()
   console.log(`BurnPal backend listening on http://127.0.0.1:${PORT}`)
-  if (smtpReady) {
-    console.log(`SMTP ready — sending mail as ${process.env.SMTP_USER}`)
+  if (provider === 'resend') {
+    console.log('Email: Resend API (HTTPS)')
+  } else if (provider === 'smtp') {
+    console.log(`Email: SMTP as ${process.env.SMTP_USER}`)
+    if (process.env.RENDER) {
+      console.warn(
+        'Warning: Render free tier blocks SMTP ports — set RESEND_API_KEY or upgrade Render plan.',
+      )
+    }
   } else {
-    console.log('SMTP not configured — verification codes will print to console')
-    console.log('Set SMTP_PASS in backend/.env (QQ mail authorization code) to send real emails')
+    console.log('Email not configured — verification codes will print to console')
+    console.log('Set RESEND_API_KEY (Render) or SMTP_* (local) in environment')
   }
 })

@@ -1,7 +1,7 @@
 import { randomInt } from 'node:crypto'
 import bcrypt from 'bcryptjs'
 import { db, type EmailVerificationRow } from './db.js'
-import { formatSmtpError, sendVerificationEmail } from './mail.js'
+import { formatEmailError, sendVerificationEmail } from './mail.js'
 
 const RESEND_COOLDOWN_MS = 60_000
 const EXPIRY_MS = 10 * 60_000
@@ -56,7 +56,7 @@ export async function requestVerificationCode(email: string): Promise<void> {
     await sendVerificationEmail(normalized, code)
   } catch (error) {
     console.error('[BurnPal] Verification email delivery failed:', error)
-    throw new VerificationError(formatSmtpError(error), 503)
+    throw new VerificationError(formatEmailError(error), 503)
   }
 }
 

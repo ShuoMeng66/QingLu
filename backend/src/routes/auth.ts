@@ -3,7 +3,18 @@ import bcrypt from 'bcryptjs'
 import { Router } from 'express'
 import { db, type UserRow } from '../db.js'
 import { requireAuth, signToken } from '../middleware/auth.js'
-import { isSmtpConfigured, verifySmtpConnection } from '../mail.js'
+import {
+  emailHealthHint,
+  formatEmailError,
+  formatSmtpError,
+  getEmailProvider,
+  isEmailConfigured,
+  isResendConfigured,
+  isSmtpConfigured,
+  verifyEmailDelivery,
+  verifyResendConnection,
+  verifySmtpConnection,
+} from '../mail.js'
 import {
   normalizeEmail,
   requestVerificationCode,
@@ -14,20 +25,57 @@ import {
 export const authRouter = Router()
 
 authRouter.get('/health', async (_req, res) => {
+  const provider = getEmailProvider()
   const smtp = isSmtpConfigured()
+  const resend = isResendConfigured()
   let smtpReachable = false
+  let resendReachable = false
+  let emailReachable = false
+  let verifyError: string | undefined
+
   if (smtp) {
     try {
       await verifySmtpConnection()
       smtpReachable = true
     } catch (error) {
+      verifyError = formatSmtpError(error)
       console.warn('[BurnPal] SMTP verify failed:', error)
     }
   }
+
+  if (resend) {
+    try {
+      await verifyResendConnection()
+      resendReachable = true
+    } catch (error) {
+      if (!verifyError) verifyError = formatEmailError(error)
+      console.warn('[BurnPal] Resend verify failed:', error)
+    }
+  }
+
+  if (isEmailConfigured()) {
+    try {
+      await verifyEmailDelivery()
+      emailReachable = true
+    } catch (error) {
+      if (!verifyError) verifyError = formatEmailError(error)
+    }
+  }
+
+  const hint = emailHealthHint(provider, emailReachable)
+
   res.json({
     ok: true,
+    emailProvider: provider,
+    emailConfigured: isEmailConfigured(),
+    emailReachable,
     smtp,
     smtpReachable,
+    resend,
+    resendReachable,
+    onRender: Boolean(process.env.RENDER),
+    hint,
+    verifyError,
   })
 })
 
@@ -50,7 +98,7 @@ authRouter.post('/send-verification-code', async (req, res) => {
     res.json({
       ok: true,
       message: 'Verification code sent',
-      smtp: isSmtpConfigured(),
+      emailProvider: getEmailProvider(),
     })
   } catch (err) {
     if (err instanceof VerificationError) {

@@ -108,7 +108,7 @@ API Key 不要写进前端 bundle。
 
 | URL | 期望 |
 |-----|------|
-| `https://你的域名/api/auth/health` | JSON：`{"ok":true,"smtp":true}`（`smtp:false` 表示 Render 未配置 `SMTP_*`） |
+| `https://你的域名/api/auth/health` | JSON：`emailReachable: true`（Render 免费版请用 `RESEND_API_KEY`，QQ SMTP 会 `smtpReachable: false`） |
 | `POST /api/auth/send-verification-code` | JSON：`{"ok":true,"smtp":true}`（未注册邮箱） |
 
 聊天页若仍演示模式，横幅会显示具体失败原因；也可清除站点 localStorage 后硬刷新。
@@ -122,7 +122,7 @@ Render 示例：
 - Root: `backend`
 - Build: `npm install && npm run build`
 - Start: `npm start`
-- 环境变量：`JWT_SECRET`、`SMTP_*`（见 `backend/.env.example`）
+- 环境变量：`JWT_SECRET`、**`RESEND_API_KEY`**（Render 免费版推荐，见 `backend/.env.example`）或 `SMTP_*`（付费实例/本地）
 
 ---
 

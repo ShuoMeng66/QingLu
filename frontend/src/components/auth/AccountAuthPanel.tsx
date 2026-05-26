@@ -46,9 +46,15 @@ export function AccountAuthPanel({
 
   useEffect(() => {
     if (mode !== 'register') return
-    void pingAuthHealth().catch(() => {
-      /* warm Render backend; ignore failures */
-    })
+    void pingAuthHealth()
+      .then((health) => {
+        if (health.emailConfigured && health.emailReachable === false && health.hint) {
+          toast(health.hint, 'error')
+        }
+      })
+      .catch(() => {
+        /* warm Render backend; ignore failures */
+      })
   }, [mode])
 
   useEffect(() => {
@@ -73,11 +79,7 @@ export function AccountAuthPanel({
 
       setSendingCode(true)
       try {
-        const result = await sendVerificationCode(trimmed)
-        if (result.smtp === false) {
-          toast(t('auth.smtpUnavailable'), 'error')
-          return false
-        }
+        await sendVerificationCode(trimmed)
         const normalized = normalizeEmail(trimmed)
         setCodeSentEmail(normalized)
         setCountdown(60)

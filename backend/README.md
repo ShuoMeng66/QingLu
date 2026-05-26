@@ -20,51 +20,64 @@ Registration requires a 6-digit email verification code:
 
 Codes expire after 10 minutes. Resend is limited to once per 60 seconds. After 5 failed verify attempts, request a new code.
 
-### SMTP configuration
+### Render 免费版 + Gmail 收不到邮件？
 
-Set these environment variables to send real verification emails:
+**Render 自 2025-09 起封锁免费实例的 SMTP 出站端口 `25` / `465` / `587`。**
+
+因此 QQ 邮箱 SMTP 在 Render 上会出现：
+
+- `GET /api/auth/health` → `"smtp": true, "smtpReachable": false`
+- 本地 `npm run dev` 正常，线上永远超时
+
+**解决办法（二选一）：**
+
+| 方案 | 说明 |
+|------|------|
+| **A. Resend（推荐）** | HTTPS API，免费层可用。在 Render 环境变量添加 `RESEND_API_KEY` |
+| **B. Render 付费实例** | 升级后 465/587 可用，可继续用 QQ SMTP |
+
+### Resend 配置（推荐）
+
+1. 打开 [resend.com](https://resend.com) 注册
+2. **API Keys** → 创建密钥 → 填入 Render：`RESEND_API_KEY`
+3. **Domains** → 添加并验证你的域名 → 设置  
+   `RESEND_FROM=BurnPal <noreply@你的域名.com>`
+4. 重新部署 Render 后端
+5. 检查 `GET /api/auth/health`：
+
+```json
+{
+  "ok": true,
+  "emailProvider": "resend",
+  "emailReachable": true,
+  "resend": true,
+  "resendReachable": true
+}
+```
+
+若同时配置了 `RESEND_API_KEY` 与 `SMTP_*`，**优先使用 Resend**。
+
+### QQ 邮箱 SMTP（本地或 Render 付费）
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `SMTP_HOST` | Yes* | SMTP server hostname |
-| `SMTP_PORT` | No | Port (default `587`; use `465` for implicit TLS) |
-| `SMTP_USER` | Yes* | SMTP username |
-| `SMTP_PASS` | Yes* | SMTP password |
-| `SMTP_FROM` | No | From address (defaults to `SMTP_USER`) |
+| `SMTP_HOST` | Yes* | e.g. `smtp.qq.com` |
+| `SMTP_PORT` | No | `465` (SSL) or `587` (STARTTLS) |
+| `SMTP_USER` | Yes* | Full QQ email |
+| `SMTP_PASS` | Yes* | **授权码**（不是 QQ 密码） |
+| `SMTP_FROM` | No | Defaults to `SMTP_USER` |
 
-\* If `SMTP_HOST`, `SMTP_USER`, and `SMTP_PASS` are not all set, the server logs the verification code to the console instead (useful for local development).
+1. QQ 邮箱 → 设置 → 账户 → 开启 POP3/SMTP → 生成 **16 位授权码**
+2. 填入 `SMTP_PASS`（Render 里不要加多余引号）
 
-Example providers: Gmail (app password), **QQ Mail** (authorization code), SendGrid, Mailgun, Amazon SES.
+### Gmail 仍收不到？
 
-### QQ 邮箱（3067938917@qq.com）
-
-1. 登录 [QQ 邮箱](https://mail.qq.com) → **设置** → **账户**
-2. 开启 **POP3/SMTP 服务**，按提示用手机验证
-3. 点击 **生成授权码**，复制 16 位授权码（不是 QQ 登录密码）
-4. 编辑 `backend/.env`，填入：
-
-```env
-SMTP_HOST=smtp.qq.com
-SMTP_PORT=465
-SMTP_USER=3067938917@qq.com
-SMTP_PASS=你的16位授权码
-SMTP_FROM=轻鹭 BurnPal <3067938917@qq.com>
-```
-
-5. 重启后端：`npm run dev`
-
-启动后若看到 `SMTP ready — sending mail as 3067938917@qq.com` 即表示配置成功。
-
-### Gmail 收不到验证码？
-
-1. **接口曾“已发送”但邮箱没有**：旧版会在邮件真正发出前就返回成功；请部署最新后端，失败时会返回 503 与具体 SMTP 错误。
-2. **QQ 邮箱发 Gmail**：邮件常进 **垃圾邮件** 或 **推广**，请搜索主题「轻鹭 BurnPal」。
-3. **`GET /api/auth/health`**：`smtp: true` 只表示配置了变量；`smtpReachable: true` 表示已连上 SMTP 服务器。
-4. 在 Render **Logs** 中搜索 `Verification email accepted` 或 `delivery failed` 确认是否投递成功。
-5. 长期方案：改用 SendGrid / Resend 等事务邮件服务，送达率更高。
+1. 查 **垃圾邮件**、**推广** 标签，搜索「轻鹭 BurnPal」
+2. 看 Render **Logs**：`Verification email sent via Resend` 或 `delivery failed`
+3. `health` 里 `verifyError` 字段会写明失败原因
 
 ## Scripts
 
 - `npm run dev` — start with hot reload
-- `npm start` — start server
-- `npm run build` — compile TypeScript to `dist/`
+- `npm run build` — compile TypeScript
+- `npm start` — run production server
