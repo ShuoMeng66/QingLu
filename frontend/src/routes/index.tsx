@@ -15,9 +15,11 @@ import { SettingsPage } from '../pages/SettingsPage'
 import { SplashPage } from '../pages/SplashPage'
 
 function AppProviderLayout() {
+  const location = useLocation()
   return (
     <AppProvider>
-      <Outlet />
+      {/* pathname 作为 key，避免仅 URL 变化时 Outlet 子页面不卸载/不重渲染 */}
+      <Outlet key={location.pathname} />
     </AppProvider>
   )
 }

@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { ArrowLeft, Moon, Sun, UserCircle } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { AppShell } from '../components/burnpal/AppShell'
 import { PageTransition } from '../components/layout/PageTransition'
 import { ToggleSwitch } from '../components/burnpal/ToggleSwitch'
@@ -52,7 +52,6 @@ function OptionPills<T extends string>({
 }
 
 export function SettingsPage() {
-  const navigate = useNavigate()
   const { toast } = useToast()
   const { location, status: locationStatus, requestPermission } = useUserLocation()
   const {
@@ -107,14 +106,14 @@ export function SettingsPage() {
     <AppShell scrollable>
       <PageTransition className="mx-auto w-full max-w-2xl pb-8">
         <header className="flex items-center gap-3 px-5 py-4">
-          <button
-            type="button"
+          <Link
+            to="/chat"
+            replace
             className="glass-panel flex h-10 w-10 items-center justify-center rounded-full shadow-glass"
             aria-label={t('action.back')}
-            onClick={() => navigate('/chat')}
           >
             <ArrowLeft className="h-5 w-5 text-slate-800" />
-          </button>
+          </Link>
           <h1 className="text-lg font-semibold text-slate-800">{t('settings.title')}</h1>
         </header>
 
