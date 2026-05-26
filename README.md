@@ -106,6 +106,8 @@ API Key 不要写进前端 bundle。
 
 若返回整页 HTML 或 404，说明路由/部署未更新；若 `hasToken: false`，说明 `OPENCLAW_TOKEN` 未注入当前 Production 部署。
 
+若设置页报 **502 `fetch failed`**：多半是 Vercel 里 `OPENCLAW_PROXY_TARGET` 误填了 `127.0.0.1` / 本地地址，或百炼 Key 与 DeepSeek 上游混用。请设为 `https://dashscope.aliyuncs.com` + `OPENCLAW_PROXY_PATH=/compatible-mode`，模型用 `qwen-plus`（构建变量 `VITE_OPENCLAW_AGENT`），然后 Redeploy。DeepSeek 需另配 `https://api.deepseek.com` 与 DeepSeek API Key。
+
 账户 API 自检（需已设置 `BACKEND_URL` 并完成 Redeploy）：
 
 | URL | 期望 |

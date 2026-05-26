@@ -105,9 +105,23 @@ export async function testConnection(config: OpenClawConfig): Promise<Connection
       }
 
       const isHtml = contentType.includes('text/html') || raw.trimStart().startsWith('<!')
-      const detail = isHtml
+      let detail = isHtml
         ? '接口返回了网页而非 JSON，请检查 Vercel 路由（vercel.json）是否把 API 转到了首页。'
-        : raw.slice(0, 200)
+        : raw.slice(0, 400)
+      try {
+        const err = JSON.parse(raw) as {
+          detail?: string
+          upstreamUrl?: string
+          proxyTargetWarning?: string
+          hints?: string[]
+        }
+        if (err.proxyTargetWarning) detail = err.proxyTargetWarning
+        else if (err.detail) detail = err.detail
+        if (err.upstreamUrl) detail += `（上游：${err.upstreamUrl}）`
+        if (Array.isArray(err.hints) && err.hints[0]) detail += `。${err.hints[0]}`
+      } catch {
+        /* keep raw slice */
+      }
       const hint =
         response.status === 401
           ? ' 访问密钥无效或已过期，请检查后重试。'
