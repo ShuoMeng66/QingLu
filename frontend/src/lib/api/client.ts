@@ -21,7 +21,21 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     },
   })
 
-  const payload = (await response.json().catch(() => ({}))) as { error?: string }
+  const raw = await response.text()
+  let payload: { error?: string } = {}
+  if (raw) {
+    try {
+      payload = JSON.parse(raw) as { error?: string }
+    } catch {
+      const snippet = raw.replace(/\s+/g, ' ').slice(0, 80)
+      throw new ApiError(
+        response.status === 405
+          ? 'Auth API unavailable (405). Check Vercel BACKEND_URL and redeploy.'
+          : `Server returned non-JSON (${response.status}): ${snippet}`,
+        response.status,
+      )
+    }
+  }
 
   if (!response.ok) {
     throw new ApiError(payload.error ?? `Request failed (${response.status})`, response.status)

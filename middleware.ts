@@ -1,9 +1,19 @@
+import { handleBackendProxy, isBackendApiPath } from './lib/backend-proxy'
 import { handleOpenClawProxy } from './lib/openclaw-proxy'
 
 export const config = {
-  matcher: ['/api/openclaw/:path*', '/openclaw-api/:path*'],
+  matcher: [
+    '/api/openclaw/:path*',
+    '/openclaw-api/:path*',
+    '/api/auth/:path*',
+    '/api/user/:path*',
+  ],
 }
 
 export default function middleware(request: Request): Promise<Response> {
+  const pathname = new URL(request.url).pathname
+  if (isBackendApiPath(pathname)) {
+    return handleBackendProxy(request)
+  }
   return handleOpenClawProxy(request)
 }

@@ -100,9 +100,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [token])
 
   const afterAuth = useCallback(async (nextToken: string, nextUser: AuthUser, isNewAccount: boolean) => {
+    if (!nextToken || !nextUser?.id || !nextUser.email) {
+      throw new Error('Invalid auth response from server')
+    }
     saveAuthSession(nextToken, nextUser)
     setToken(nextToken)
     setUser(nextUser)
+    setLoading(false)
     setSyncing(true)
     try {
       await syncCloudData(nextToken, isNewAccount)
@@ -113,7 +117,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(
     async (email: string, password: string) => {
-      const result = await loginAccount({ email, password })
+      const result = await loginAccount({
+        email: email.trim().toLowerCase(),
+        password,
+      })
       await afterAuth(result.token, result.user, false)
     },
     [afterAuth],
@@ -121,7 +128,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = useCallback(
     async (email: string, password: string, verificationCode: string, displayName?: string) => {
-      const result = await registerAccount({ email, password, verificationCode, displayName })
+      const result = await registerAccount({
+        email: email.trim().toLowerCase(),
+        password,
+        verificationCode,
+        displayName,
+      })
       await afterAuth(result.token, result.user, true)
     },
     [afterAuth],
@@ -157,6 +169,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const storedToken = getStoredToken()
     if (!storedToken) {
       setLoading(false)
+      if (!token) {
+        setUser(null)
+      }
       return
     }
 
@@ -165,24 +180,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     void (async () => {
       try {
         const me = await fetchMe(storedToken)
-        if (cancelled) return
+        if (cancelled || getStoredToken() !== storedToken) return
         saveAuthSession(storedToken, me.user)
         setToken(storedToken)
         setUser(me.user)
         await refreshFromServer()
       } catch (error) {
+        if (cancelled || getStoredToken() !== storedToken) return
+
         const status = error instanceof ApiError ? error.status : 0
         if (status === 401 || status === 403) {
           console.warn('[BurnPal] Session invalid, cleared local login')
-          if (!cancelled) {
-            clearAuthSession()
-            setToken(null)
-            setUser(null)
-          }
+          clearAuthSession()
+          setToken(null)
+          setUser(null)
         } else {
           // Backend offline / 502 — keep cached session so user stays logged in
           const cached = getStoredUser()
-          if (!cancelled && cached) {
+          if (cached) {
             setToken(storedToken)
             setUser(cached)
           }
@@ -196,8 +211,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [token, refreshFromServer])
 
   useEffect(() => {
     if (!token) return
