@@ -24,7 +24,8 @@ function usesServerProxy(baseUrl: string): boolean {
 function openClawHealthUrl(baseUrl: string): string {
   const normalized = normalizeBaseUrl(baseUrl)
   if (normalized.endsWith('/v1')) {
-    return `${normalized.slice(0, -3)}health`
+    // /api/openclaw/v1 → /api/openclaw/health（不能拼成 openclawhealth）
+    return `${normalized.slice(0, -3)}/health`
   }
   return `${normalized}/health`
 }
