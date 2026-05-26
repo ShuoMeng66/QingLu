@@ -42,8 +42,11 @@ Codes expire after 10 minutes. Resend is limited to once per 60 seconds. After 5
 2. **API Keys** → 创建密钥 → 填入 Render：`RESEND_API_KEY`
 3. **Domains** → 添加并验证你的域名 → 设置  
    `RESEND_FROM=BurnPal <noreply@你的域名.com>`
-4. **在 Render 后端服务**（不是 Vercel）添加上述环境变量，然后 **Manual Deploy**
-5. 检查 `GET /api/auth/health`（经 Vercel 转发到 Render）：
+4. 环境变量二选一（或两处都配同一 Key）：
+   - **仅 Render**：`RESEND_API_KEY` + `RESEND_FROM` → Manual Deploy Render
+   - **仅 Vercel**（推荐若你一直在 Vercel 配 Key）：在 **Vercel** 填 `RESEND_API_KEY`；在 **Vercel 与 Render** 填相同 `BURNPAL_PROXY_SECRET`（随机字符串）；然后 **Redeploy Vercel + Render**
+5. **Manual Deploy** 两侧（改 env 后必须部署才生效）
+6. 检查 `GET /api/auth/health`（经 Vercel 转发到 Render）：
 
 ```json
 {
@@ -63,7 +66,20 @@ Codes expire after 10 minutes. Resend is limited to once per 60 seconds. After 5
 |-------------|------|
 | `resendKeyFormatOk: false` | Key 不是 `re_` 开头，或 Render 里多加了引号/空格 |
 | `resendReachable: false` + `resendError` | Key 无效、过期，或填在了 Vercel 而非 Render |
+| `Resend 400: API key is invalid` | Render 里的 Key **不是** Resend 控制台当前有效的完整密钥（见下方） |
+| `resendKeyLooksPlaceholder: true` | 仍在使用 `re_xxxxxxxx` 等示例，非真实 Key |
 | `verifyError` 仍是 SMTP 文案 | 请部署最新后端（已修复诊断逻辑） |
+
+#### `API key is invalid` 逐步排查
+
+1. 打开 https://resend.com/api-keys → **Create API Key** → 权限选 **Full access** / Sending  
+2. **立即复制整段** `re_……`（只显示一次；漏字符就会 400 invalid）  
+3. Render → 你的 **backend Web Service** → Environment → `RESEND_API_KEY` → **粘贴覆盖**（不要 `Bearer `，不要引号）  
+4. 点 **Save Changes** → **Manual Deploy**（改环境变量后必须重新部署）  
+5. 在 Resend 控制台对比 Key 旁显示的末几位，与 health 里的 `resendKeySuffix` 是否一致  
+6. 本地自测（可选）：`curl -H "Authorization: Bearer re_你的key" https://api.resend.com/domains` 应返回 200 JSON  
+
+**注意：** Vercel 的 `RESEND_API_KEY` 对发验证码 **无效**；必须写在 **Render 后端**。
 
 ### QQ 邮箱 SMTP（本地或 Render 付费）
 

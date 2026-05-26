@@ -2,6 +2,7 @@ import 'dotenv/config'
 import cors from 'cors'
 import express from 'express'
 import { getEmailProvider } from './mail.js'
+import { proxySecretsMiddleware } from './middleware/proxySecrets.js'
 import { authRouter } from './routes/auth.js'
 import { userDataRouter } from './routes/userData.js'
 
@@ -16,7 +17,7 @@ app.get('/health', (_req, res) => {
   res.json({ ok: true, service: 'burnpal-backend' })
 })
 
-app.use('/api/auth', authRouter)
+app.use('/api/auth', proxySecretsMiddleware, authRouter)
 app.use('/api/user/data', userDataRouter)
 
 app.listen(PORT, () => {

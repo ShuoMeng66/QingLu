@@ -84,6 +84,8 @@ git push -u origin main
 
 勿在生产设置 `VITE_OPENCLAW_TOKEN`（会打进前端 bundle）。`VITE_OPENCLAW_PROXY_*` 仅本地 Vite 开发代理用，Vercel 上请用 `OPENCLAW_PROXY_*`。
 | `BACKEND_URL` | 已部署的后端公网地址（账户/云同步） | `https://your-api.onrender.com` |
+| `RESEND_API_KEY` | 验证码发信（可只配在 Vercel，见下） | `re_…` |
+| `BURNPAL_PROXY_SECRET` | Vercel→Render 转发 Resend 密钥时的共享口令（随机长字符串） | 与 Render 相同 |
 
 生产环境 **Edge Middleware** 代理：
 
@@ -122,7 +124,8 @@ Render 示例：
 - Root: `backend`
 - Build: `npm install && npm run build`
 - Start: `npm start`
-- 环境变量：`JWT_SECRET`、**`RESEND_API_KEY`**（Render 免费版推荐，见 `backend/.env.example`）或 `SMTP_*`（付费实例/本地）
+- 环境变量：`JWT_SECRET`、**`RESEND_API_KEY`**、**`BURNPAL_PROXY_SECRET`**（见 `backend/.env.example`）
+- **Resend 可只配在 Vercel**：在 Vercel 与 Render 填相同的 `BURNPAL_PROXY_SECRET`，Middleware 会把 `RESEND_API_KEY` 安全转给 Render 发信（避免「Vercel 配对了但 Render 用的是旧 Key」）
 
 ---
 
