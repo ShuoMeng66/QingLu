@@ -8,7 +8,9 @@ export function useOpenClawConfig(options?: { autoConnect?: boolean }) {
   const autoConnect = options?.autoConnect ?? true
   const [config, setConfig] = useState<OpenClawConfig>(() => loadConfig())
   const [draftConfig, setDraftConfig] = useState<OpenClawConfig>(() => loadConfig())
-  const [status, setStatus] = useState<ConnectionStatus>('idle')
+  const [status, setStatus] = useState<ConnectionStatus>(() =>
+    autoConnect ? 'checking' : 'idle',
+  )
   const [statusMessage, setStatusMessage] = useState('')
   const [models, setModels] = useState<OpenClawModel[]>([])
 
@@ -27,6 +29,26 @@ export function useOpenClawConfig(options?: { autoConnect?: boolean }) {
     if (!autoConnect) return
     void runConnectionTest(config)
   }, [autoConnect, config, runConnectionTest])
+
+  useEffect(() => {
+    if (!autoConnect) return
+
+    const retry = () => {
+      if (status === 'connected' || status === 'checking') return
+      void runConnectionTest(config)
+    }
+
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') retry()
+    }
+
+    document.addEventListener('visibilitychange', onVisible)
+    const timer = window.setInterval(retry, 60_000)
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible)
+      window.clearInterval(timer)
+    }
+  }, [autoConnect, config, runConnectionTest, status])
 
   const handleSaveConfig = () => {
     saveConfig(draftConfig)

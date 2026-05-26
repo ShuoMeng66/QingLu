@@ -1,7 +1,7 @@
 import { AnimatePresence } from 'framer-motion'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Menu, X } from 'lucide-react'
-import { useLocation as useRouteLocation } from 'react-router-dom'
+import { Link, useLocation as useRouteLocation } from 'react-router-dom'
 import type { ChatMessage } from '../types/openclaw'
 import type { ConnectionStatus } from '../types/openclaw'
 import type { Conversation } from '../types/conversation'
@@ -102,6 +102,8 @@ export function ChatView({
   input,
   loading,
   connected,
+  status,
+  statusMessage,
   clusterTurn,
   activeConversation,
   historyConversations,
@@ -140,7 +142,15 @@ export function ChatView({
   })
   const { food, gym, recovery, loading: nearbyLoading } = useNearbyRecommendations(location)
 
-  const useDemo = !connected
+  const useDemo = !connected && status !== 'checking'
+  const connectionLabel =
+    status === 'checking'
+      ? t('chat.statusChecking')
+      : connected
+        ? loading
+          ? t('chat.statusWorking')
+          : t('chat.statusOnline')
+        : t('chat.statusOffline')
   const displayMessages = useDemo ? demoMessages : messages
   const isBusy = loading || isTyping
 
@@ -420,13 +430,12 @@ export function ChatView({
               <div className="ml-auto flex items-center gap-3">
                 <UserAccountAvatar showLabel={false} />
                 <span
-                  className={`text-xs font-medium ${connected ? 'text-lime-600' : 'text-body-secondary'}`}
+                  className={`text-xs font-medium ${
+                    connected || status === 'checking' ? 'text-lime-600' : 'text-body-secondary'
+                  }`}
+                  title={statusMessage || undefined}
                 >
-                  {connected
-                    ? loading
-                      ? t('chat.statusWorking')
-                      : t('chat.statusOnline')
-                    : t('chat.statusOffline')}
+                  {connectionLabel}
                 </span>
                 {location && (
                   <span className="hidden text-xs text-body-secondary/70 sm:inline">
@@ -438,6 +447,18 @@ export function ChatView({
           </header>
 
           <ChatDashboardBar onOpenProfile={() => setProfileSheetOpen(true)} />
+
+          {useDemo && (
+            <div className="burnpal-chat-column px-4 pb-2">
+              <p className="rounded-2xl border border-amber-200/80 bg-amber-50/90 px-3 py-2 text-xs leading-relaxed text-amber-950">
+                {t('chat.demoBanner')}
+                {statusMessage ? ` ${statusMessage}` : t('chat.demoBannerExtra')}
+                <Link to="/settings" className="ml-1 font-semibold text-lime-700 underline">
+                  {t('chat.demoBannerLink')}
+                </Link>
+              </p>
+            </div>
+          )}
 
           <div className="relative z-0 flex min-h-0 flex-1 flex-col overflow-hidden">
             {isEmpty ? (

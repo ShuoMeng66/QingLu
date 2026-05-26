@@ -101,6 +101,7 @@ export type MessageKey =
   | 'chat.placeholderReady'
   | 'chat.scrollToBottom'
   | 'chat.statusOffline'
+  | 'chat.statusChecking'
   | 'chat.statusOnline'
   | 'chat.statusWorking'
   | 'chat.stopped'
@@ -457,6 +458,7 @@ const ZH: Record<MessageKey, string> = {
   'chat.placeholderReady': '问问 BurnPal…',
   'chat.scrollToBottom': '回到底部',
   'chat.statusOffline': '离线',
+  'chat.statusChecking': '连接中…',
   'chat.statusOnline': '轻鹭待命',
   'chat.statusWorking': '轻鹭思考中',
   'chat.stopped': '（已停止生成）',
@@ -819,6 +821,7 @@ const EN: Record<MessageKey, string> = {
   'chat.placeholderReady': 'Ask BurnPal…',
   'chat.scrollToBottom': 'Scroll to bottom',
   'chat.statusOffline': 'Offline',
+  'chat.statusChecking': 'Connecting…',
   'chat.statusOnline': 'Qinglu ready',
   'chat.statusWorking': 'Qinglu thinking',
   'chat.stopped': '(Generation stopped)',
@@ -1181,6 +1184,7 @@ const JA: Record<MessageKey, string> = {
   'chat.placeholderReady': 'BurnPal に聞く…',
   'chat.scrollToBottom': '下へスクロール',
   'chat.statusOffline': 'オフライン',
+  'chat.statusChecking': '接続中…',
   'chat.statusOnline': '軽鹭待機',
   'chat.statusWorking': '軽鹭思考中',
   'chat.stopped': '（生成停止）',
@@ -1543,6 +1547,7 @@ const KO: Record<MessageKey, string> = {
   'chat.placeholderReady': 'BurnPal에게 물어보기…',
   'chat.scrollToBottom': '아래로 스크롤',
   'chat.statusOffline': '오프라인',
+  'chat.statusChecking': '연결 중…',
   'chat.statusOnline': '경록 대기',
   'chat.statusWorking': '경록 생각 중',
   'chat.stopped': '(생성 중지됨)',

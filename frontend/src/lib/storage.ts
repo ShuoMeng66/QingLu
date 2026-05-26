@@ -7,8 +7,13 @@ const PRODUCTION_PROXY_BASE = '/api/openclaw/v1'
 function resolveProductionBaseUrl(): string {
   const envBase = import.meta.env.VITE_OPENCLAW_BASE_URL?.trim()
   if (!envBase) return PRODUCTION_PROXY_BASE
+  // 生产环境禁止浏览器直连外部 LLM（CORS + 密钥），统一走同源 Edge 代理
+  if (envBase.startsWith('http://') || envBase.startsWith('https://')) {
+    return PRODUCTION_PROXY_BASE
+  }
   if (envBase.startsWith('/openclaw-api')) return PRODUCTION_PROXY_BASE
-  return envBase
+  if (envBase.startsWith('/api/openclaw')) return envBase
+  return PRODUCTION_PROXY_BASE
 }
 
 function productionConfig(): OpenClawConfig {

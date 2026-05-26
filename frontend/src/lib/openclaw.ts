@@ -29,9 +29,21 @@ function openClawHealthUrl(baseUrl: string): string {
   return `${normalized}/health`
 }
 
+const FETCH_TIMEOUT_MS = 12_000
+
+async function fetchWithTimeout(url: string, init?: RequestInit): Promise<Response> {
+  const controller = new AbortController()
+  const timer = window.setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
+  try {
+    return await fetch(url, { ...init, signal: controller.signal })
+  } finally {
+    window.clearTimeout(timer)
+  }
+}
+
 async function tryProxyHealth(baseUrl: string): Promise<ConnectionResult | null> {
   try {
-    const response = await fetch(openClawHealthUrl(baseUrl))
+    const response = await fetchWithTimeout(openClawHealthUrl(baseUrl))
     const raw = await response.text()
     if (!response.ok) return null
 
@@ -62,8 +74,23 @@ export async function testConnection(config: OpenClawConfig): Promise<Connection
     }
   }
 
+  let proxyHealth: ConnectionResult | null = null
+  if (proxied) {
+    proxyHealth = await tryProxyHealth(baseUrl)
+    if (!proxyHealth?.ok) {
+      return (
+        proxyHealth ?? {
+          ok: false,
+          models: [],
+          message:
+            '无法连接 AI 代理。请在 Vercel 配置 OPENCLAW_TOKEN（百炼 API Key）并 Redeploy，或打开 /api/openclaw/health 自检。',
+        }
+      )
+    }
+  }
+
   try {
-    const response = await fetch(`${baseUrl}/models`, {
+    const response = await fetchWithTimeout(`${baseUrl}/models`, {
       headers: buildHeaders(config.token),
     })
 
@@ -71,6 +98,7 @@ export async function testConnection(config: OpenClawConfig): Promise<Connection
     const raw = await response.text()
 
     if (!response.ok) {
+      if (proxied && proxyHealth?.ok) return proxyHealth
       if (proxied) {
         const health = await tryProxyHealth(baseUrl)
         if (health?.ok) return health
@@ -98,6 +126,7 @@ export async function testConnection(config: OpenClawConfig): Promise<Connection
     }
 
     if (contentType.includes('text/html') || raw.trimStart().startsWith('<!')) {
+      if (proxied && proxyHealth?.ok) return proxyHealth
       if (proxied) {
         const health = await tryProxyHealth(baseUrl)
         if (health?.ok) return health
@@ -127,10 +156,11 @@ export async function testConnection(config: OpenClawConfig): Promise<Connection
       models,
       message: models.length
         ? `连接成功，已发现 ${models.length} 个可用模型`
-        : '连接成功，服务已就绪',
+        : proxyHealth?.message || '连接成功，服务已就绪',
     }
   } catch (error) {
     if (usesServerProxy(normalizeBaseUrl(config.baseUrl))) {
+      if (proxyHealth?.ok) return proxyHealth
       const health = await tryProxyHealth(normalizeBaseUrl(config.baseUrl))
       if (health?.ok) return health
     }
