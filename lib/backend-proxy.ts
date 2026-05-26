@@ -37,6 +37,7 @@ export async function handleBackendProxy(request: Request): Promise<Response> {
       method: request.method,
       headers,
       body,
+      signal: AbortSignal.timeout(25_000),
     })
 
     return new Response(upstream.body, {
@@ -45,12 +46,15 @@ export async function handleBackendProxy(request: Request): Promise<Response> {
     })
   } catch (error) {
     console.error('[backend proxy]', error)
+    const timedOut = error instanceof Error && error.name === 'TimeoutError'
     return Response.json(
       {
-        error: 'Backend proxy failed',
+        error: timedOut
+          ? 'Backend request timed out (service may be waking up — try again)'
+          : 'Backend proxy failed',
         detail: error instanceof Error ? error.message : 'Unknown error',
       },
-      { status: 502 },
+      { status: timedOut ? 504 : 502 },
     )
   }
 }

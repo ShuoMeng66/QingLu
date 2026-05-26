@@ -1,7 +1,8 @@
-/** Legacy path for /api/backend/* (older rewrites); prefer /api/auth and /api/user handlers */
-import { backendProxyConfig, proxyToBackend } from '../../lib/proxy-backend-request'
-
-export const config = backendProxyConfig
+/** Legacy path for /api/backend/* (older rewrites); /api/auth and /api/user use Edge Middleware */
+export const config = {
+  runtime: 'nodejs' as const,
+  maxDuration: 60,
+}
 
 export default async function handler(request: Request): Promise<Response> {
   const backendBase = process.env.BACKEND_URL?.replace(/\/+$/, '')

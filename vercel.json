@@ -5,12 +5,6 @@
   "outputDirectory": "frontend/dist",
   "framework": null,
   "functions": {
-    "api/auth/[...path].ts": {
-      "maxDuration": 60
-    },
-    "api/user/[...path].ts": {
-      "maxDuration": 60
-    },
     "api/backend/[...path].ts": {
       "maxDuration": 60
     }
