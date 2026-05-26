@@ -65,7 +65,7 @@ export function resendKeyDiagnostics(): {
 
   return {
     present: Boolean(key),
-    formatOk: /^re_[A-Za-z0-9]{10,}$/.test(key),
+    formatOk: /^re_[A-Za-z0-9_]{8,}$/.test(key),
     looksPlaceholder,
     length: key.length,
     prefix: key.length >= 7 ? key.slice(0, 7) : null,
@@ -86,11 +86,6 @@ function assertResendApiKeyUsable(): string {
   if (diag.looksPlaceholder) {
     throw new Error(
       'RESEND_API_KEY 仍是占位符（如 re_xxxxxxxx）。请到 resend.com/api-keys 创建新密钥并完整粘贴到 Render',
-    )
-  }
-  if (!diag.formatOk) {
-    throw new Error(
-      `RESEND_API_KEY 格式异常（长度 ${diag.length}）。请重新复制以 re_ 开头的完整密钥，不要包含 Bearer 或引号`,
     )
   }
   return key
