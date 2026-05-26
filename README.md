@@ -99,6 +99,13 @@ git push -u origin main
 
 若返回整页 HTML 或 404，说明路由/部署未更新；若 `hasToken: false`，说明 `OPENCLAW_TOKEN` 未注入当前 Production 部署。
 
+账户 API 自检（需已设置 `BACKEND_URL` 并完成 Redeploy）：
+
+| URL | 期望 |
+|-----|------|
+| `https://你的域名/api/auth/health` | JSON：`{"ok":true,"smtp":true}`（`smtp:false` 表示 Render 未配置 `SMTP_*`） |
+| `POST /api/auth/send-verification-code` | JSON：`{"ok":true,"smtp":true}`（未注册邮箱） |
+
 聊天页若仍演示模式，横幅会显示具体失败原因；也可清除站点 localStorage 后硬刷新。
 
 ### 4. 账户后端（云同步 / 注册）

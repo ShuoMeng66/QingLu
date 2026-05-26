@@ -1,9 +1,10 @@
-/** Legacy path for /api/backend/* (older rewrites); prefer /api/auth and /api/user handlers */
-import { backendProxyConfig, proxyToBackend } from '../../lib/proxy-backend-request'
+export const backendProxyConfig = {
+  runtime: 'nodejs' as const,
+  maxDuration: 60,
+}
 
-export const config = backendProxyConfig
-
-export default async function handler(request: Request): Promise<Response> {
+/** Proxy /api/auth/* and /api/user/* to Render (or other) BACKEND_URL */
+export async function proxyToBackend(request: Request, apiPrefix: '/api/auth' | '/api/user'): Promise<Response> {
   const backendBase = process.env.BACKEND_URL?.replace(/\/+$/, '')
 
   if (!backendBase) {
@@ -16,11 +17,15 @@ export default async function handler(request: Request): Promise<Response> {
     )
   }
 
-  const pathname = new URL(request.url).pathname
-  const prefix = '/api/backend/'
-  const subpath = pathname.startsWith(prefix) ? pathname.slice(prefix.length) : ''
-  const search = new URL(request.url).search
-  const upstreamUrl = `${backendBase}/api/${subpath}${search}`
+  const url = new URL(request.url)
+  const pathname = url.pathname
+  const subpath = pathname.startsWith(`${apiPrefix}/`)
+    ? pathname.slice(apiPrefix.length + 1)
+    : pathname === apiPrefix
+      ? ''
+      : pathname.replace(apiPrefix, '').replace(/^\//, '')
+
+  const upstreamUrl = `${backendBase}${apiPrefix}${subpath ? `/${subpath}` : ''}${url.search}`
 
   const headers = new Headers()
   const contentType = request.headers.get('content-type')
@@ -49,7 +54,7 @@ export default async function handler(request: Request): Promise<Response> {
       headers: upstream.headers,
     })
   } catch (error) {
-    console.error('[backend proxy]', error)
+    console.error('[backend proxy]', apiPrefix, error)
     const timedOut = error instanceof Error && error.name === 'TimeoutError'
     return Response.json(
       {

@@ -5,19 +5,17 @@
   "outputDirectory": "frontend/dist",
   "framework": null,
   "functions": {
+    "api/auth/[...path].ts": {
+      "maxDuration": 60
+    },
+    "api/user/[...path].ts": {
+      "maxDuration": 60
+    },
     "api/backend/[...path].ts": {
       "maxDuration": 60
     }
   },
   "rewrites": [
-    {
-      "source": "/api/auth/:path*",
-      "destination": "/api/backend/auth/:path*"
-    },
-    {
-      "source": "/api/user/:path*",
-      "destination": "/api/backend/user/:path*"
-    },
     {
       "source": "/((?!api/).*)",
       "destination": "/index.html"
