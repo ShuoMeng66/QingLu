@@ -15,6 +15,19 @@ export function isResendConfigured(): boolean {
   return Boolean(envTrim('RESEND_API_KEY'))
 }
 
+export function resendKeyDiagnostics(): {
+  present: boolean
+  formatOk: boolean
+  prefix: string | null
+} {
+  const key = envTrim('RESEND_API_KEY')
+  return {
+    present: Boolean(key),
+    formatOk: /^re_[a-zA-Z0-9_]{8,}$/.test(key),
+    prefix: key ? `${key.slice(0, 6)}…` : null,
+  }
+}
+
 export function isSmtpConfigured(): boolean {
   return Boolean(
     envTrim('SMTP_HOST') && envTrim('SMTP_USER') && envTrim('SMTP_PASS'),
@@ -98,10 +111,27 @@ export async function verifySmtpConnection(): Promise<void> {
   await getTransporter().verify()
 }
 
+function parseResendApiError(status: number, body: string): string {
+  try {
+    const json = JSON.parse(body) as { message?: string; name?: string }
+    if (json.message) return `Resend ${status}: ${json.message}`
+  } catch {
+    /* plain text */
+  }
+  return `Resend API ${status}: ${body.slice(0, 200)}`
+}
+
 export async function verifyResendConnection(): Promise<void> {
   const apiKey = envTrim('RESEND_API_KEY')
   if (!apiKey) {
     throw new Error('RESEND_API_KEY is not configured')
+  }
+
+  const { formatOk } = resendKeyDiagnostics()
+  if (!formatOk) {
+    throw new Error(
+      'RESEND_API_KEY 格式不正确，应以 re_ 开头（在 Render 环境变量中填写，不要加引号）',
+    )
   }
 
   const response = await fetch('https://api.resend.com/domains', {
@@ -112,7 +142,7 @@ export async function verifyResendConnection(): Promise<void> {
 
   if (!response.ok) {
     const body = await response.text()
-    throw new Error(`Resend API ${response.status}: ${body.slice(0, 200)}`)
+    throw new Error(parseResendApiError(response.status, body))
   }
 }
 
@@ -144,7 +174,7 @@ async function sendViaResend(email: string, code: string): Promise<void> {
 
   if (!response.ok) {
     const body = await response.text()
-    throw new Error(`Resend API ${response.status}: ${body.slice(0, 300)}`)
+    throw new Error(parseResendApiError(response.status, body))
   }
 
   const payload = (await response.json()) as { id?: string }
@@ -211,18 +241,26 @@ export function formatSmtpError(error: unknown): string {
   return message
 }
 
-export function formatEmailError(error: unknown): string {
+export function formatResendError(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error)
+  if (/格式不正确|re_/i.test(message)) return message
+  if (/Resend 401|API 401|invalid.*key|unauthorized/i.test(message)) {
+    return 'Resend API 密钥无效。请在 Render（后端）环境变量设置 RESEND_API_KEY，并重新 Deploy'
+  }
+  if (/Resend 403|API 403/i.test(message)) {
+    return 'Resend API 权限不足，请重新创建具备 Sending access 的 API Key'
+  }
+  if (/domain|from|sender/i.test(message)) {
+    return 'Resend 发件地址无效：验证域名后设置 RESEND_FROM，测试可用 BurnPal <onboarding@resend.dev>'
+  }
+  return message.slice(0, 240)
+}
+
+export function formatEmailError(error: unknown): string {
   if (getEmailProvider() === 'smtp') {
     return formatSmtpError(error)
   }
-  if (/Resend API 401|403|validation/i.test(message)) {
-    return 'Resend API 密钥无效或未授权，请检查 RESEND_API_KEY'
-  }
-  if (/domain|from/i.test(message) && /resend/i.test(message)) {
-    return 'Resend 发件地址未验证，请在 Resend 控制台验证域名或检查 RESEND_FROM'
-  }
-  return message.slice(0, 240)
+  return formatResendError(error)
 }
 
 export function emailHealthHint(provider: EmailProvider, reachable: boolean): string | undefined {
@@ -234,7 +272,7 @@ export function emailHealthHint(provider: EmailProvider, reachable: boolean): st
     return 'SMTP 无法连接，请核对授权码与端口(465)，或改用 RESEND_API_KEY。'
   }
   if (provider === 'resend') {
-    return 'Resend API 不可用，请检查 RESEND_API_KEY 与 RESEND_FROM（需已验证域名）。'
+    return 'Resend 不可用：在 Render 后端（非 Vercel）配置 RESEND_API_KEY 并 Redeploy；测试发件可用 BurnPal <onboarding@resend.dev>'
   }
   return '未配置邮件：设置 RESEND_API_KEY 或 SMTP_*。'
 }

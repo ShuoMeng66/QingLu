@@ -42,8 +42,8 @@ Codes expire after 10 minutes. Resend is limited to once per 60 seconds. After 5
 2. **API Keys** → 创建密钥 → 填入 Render：`RESEND_API_KEY`
 3. **Domains** → 添加并验证你的域名 → 设置  
    `RESEND_FROM=BurnPal <noreply@你的域名.com>`
-4. 重新部署 Render 后端
-5. 检查 `GET /api/auth/health`：
+4. **在 Render 后端服务**（不是 Vercel）添加上述环境变量，然后 **Manual Deploy**
+5. 检查 `GET /api/auth/health`（经 Vercel 转发到 Render）：
 
 ```json
 {
@@ -55,7 +55,15 @@ Codes expire after 10 minutes. Resend is limited to once per 60 seconds. After 5
 }
 ```
 
-若同时配置了 `RESEND_API_KEY` 与 `SMTP_*`，**优先使用 Resend**。
+若同时配置了 `RESEND_API_KEY` 与 `SMTP_*`，**优先使用 Resend**（健康检查会跳过 SMTP，避免 Render 误报）。
+
+**常见错误：**
+
+| health 字段 | 含义 |
+|-------------|------|
+| `resendKeyFormatOk: false` | Key 不是 `re_` 开头，或 Render 里多加了引号/空格 |
+| `resendReachable: false` + `resendError` | Key 无效、过期，或填在了 Vercel 而非 Render |
+| `verifyError` 仍是 SMTP 文案 | 请部署最新后端（已修复诊断逻辑） |
 
 ### QQ 邮箱 SMTP（本地或 Render 付费）
 

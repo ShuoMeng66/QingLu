@@ -11,7 +11,7 @@ import {
   isEmailConfigured,
   isResendConfigured,
   isSmtpConfigured,
-  verifyEmailDelivery,
+  resendKeyDiagnostics,
   verifyResendConnection,
   verifySmtpConnection,
 } from '../mail.js'
@@ -30,15 +30,16 @@ authRouter.get('/health', async (_req, res) => {
   const resend = isResendConfigured()
   let smtpReachable = false
   let resendReachable = false
-  let emailReachable = false
-  let verifyError: string | undefined
+  let smtpError: string | undefined
+  let resendError: string | undefined
 
-  if (smtp) {
+  // When Resend is active, skip SMTP verify (Render free tier always fails — avoids misleading errors)
+  if (smtp && provider !== 'resend') {
     try {
       await verifySmtpConnection()
       smtpReachable = true
     } catch (error) {
-      verifyError = formatSmtpError(error)
+      smtpError = formatSmtpError(error)
       console.warn('[BurnPal] SMTP verify failed:', error)
     }
   }
@@ -48,21 +49,15 @@ authRouter.get('/health', async (_req, res) => {
       await verifyResendConnection()
       resendReachable = true
     } catch (error) {
-      if (!verifyError) verifyError = formatEmailError(error)
+      resendError = formatEmailError(error)
       console.warn('[BurnPal] Resend verify failed:', error)
     }
   }
 
-  if (isEmailConfigured()) {
-    try {
-      await verifyEmailDelivery()
-      emailReachable = true
-    } catch (error) {
-      if (!verifyError) verifyError = formatEmailError(error)
-    }
-  }
-
+  const emailReachable = provider === 'resend' ? resendReachable : smtpReachable
+  const verifyError = provider === 'resend' ? resendError : smtpError
   const hint = emailHealthHint(provider, emailReachable)
+  const resendKey = resendKeyDiagnostics()
 
   res.json({
     ok: true,
@@ -70,12 +65,18 @@ authRouter.get('/health', async (_req, res) => {
     emailConfigured: isEmailConfigured(),
     emailReachable,
     smtp,
-    smtpReachable,
+    smtpReachable: provider === 'resend' ? false : smtpReachable,
+    smtpSkipped: smtp && provider === 'resend',
     resend,
     resendReachable,
+    resendKeyPresent: resendKey.present,
+    resendKeyFormatOk: resendKey.formatOk,
+    resendFrom: resend ? (process.env.RESEND_FROM?.trim() || 'BurnPal <onboarding@resend.dev>') : undefined,
     onRender: Boolean(process.env.RENDER),
     hint,
     verifyError,
+    smtpError: provider === 'resend' ? undefined : smtpError,
+    resendError,
   })
 })
 
