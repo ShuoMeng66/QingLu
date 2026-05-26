@@ -9,6 +9,8 @@ import {
 } from 'react'
 import {
   clearAuthSession,
+  ApiError,
+  fetchMe,
   fetchRemoteUserData,
   getStoredToken,
   getStoredUser,
@@ -39,6 +41,25 @@ interface AuthContextValue {
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null)
+
+async function syncCloudData(token: string, isNewAccount: boolean) {
+  try {
+    if (isNewAccount) {
+      await pushRemoteUserData(token, collectUserDataSnapshot())
+      return
+    }
+
+    const remote = await fetchRemoteUserData(token)
+    if (remote.data && isUserDataSnapshot(remote.data)) {
+      applyUserDataSnapshot(remote.data)
+      window.dispatchEvent(new CustomEvent('burnpal:user-data-applied'))
+    } else {
+      await pushRemoteUserData(token, collectUserDataSnapshot())
+    }
+  } catch (error) {
+    console.warn('[BurnPal] Cloud sync skipped:', error)
+  }
+}
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(() => getStoredUser())
@@ -74,26 +95,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, [token])
 
-  const afterAuth = useCallback(
-    async (nextToken: string, nextUser: AuthUser, isNewAccount: boolean) => {
-      saveAuthSession(nextToken, nextUser)
-      setToken(nextToken)
-      setUser(nextUser)
-
-      if (isNewAccount) {
-        await pushRemoteUserData(nextToken, collectUserDataSnapshot())
-      } else {
-        const remote = await fetchRemoteUserData(nextToken)
-        if (remote.data && isUserDataSnapshot(remote.data)) {
-          applyUserDataSnapshot(remote.data)
-          window.dispatchEvent(new CustomEvent('burnpal:user-data-applied'))
-        } else {
-          await pushRemoteUserData(nextToken, collectUserDataSnapshot())
-        }
-      }
-    },
-    [],
-  )
+  const afterAuth = useCallback(async (nextToken: string, nextUser: AuthUser, isNewAccount: boolean) => {
+    saveAuthSession(nextToken, nextUser)
+    setToken(nextToken)
+    setUser(nextUser)
+    setSyncing(true)
+    try {
+      await syncCloudData(nextToken, isNewAccount)
+    } finally {
+      setSyncing(false)
+    }
+  }, [])
 
   const login = useCallback(
     async (email: string, password: string) => {
@@ -118,22 +130,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   useEffect(() => {
-    if (!token) {
+    const storedToken = getStoredToken()
+    if (!storedToken) {
       setLoading(false)
       return
     }
 
     let cancelled = false
-    void refreshFromServer().finally(() => {
-      if (!cancelled) setLoading(false)
-    })
+
+    void (async () => {
+      try {
+        const me = await fetchMe(storedToken)
+        if (cancelled) return
+        saveAuthSession(storedToken, me.user)
+        setToken(storedToken)
+        setUser(me.user)
+        await refreshFromServer()
+      } catch (error) {
+        const status = error instanceof ApiError ? error.status : 0
+        if (status === 401 || status === 403) {
+          console.warn('[BurnPal] Session invalid, cleared local login')
+          if (!cancelled) {
+            clearAuthSession()
+            setToken(null)
+            setUser(null)
+          }
+        } else {
+          // Backend offline / 502 — keep cached session so user stays logged in
+          const cached = getStoredUser()
+          if (!cancelled && cached) {
+            setToken(storedToken)
+            setUser(cached)
+          }
+          console.warn('[BurnPal] Could not verify session with server:', error)
+        }
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    })()
 
     return () => {
       cancelled = true
     }
-    // Pull once when session is restored — not on every refreshFromServer identity change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token])
+  }, [])
 
   useEffect(() => {
     if (!token) return

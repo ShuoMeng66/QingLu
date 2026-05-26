@@ -68,7 +68,15 @@ export async function registerAccount(input: {
 }) {
   return request<{ token: string; user: { id: string; email: string; displayName: string | null } }>(
     '/auth/register',
-    { method: 'POST', body: JSON.stringify(input) },
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        email: input.email,
+        password: input.password,
+        code: input.verificationCode,
+        displayName: input.displayName,
+      }),
+    },
   )
 }
 

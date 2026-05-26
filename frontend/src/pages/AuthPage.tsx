@@ -33,9 +33,7 @@ export function AuthPage() {
         <AccountAuthPanel
           defaultMode={defaultMode}
           variant="full"
-          onSuccess={(mode) => {
-            if (mode === 'login') navigate('/chat')
-          }}
+          onSuccess={() => navigate('/chat', { replace: true })}
         />
 
         <p className="mt-4 text-center text-xs text-slate-500">

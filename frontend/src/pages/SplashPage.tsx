@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useI18n } from '../hooks/useI18n'
+import { useAuth } from '../context/AuthContext'
 import { AccountAuthPanel } from '../components/auth/AccountAuthPanel'
 import { UserAccountAvatar } from '../components/auth/UserAccountAvatar'
 import { AppShell } from '../components/burnpal/AppShell'
@@ -11,6 +13,23 @@ import { SplashHeroVisual } from '../components/burnpal/SplashHeroVisual'
 export function SplashPage() {
   const navigate = useNavigate()
   const { t } = useI18n()
+  const { user, loading } = useAuth()
+
+  useEffect(() => {
+    if (!loading && user) {
+      navigate('/chat', { replace: true })
+    }
+  }, [loading, user, navigate])
+
+  if (loading || user) {
+    return (
+      <AppShell scrollable>
+        <PageTransition className="flex min-h-dvh flex-1 items-center justify-center">
+          <p className="text-sm text-slate-500">{t('auth.restoringSession')}</p>
+        </PageTransition>
+      </AppShell>
+    )
+  }
 
   return (
     <AppShell scrollable>
@@ -58,9 +77,8 @@ export function SplashPage() {
               <div className="mt-8 max-w-md">
                 <AccountAuthPanel
                   variant="compact"
-                  onSuccess={(mode) => {
-                    if (mode === 'login') navigate('/chat')
-                  }}
+                  defaultMode="login"
+                  onSuccess={() => navigate('/chat', { replace: true })}
                 />
               </div>
             </div>

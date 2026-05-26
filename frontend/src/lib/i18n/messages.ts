@@ -34,6 +34,7 @@ export type MessageKey =
   | 'auth.registerSubmit'
   | 'auth.registerSuccess'
   | 'auth.registerTab'
+  | 'auth.restoringSession'
   | 'auth.submitting'
   | 'auth.syncing'
   | 'auth.title'
@@ -372,6 +373,7 @@ const ZH: Record<MessageKey, string> = {
   'auth.registerSubmit': '注册',
   'auth.registerSuccess': '注册成功！本地数据已上传，云端同步已开启',
   'auth.registerTab': '注册',
+  'auth.restoringSession': '正在恢复登录状态…',
   'auth.submitting': '处理中…',
   'auth.syncing': '正在同步…',
   'auth.title': '账户',
@@ -711,6 +713,7 @@ const EN: Record<MessageKey, string> = {
   'auth.registerSubmit': 'Sign up',
   'auth.registerSuccess': 'Account created — local data uploaded',
   'auth.registerTab': 'Sign up',
+  'auth.restoringSession': 'Restoring your session…',
   'auth.submitting': 'Working…',
   'auth.syncing': 'Syncing…',
   'auth.title': 'Account',
@@ -1050,6 +1053,7 @@ const JA: Record<MessageKey, string> = {
   'auth.registerSubmit': '登録',
   'auth.registerSuccess': '登録完了 — ローカルデータをアップロードしました',
   'auth.registerTab': '登録',
+  'auth.restoringSession': 'ログイン状態を復元しています…',
   'auth.submitting': '処理中…',
   'auth.syncing': '同期中…',
   'auth.title': 'アカウント',
@@ -1389,6 +1393,7 @@ const KO: Record<MessageKey, string> = {
   'auth.registerSubmit': '가입',
   'auth.registerSuccess': '가입 완료 — 로컬 데이터 업로드됨',
   'auth.registerTab': '가입',
+  'auth.restoringSession': '로그인 상태를 복원하는 중…',
   'auth.submitting': '처리 중…',
   'auth.syncing': '동기화 중…',
   'auth.title': '계정',

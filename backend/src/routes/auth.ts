@@ -42,7 +42,7 @@ authRouter.post('/send-verification-code', async (req, res) => {
 authRouter.post('/register', (req, res) => {
   const email = normalizeEmail(String(req.body?.email ?? ''))
   const password = String(req.body?.password ?? '')
-  const code = String(req.body?.code ?? '')
+  const code = String(req.body?.code ?? req.body?.verificationCode ?? '')
   const displayName = String(req.body?.displayName ?? '').trim() || null
 
   if (!email || !password || !code) {
