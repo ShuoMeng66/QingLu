@@ -102,7 +102,7 @@ export async function handleOpenClawProxy(request: Request): Promise<Response> {
     return Response.json({
       ok: true,
       service: 'openclaw-proxy',
-      runtime: process.env.VERCEL ? 'vercel-serverless' : 'local',
+      runtime: 'edge-middleware',
       ...diag,
     })
   }

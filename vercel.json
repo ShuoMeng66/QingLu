@@ -7,9 +7,6 @@
   "functions": {
     "api/backend/[...path].ts": {
       "maxDuration": 60
-    },
-    "api/openclaw/[...path].ts": {
-      "maxDuration": 60
     }
   },
   "rewrites": [
