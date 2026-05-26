@@ -5,18 +5,18 @@ const ORB_FLOAT = {
   transition: { duration: 6, repeat: Infinity, ease: 'easeInOut' as const },
 }
 
-/** Soft yellow + light lime fluid mesh background */
+/** Soft mint-green mesh with subtle yellow highlights */
 export function VitalityMeshBackground() {
   return (
     <div
-      className="vitality-mesh pointer-events-none fixed inset-0 z-[-1] overflow-hidden bg-gradient-to-br from-yellow-50 via-[#f7fee7] to-[#ecfccb]"
+      className="vitality-mesh pointer-events-none fixed inset-0 z-[-1] overflow-hidden bg-gradient-to-br from-[#ecfccb] via-[#f0fdf4] to-[#f7fee7]"
       aria-hidden="true"
     >
       <div
         className="absolute inset-0 z-0 opacity-[0.025] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"
       />
       <div
-        className="absolute inset-0 bg-gradient-to-tr from-yellow-100/35 via-transparent to-lime-100/30"
+        className="absolute inset-0 bg-gradient-to-tr from-lime-100/40 via-transparent to-emerald-50/35"
         aria-hidden="true"
       />
 
@@ -24,7 +24,7 @@ export function VitalityMeshBackground() {
         <motion.div
           animate={{ x: [0, 30, 0], y: [0, 40, 0] }}
           transition={{ duration: 15, repeat: Infinity, ease: 'easeInOut' }}
-          className="h-[520px] w-[520px] rounded-full bg-yellow-200/55 blur-[110px]"
+          className="h-[520px] w-[520px] rounded-full bg-lime-200/55 blur-[110px]"
         />
       </motion.div>
 
@@ -36,7 +36,7 @@ export function VitalityMeshBackground() {
         <motion.div
           animate={{ x: [0, -40, 0], y: [0, 30, 0] }}
           transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
-          className="h-[460px] w-[460px] rounded-full bg-lime-200/50 blur-[100px]"
+          className="h-[460px] w-[460px] rounded-full bg-emerald-200/45 blur-[100px]"
         />
       </motion.div>
 
@@ -48,7 +48,7 @@ export function VitalityMeshBackground() {
         <motion.div
           animate={{ x: [0, 20, 0], y: [0, -40, 0] }}
           transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
-          className="h-[540px] w-[540px] rounded-full bg-lime-100/50 blur-[130px]"
+          className="h-[540px] w-[540px] rounded-full bg-green-100/55 blur-[130px]"
         />
       </motion.div>
 
@@ -60,7 +60,7 @@ export function VitalityMeshBackground() {
         <motion.div
           animate={{ x: [0, 15, 0], y: [0, 20, 0] }}
           transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
-          className="h-[320px] w-[320px] rounded-full bg-yellow-100/50 blur-[90px]"
+          className="h-[280px] w-[280px] rounded-full bg-yellow-100/30 blur-[90px]"
         />
       </motion.div>
 
@@ -72,7 +72,7 @@ export function VitalityMeshBackground() {
         <motion.div
           animate={{ x: [0, -20, 0], y: [0, 15, 0] }}
           transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
-          className="h-[280px] w-[280px] rounded-full bg-lime-100/55 blur-[80px]"
+          className="h-[300px] w-[300px] rounded-full bg-lime-100/50 blur-[80px]"
         />
       </motion.div>
     </div>

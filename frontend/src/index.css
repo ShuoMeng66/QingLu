@@ -4,16 +4,16 @@
 @import "./styles/theme-dark.css";
 
 @theme {
-  --color-background: #f7fee7;
-  --color-surface: #f7fee7;
+  --color-background: #f0fdf4;
+  --color-surface: #ecfccb;
   --color-foreground: #1a202c;
-  --color-primary: #a3e635;
-  --color-primary-foreground: #1a2e05;
-  --color-secondary: #facc15;
+  --color-primary: #86efac;
+  --color-primary-foreground: #14532d;
+  --color-secondary: #fde68a;
   --color-secondary-foreground: #422006;
   --color-card: #ffffff;
-  --color-accent: #bef264;
-  --color-accent-foreground: #1a2e05;
+  --color-accent: #bbf7d0;
+  --color-accent-foreground: #14532d;
   --color-muted: rgba(255, 255, 255, 0.72);
   --color-muted-foreground: #4a5568;
   --color-border: rgba(255, 255, 255, 0.85);

@@ -1,4 +1,4 @@
-/* Light theme — higher contrast on yellow-lime backgrounds */
+/* Light theme — readable text on mint-green surfaces */
 [data-theme='light'] {
   color-scheme: light;
 
@@ -16,7 +16,7 @@
   --text-on-banner-muted: #334155;
 
   --composer-bg: rgba(255, 255, 255, 0.88);
-  --composer-border: rgba(163, 230, 53, 0.35);
+  --composer-border: rgba(134, 239, 172, 0.45);
   --composer-text: #0f172a;
   --composer-placeholder: #64748b;
 
@@ -53,5 +53,5 @@
 }
 
 [data-theme='light'] .profile-setup-banner__inner {
-  background: linear-gradient(135deg, #fef9c3 0%, #ecfccb 100%);
+  background: linear-gradient(135deg, #ecfccb 0%, #d9f99d 72%, #fef9c3 100%);
 }

@@ -1,24 +1,24 @@
-/* BurnPal 轻鹭 · Sunny lime & soft yellow design tokens */
+/* BurnPal 轻鹭 · Light green primary, soft yellow accent */
 :root {
   --scroll-y: 0;
 
-  --background: #f7fee7;
-  --background-soft: #fef9c3;
+  --background: #f0fdf4;
+  --background-soft: #ecfccb;
   --foreground: #1a202c;
-  --primary: #a3e635;
-  --primary-foreground: #1a2e05;
-  --secondary: #facc15;
+  --primary: #86efac;
+  --primary-foreground: #14532d;
+  --secondary: #fde68a;
   --secondary-foreground: #422006;
-  --accent: #bef264;
-  --accent-foreground: #1a2e05;
+  --accent: #bbf7d0;
+  --accent-foreground: #14532d;
   --muted-bg: rgba(255, 255, 255, 0.72);
   --muted: rgba(255, 255, 255, 0.72);
-  --border: rgba(255, 255, 255, 0.85);
+  --border: rgba(255, 255, 255, 0.88);
   --destructive: #ef4444;
 
-  --canvas: #f7fee7;
-  --canvas-base: #f7fee7;
-  --canvas-morning: linear-gradient(165deg, #fef9c3 0%, #ecfccb 42%, #f7fee7 100%);
+  --canvas: #f0fdf4;
+  --canvas-base: #ecfccb;
+  --canvas-morning: linear-gradient(165deg, #ecfccb 0%, #f0fdf4 48%, #f7fee7 82%, #fefce8 100%);
   --ink: #0f172a;
   --body: #334155;
   --body-strong: #1e293b;
@@ -27,69 +27,69 @@
 
   --text-on-surface: #0f172a;
   --text-on-surface-muted: #475569;
-  --composer-bg: rgba(255, 255, 255, 0.88);
-  --composer-border: rgba(163, 230, 53, 0.35);
+  --composer-bg: rgba(255, 255, 255, 0.9);
+  --composer-border: rgba(134, 239, 172, 0.45);
   --composer-text: #0f172a;
   --composer-placeholder: #64748b;
-  --sidebar-item-active: rgba(255, 255, 255, 0.92);
-  --sidebar-item-hover: rgba(255, 255, 255, 0.65);
-  --hairline: rgba(255, 255, 255, 0.85);
-  --hairline-soft: rgba(255, 255, 255, 0.65);
-  --line: rgba(255, 255, 255, 0.85);
-  --line-strong: rgba(163, 230, 53, 0.35);
+  --sidebar-item-active: rgba(255, 255, 255, 0.94);
+  --sidebar-item-hover: rgba(236, 252, 203, 0.55);
+  --hairline: rgba(255, 255, 255, 0.9);
+  --hairline-soft: rgba(236, 252, 203, 0.7);
+  --line: rgba(255, 255, 255, 0.88);
+  --line-strong: rgba(134, 239, 172, 0.4);
 
-  --accent-from: #bef264;
-  --accent-to: #fde047;
-  --accent-deep: #84cc16;
-  --accent-green: #a3e635;
-  --accent-green-deep: #65a30d;
-  --accent-teal: #eab308;
+  --accent-from: #86efac;
+  --accent-to: #bef264;
+  --accent-deep: #4ade80;
+  --accent-green: #86efac;
+  --accent-green-deep: #16a34a;
+  --accent-teal: #fde68a;
   --accent-teal-deep: #ca8a04;
   --accent-teal-light: #ecfccb;
 
-  --on-primary: #1a2e05;
+  --on-primary: #14532d;
   --on-dark: #ffffff;
   --on-dark-soft: rgba(255, 255, 255, 0.9);
 
-  --surface: rgba(255, 255, 255, 0.68);
-  --surface-soft: rgba(255, 255, 255, 0.72);
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-soft: rgba(240, 253, 244, 0.75);
   --surface-card: #ffffff;
-  --surface-cream-strong: rgba(254, 252, 232, 0.85);
-  --surface-strong: rgba(255, 255, 255, 0.82);
-  --sidebar-bg: rgba(255, 255, 255, 0.75);
+  --surface-cream-strong: rgba(236, 252, 203, 0.75);
+  --surface-strong: rgba(255, 255, 255, 0.85);
+  --sidebar-bg: rgba(240, 253, 244, 0.78);
 
-  --bg: #f7fee7;
-  --bg-deep: #ecfccb;
-  --bg-soft: rgba(254, 249, 195, 0.65);
+  --bg: #f0fdf4;
+  --bg-deep: #dcfce7;
+  --bg-soft: rgba(236, 252, 203, 0.65);
 
   --brand: var(--accent-green);
   --brand-bright: var(--secondary);
   --brand-deep: var(--accent-green-deep);
-  --brand-muted: rgba(190, 242, 100, 0.35);
-  --success: #84cc16;
+  --brand-muted: rgba(187, 247, 208, 0.45);
+  --success: #22c55e;
   --danger: var(--destructive);
   --warning: #fbbf24;
 
-  --shadow-soft: 0 2px 12px rgba(202, 138, 4, 0.08);
-  --shadow-hover: 0 6px 24px rgba(163, 230, 53, 0.12);
-  --shadow-custom: 0 8px 32px rgba(190, 242, 100, 0.1);
-  --shadow-glass: 0 8px 32px rgba(163, 230, 53, 0.08);
-  --shadow-glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.85);
-  --shadow-vitality-btn: 0 8px 20px -4px rgba(234, 179, 8, 0.35);
-  --shadow-spot: 0 4px 16px rgba(163, 230, 53, 0.18);
+  --shadow-soft: 0 2px 12px rgba(34, 197, 94, 0.08);
+  --shadow-hover: 0 6px 24px rgba(74, 222, 128, 0.14);
+  --shadow-custom: 0 8px 32px rgba(134, 239, 172, 0.12);
+  --shadow-glass: 0 8px 32px rgba(74, 222, 128, 0.1);
+  --shadow-glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  --shadow-vitality-btn: 0 8px 20px -4px rgba(74, 222, 128, 0.35);
+  --shadow-spot: 0 4px 16px rgba(34, 197, 94, 0.18);
   --shadow-clay: var(--shadow-custom);
 
   --glass-bg: rgba(255, 255, 255, 0.68);
-  --glass-bg-strong: rgba(255, 255, 255, 0.82);
-  --glass-border: rgba(255, 255, 255, 0.85);
+  --glass-bg-strong: rgba(255, 255, 255, 0.84);
+  --glass-border: rgba(255, 255, 255, 0.9);
   --glass-blur: blur(40px);
   --glass-shadow: var(--shadow-custom);
 
-  --gradient-primary: linear-gradient(to right, #bef264, #fde047);
-  --gradient-primary-br: linear-gradient(to bottom right, #d9f99d, #fde68a);
-  --gradient-spot: linear-gradient(135deg, #bef264 0%, #facc15 100%);
-  --gradient-warm-soft: linear-gradient(155deg, rgba(254, 249, 195, 0.55) 0%, rgba(236, 252, 203, 0.75) 72%);
-  --gradient-soft: linear-gradient(155deg, rgba(236, 252, 203, 0.45) 0%, rgba(255, 255, 255, 0.7) 72%);
+  --gradient-primary: linear-gradient(135deg, #86efac 0%, #4ade80 55%, #a3e635 85%, #fde68a 100%);
+  --gradient-primary-br: linear-gradient(to bottom right, #d9f99d, #86efac, #ecfccb);
+  --gradient-spot: linear-gradient(135deg, #4ade80 0%, #86efac 72%, #fde68a 100%);
+  --gradient-warm-soft: linear-gradient(155deg, rgba(236, 252, 203, 0.65) 0%, rgba(240, 253, 244, 0.85) 68%, rgba(254, 252, 232, 0.35) 100%);
+  --gradient-soft: linear-gradient(155deg, rgba(220, 252, 231, 0.5) 0%, rgba(255, 255, 255, 0.75) 72%);
 
   --font-display: 'Inter', 'PingFang SC', 'Noto Sans SC', system-ui, sans-serif;
   --font-body: 'Inter', 'PingFang SC', 'Noto Sans SC', system-ui, sans-serif;

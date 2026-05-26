@@ -1,7 +1,7 @@
 /* BurnPal 轻鹭 · Morning Mint Vitality design system */
 
 .bg-surface {
-  background-color: #f7fee7;
+  background-color: #f0fdf4;
 }
 
 /* Frosted glass panel — cards, panels, dock */
@@ -148,10 +148,10 @@
 
 /* Floating shell panels — sidebar & main chat */
 .burnpal-shell-panel {
-  background: rgba(255, 255, 255, 0.58);
+  background: rgba(240, 253, 244, 0.62);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
-  border: 1px solid rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.88);
   border-radius: 28px;
   box-shadow:
     var(--shadow-glass-inner),

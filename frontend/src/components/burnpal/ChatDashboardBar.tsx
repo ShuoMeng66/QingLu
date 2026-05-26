@@ -40,7 +40,7 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
           onClick={onOpenProfile}
         >
           <div className="absolute inset-0 gradient-vitality opacity-90" />
-          <div className="profile-setup-banner__inner relative flex items-center gap-4 rounded-[21px] bg-gradient-to-br from-yellow-50 to-lime-50/90 px-4 py-4">
+          <div className="profile-setup-banner__inner relative flex items-center gap-4 rounded-[21px] bg-gradient-to-br from-lime-50 via-green-50/90 to-yellow-50/40 px-4 py-4">
             <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl gradient-vitality-br text-lime-950 shadow-glow-emerald">
               <Sparkles className="h-6 w-6" />
             </div>
@@ -61,7 +61,7 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
     <div className="burnpal-chat-column px-5 pb-3 pt-1">
       <div className="relative overflow-hidden rounded-[22px] border border-white/80 bg-white/70 p-4 shadow-glass backdrop-blur-xl dark:border-white/10 dark:bg-[#2a2e28]/90">
         <div
-          className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-yellow-200/40 blur-2xl"
+          className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-lime-200/45 blur-2xl"
           aria-hidden="true"
         />
         <div className="relative grid grid-cols-3 gap-3">
@@ -111,7 +111,7 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
 
           <button
             type="button"
-            className="flex flex-col justify-between rounded-2xl bg-gradient-to-br from-lime-300/20 to-yellow-200/25 p-3 text-left transition hover:from-lime-300/30 hover:to-yellow-200/35"
+            className="flex flex-col justify-between rounded-2xl bg-gradient-to-br from-lime-200/35 to-green-100/30 p-3 text-left transition hover:from-lime-200/45 hover:to-yellow-50/25"
             onClick={onOpenProfile}
           >
             <div className="mb-2 flex items-center justify-between">

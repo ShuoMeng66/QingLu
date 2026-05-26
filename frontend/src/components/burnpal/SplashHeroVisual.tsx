@@ -14,7 +14,7 @@ export function SplashHeroVisual() {
   const badges = [
     { icon: Dumbbell, label: t('splash.badge1'), tone: 'from-emerald-300/35 to-green-200/40' },
     { icon: MapPin, label: t('splash.badge2'), tone: 'from-lime-200/40 to-emerald-200/35' },
-    { icon: Sparkles, label: t('splash.badge3'), tone: 'from-yellow-100/50 to-lime-200/40' },
+    { icon: Sparkles, label: t('splash.badge3'), tone: 'from-lime-200/45 to-yellow-100/35' },
   ] as const
 
   return (
@@ -25,7 +25,7 @@ export function SplashHeroVisual() {
       >
         <div className="absolute -right-8 top-[8%] h-56 w-56 rounded-full bg-lime-200/40 blur-3xl" />
         <div className="absolute right-[15%] bottom-[12%] h-64 w-64 rounded-full bg-emerald-200/38 blur-3xl" />
-        <div className="absolute right-[35%] top-[35%] h-44 w-44 rounded-full bg-yellow-100/45 blur-2xl" />
+        <div className="absolute right-[35%] top-[35%] h-44 w-44 rounded-full bg-yellow-100/28 blur-2xl" />
         <div className="absolute right-0 top-1/2 h-full w-1/2 bg-gradient-to-l from-lime-100/30 via-emerald-50/15 to-transparent" />
       </div>
 
@@ -33,7 +33,7 @@ export function SplashHeroVisual() {
         className="relative w-full max-w-[520px]"
         {...FLOAT}
       >
-        <div className="absolute -inset-3 rounded-[36px] bg-gradient-to-br from-emerald-200/45 via-lime-200/35 to-yellow-100/40 blur-xl" />
+        <div className="absolute -inset-3 rounded-[36px] bg-gradient-to-br from-emerald-200/50 via-lime-200/40 to-yellow-100/25 blur-xl" />
 
         <div className="relative overflow-hidden rounded-[32px] border border-white/80 bg-white/40 p-2 shadow-glass backdrop-blur-sm">
           <img
