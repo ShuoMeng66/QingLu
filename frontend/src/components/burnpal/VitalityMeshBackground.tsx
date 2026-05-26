@@ -9,7 +9,7 @@ const ORB_FLOAT = {
 export function VitalityMeshBackground() {
   return (
     <div
-      className="pointer-events-none fixed inset-0 z-[-1] overflow-hidden bg-gradient-to-br from-emerald-50 via-[#f0fdf4] to-lime-50"
+      className="pointer-events-none fixed inset-0 z-[-1] overflow-hidden bg-gradient-to-br from-emerald-50 via-[#f0fdf4] to-[#e6f7ef]"
       aria-hidden="true"
     >
       <div

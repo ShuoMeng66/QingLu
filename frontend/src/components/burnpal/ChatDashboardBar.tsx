@@ -45,8 +45,8 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
               <Sparkles className="h-6 w-6" />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-slate-800">{t('dashboard.setupTitle')}</p>
-              <p className="mt-0.5 text-xs leading-relaxed text-slate-500">{t('dashboard.setupHint')}</p>
+              <p className="text-sm font-semibold text-body-primary">{t('dashboard.setupTitle')}</p>
+              <p className="mt-0.5 text-xs leading-relaxed text-body-secondary">{t('dashboard.setupHint')}</p>
             </div>
             <span className="btn-vitality shrink-0 rounded-full px-3 py-1.5 text-xs font-semibold">
               {t('dashboard.setupBtn')}
@@ -76,13 +76,13 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
                 {t('dashboard.calories')}
               </span>
             </div>
-            <p className="text-xl font-bold tabular-nums text-slate-800">{remaining}</p>
-            <p className="text-[11px] text-slate-500">
+            <p className="text-xl font-bold tabular-nums text-body-primary">{remaining}</p>
+            <p className="text-[11px] text-body-secondary">
               {t('dashboard.remaining')} · {consumed} {t('dashboard.consumed')}
             </p>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-emerald-100 dark:bg-emerald-950">
               <motion.div
-                className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-teal-400"
+                className="h-full rounded-full gradient-vitality"
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.6, ease: 'easeOut' }}
@@ -101,7 +101,7 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
                 {t('dashboard.training')}
               </span>
             </div>
-            <p className="line-clamp-2 text-sm font-semibold leading-snug text-slate-800">
+            <p className="line-clamp-2 text-sm font-semibold leading-snug text-body-primary">
               {userProfile.training?.typical_session ?? '—'}
             </p>
             <p className="mt-1 text-[11px] text-emerald-500">
@@ -120,11 +120,11 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
               </span>
               <ChevronRight className="h-4 w-4 text-emerald-500" />
             </div>
-            <p className="text-3xl font-bold tabular-nums text-slate-800">
+            <p className="text-3xl font-bold tabular-nums text-body-primary">
               {userProfile.training?.frequency_per_week ?? '—'}
-              <span className="ml-0.5 text-base font-medium text-slate-500">×</span>
+              <span className="ml-0.5 text-base font-medium text-body-secondary">×</span>
             </p>
-            <p className="text-[11px] text-slate-500">{budget} kcal / day</p>
+            <p className="text-[11px] text-body-secondary">{budget} kcal / day</p>
           </button>
         </div>
       </div>

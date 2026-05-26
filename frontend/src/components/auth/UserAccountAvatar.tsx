@@ -28,7 +28,7 @@ export function UserAccountAvatar({ className = '', showLabel = true }: UserAcco
       aria-label={t('auth.accountMenu')}
       title={user.email}
     >
-      <span className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 text-sm font-semibold text-white shadow-glass ring-2 ring-white/80 transition group-hover:scale-105 group-active:scale-95">
+      <span className="flex h-10 w-10 items-center justify-center rounded-full gradient-vitality-br text-sm font-semibold text-white shadow-glass ring-2 ring-white/80 transition group-hover:scale-105 group-active:scale-95">
         {accountInitial(user.displayName, user.email)}
       </span>
       {showLabel && (

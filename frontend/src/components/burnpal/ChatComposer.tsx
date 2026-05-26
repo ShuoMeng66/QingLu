@@ -128,7 +128,7 @@ export function ChatComposer({
               : t('chat.placeholderOffline')
         }
         disabled={!inputEnabled}
-        className="min-h-[28px] max-h-[200px] flex-1 resize-none border-0 bg-transparent py-1.5 text-base leading-relaxed text-gray-900 outline-none placeholder:text-gray-600"
+        className="min-h-[28px] max-h-[200px] flex-1 resize-none border-0 bg-transparent py-1.5 text-base leading-relaxed text-body-primary outline-none placeholder:text-body-secondary"
         onChange={(event) => {
           if (listening) stop()
           onInputChange(event.target.value)

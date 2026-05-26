@@ -460,7 +460,7 @@ export function ChatView({
                   <h2 className="font-display-serif text-3xl font-semibold text-body-primary sm:text-[2.5rem]">
                     {t('chat.emptyTitle')}
                   </h2>
-                  <p className="mt-3 max-w-xl text-base leading-relaxed text-slate-500">
+                  <p className="mt-3 max-w-xl text-base leading-relaxed text-body-secondary">
                     {t('chat.emptyHint')}
                   </p>
                 </div>
@@ -506,7 +506,7 @@ export function ChatView({
                           {inlineCards.length > 0 && (
                             <div className="mb-3 mt-1 flex flex-col gap-3 pl-14 pr-2">
                               {nearbyLoading ? (
-                                <p className="text-xs text-slate-500">{t('chat.nearbyLoading')}</p>
+                                <p className="text-xs text-body-secondary">{t('chat.nearbyLoading')}</p>
                               ) : (
                                 inlineCards.map((card) => (
                                   <RichCard
@@ -534,7 +534,7 @@ export function ChatView({
             {showScrollFab && (
               <button
                 type="button"
-                className="glass-panel fixed bottom-40 right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full text-emerald-400 shadow-glass"
+                className="glass-panel fixed bottom-40 right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full text-emerald-500 shadow-glass"
                 aria-label={t('chat.scrollToBottom')}
                 onClick={() => {
                   pinnedToBottomRef.current = true
