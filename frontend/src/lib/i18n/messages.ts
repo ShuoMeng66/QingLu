@@ -217,6 +217,7 @@ export type MessageKey =
   | 'rail.hintExecuting'
   | 'rail.hintScoring'
   | 'richCard.viewDetail'
+  | 'richCard.navigate'
   | 'settings.aiDetail'
   | 'settings.aiEmoji'
   | 'settings.aiNearby'
@@ -572,6 +573,7 @@ const ZH: Record<MessageKey, string> = {
   'rail.hintExecuting': '正在组织回答…',
   'rail.hintScoring': '回答已生成，轻鹭正在校验质量…',
   'richCard.viewDetail': '查看详情',
+  'richCard.navigate': '一键导航',
   'settings.aiDetail': '详略程度',
   'settings.aiEmoji': '适度使用表情',
   'settings.aiNearby': '优先结合附近推荐',
@@ -933,6 +935,7 @@ const EN: Record<MessageKey, string> = {
   'rail.hintExecuting': 'Organizing your answer…',
   'rail.hintScoring': 'Answer ready — Qinglu is checking quality…',
   'richCard.viewDetail': 'View details',
+  'richCard.navigate': 'Navigate',
   'settings.aiDetail': 'Detail level',
   'settings.aiEmoji': 'Use emojis',
   'settings.aiNearby': 'Prefer nearby picks',
@@ -1294,6 +1297,7 @@ const JA: Record<MessageKey, string> = {
   'rail.hintExecuting': '回答を整理中…',
   'rail.hintScoring': '回答生成完了 — 軽鹭が品質を確認中…',
   'richCard.viewDetail': '詳細を見る',
+  'richCard.navigate': 'ナビ',
   'settings.aiDetail': '詳細度',
   'settings.aiEmoji': '絵文字を使う',
   'settings.aiNearby': '近くのおすすめを優先',
@@ -1655,6 +1659,7 @@ const KO: Record<MessageKey, string> = {
   'rail.hintExecuting': '답변 정리 중…',
   'rail.hintScoring': '답변 생성 완료 — 경록이 품질 확인 중…',
   'richCard.viewDetail': '상세 보기',
+  'richCard.navigate': '길찾기',
   'settings.aiDetail': '상세도',
   'settings.aiEmoji': '이모지 사용',
   'settings.aiNearby': '근처 추천 우선',

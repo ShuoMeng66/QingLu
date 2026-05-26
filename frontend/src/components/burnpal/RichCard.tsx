@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { ChevronRight, Star } from 'lucide-react'
+import { ChevronRight, Navigation, Star } from 'lucide-react'
 import { ActionTags } from './ActionTags'
 
 import { useI18n } from '../../hooks/useI18n'
@@ -15,7 +15,10 @@ export interface RichCardProps {
   tags?: string[]
   stats?: Array<{ label: string; value: string }>
   location?: string
+  lat?: number
+  lon?: number
   onDetail?: () => void
+  onNavigate?: () => void
 }
 
 const ICON_BY_TYPE = {
@@ -36,9 +39,13 @@ export function RichCard({
   tags = [],
   stats = [],
   location,
+  lat,
+  lon,
   onDetail,
+  onNavigate,
 }: RichCardProps) {
   const { t } = useI18n()
+  const canNavigate = lat != null && lon != null && Boolean(onNavigate)
 
   return (
     <motion.article
@@ -90,16 +97,29 @@ export function RichCard({
             </dl>
           )}
           {location && <p className="truncate text-[10px] text-slate-500">{location}</p>}
-          <div className="mt-auto border-t border-white/60 pt-2">
-            <motion.button
-              type="button"
-              className="flex items-center gap-0.5 text-xs font-semibold text-emerald-400"
-              whileTap={{ scale: 0.97 }}
-              onClick={onDetail}
-            >
-              {t('richCard.viewDetail')}
-              <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </motion.button>
+          <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-white/60 pt-2">
+            {canNavigate && (
+              <motion.button
+                type="button"
+                className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 px-3 py-1.5 text-xs font-semibold text-white shadow-glow-emerald"
+                whileTap={{ scale: 0.97 }}
+                onClick={onNavigate}
+              >
+                <Navigation className="h-3.5 w-3.5" aria-hidden="true" />
+                {t('richCard.navigate')}
+              </motion.button>
+            )}
+            {onDetail && (
+              <motion.button
+                type="button"
+                className="inline-flex items-center gap-0.5 text-xs font-semibold text-emerald-400"
+                whileTap={{ scale: 0.97 }}
+                onClick={onDetail}
+              >
+                {t('richCard.viewDetail')}
+                <ChevronRight className="h-3.5 w-3.5" aria-hidden="true" />
+              </motion.button>
+            )}
           </div>
         </div>
       </div>

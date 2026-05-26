@@ -4,7 +4,7 @@ import { ExternalLink, X } from 'lucide-react'
 
 import type { NearbyPlaceKind } from '../../lib/nearbyRecommendations'
 
-import { openExternalNavigation } from '../../lib/openMaps'
+import { openSmartNavigation } from '../../lib/openMaps'
 
 import { useI18n } from '../../hooks/useI18n'
 
@@ -98,7 +98,10 @@ export function DetailBottomSheet({ open, data, onClose }: DetailBottomSheetProp
 
       location != null ? { lat: location.lat, lon: location.lon } : undefined
 
-    openExternalNavigation(data.lat, data.lon, data.title, origin)
+    openSmartNavigation(data.lat, data.lon, data.title, origin, {
+      country: location?.country,
+      region: location?.region,
+    })
 
   }
 
@@ -360,7 +363,7 @@ export function DetailBottomSheet({ open, data, onClose }: DetailBottomSheetProp
 
                 <ExternalLink className="h-4 w-4" aria-hidden="true" />
 
-                {canNavigate ? t('detail.openExternal') : t('detail.noNavigate')}
+                {canNavigate ? t('detail.navigate') : t('detail.noNavigate')}
 
               </motion.button>
 

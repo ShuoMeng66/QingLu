@@ -16,6 +16,7 @@ import { usePreferences } from '../context/PreferencesContext'
 import { useUserLocation } from '../hooks/useUserLocation'
 import { useNearbyRecommendations } from '../hooks/useNearbyRecommendations'
 import { formatLocationLabel } from '../lib/citySkyline'
+import { openSmartNavigation } from '../lib/openMaps'
 import { getConversationRecommendationCards } from '../lib/recommendationIntent'
 import { formatDistance, formatWalkMinutes } from '../lib/userLocation'
 import { AgentPhaseRail } from './agents/AgentPhaseRail'
@@ -476,7 +477,10 @@ export function ChatView({
                               food,
                               gym,
                               recovery,
-                              { citeNearby: preferences.ai.citeNearby },
+                              {
+                                citeNearby: preferences.ai.citeNearby,
+                                assistantText: message.content,
+                              },
                             )
                           : []
 
@@ -501,6 +505,26 @@ export function ChatView({
                                   <RichCard
                                     key={`${card.title}-${card.tag}`}
                                     {...card}
+                                    onNavigate={
+                                      card.lat != null && card.lon != null
+                                        ? () =>
+                                            openSmartNavigation(
+                                              card.lat!,
+                                              card.lon!,
+                                              card.title,
+                                              location
+                                                ? {
+                                                    lat: location.lat,
+                                                    lon: location.lon,
+                                                  }
+                                                : undefined,
+                                              {
+                                                country: location?.country,
+                                                region: location?.region,
+                                              },
+                                            )
+                                        : undefined
+                                    }
                                     onDetail={() => openSheet(card)}
                                   />
                                 ))

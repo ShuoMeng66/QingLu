@@ -48,6 +48,32 @@ function amapUrl(lat: number, lon: number, label?: string): string {
   return `https://uri.amap.com/marker?position=${lon},${lat}&name=${name}&coordinate=gaode&callnative=1`
 }
 
+export function isChinaRegion(meta?: { country?: string; region?: string } | null): boolean {
+  if (!meta) return false
+  const country = meta.country ?? ''
+  const region = meta.region ?? ''
+  return (
+    /中国|china/i.test(country) ||
+    /省|自治区|特别行政区/.test(region) ||
+    /^(CN|CHN)$/i.test(country)
+  )
+}
+
+/** 国内优先高德唤起原生地图，海外沿用 geo / OSM */
+export function openSmartNavigation(
+  lat: number,
+  lon: number,
+  label?: string,
+  origin?: NavigationOrigin,
+  regionMeta?: { country?: string; region?: string },
+) {
+  if (isChinaRegion(regionMeta)) {
+    openNavigationWithProvider(lat, lon, label, 'amap', origin)
+    return
+  }
+  openExternalNavigation(lat, lon, label, origin)
+}
+
 export function openExternalNavigation(
   lat: number,
   lon: number,
