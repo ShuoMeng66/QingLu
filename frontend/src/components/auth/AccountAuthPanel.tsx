@@ -73,7 +73,11 @@ export function AccountAuthPanel({
 
       setSendingCode(true)
       try {
-        await sendVerificationCode(trimmed)
+        const result = await sendVerificationCode(trimmed)
+        if (result.smtp === false) {
+          toast(t('auth.smtpUnavailable'), 'error')
+          return false
+        }
         const normalized = normalizeEmail(trimmed)
         setCodeSentEmail(normalized)
         setCountdown(60)

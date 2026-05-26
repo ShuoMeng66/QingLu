@@ -36,7 +36,11 @@ authRouter.post('/send-verification-code', async (req, res) => {
 
   try {
     await requestVerificationCode(email)
-    res.json({ ok: true, message: 'Verification code sent' })
+    res.json({
+      ok: true,
+      message: 'Verification code sent',
+      smtp: isSmtpConfigured(),
+    })
   } catch (err) {
     if (err instanceof VerificationError) {
       res.status(err.status).json({ error: err.message })

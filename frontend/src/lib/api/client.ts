@@ -24,6 +24,13 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const raw = await response.text()
   let payload: { error?: string } = {}
   if (raw) {
+    const trimmed = raw.trimStart()
+    if (trimmed.startsWith('<!') || trimmed.startsWith('<html')) {
+      throw new ApiError(
+        '认证接口返回了网页而非 JSON。请确认 Vercel 已设置 BACKEND_URL 并完成重新部署。',
+        response.status || 502,
+      )
+    }
     try {
       payload = JSON.parse(raw) as { error?: string }
     } catch {
@@ -81,7 +88,7 @@ export async function sendVerificationCode(email: string) {
 
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     try {
-      return await request<{ ok: boolean }>('/auth/send-verification-code', {
+      return await request<{ ok: boolean; smtp?: boolean }>('/auth/send-verification-code', {
         method: 'POST',
         body: JSON.stringify({ email }),
       })
