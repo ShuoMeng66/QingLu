@@ -1,44 +1,62 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { pickForwardHeaders, pipeProxyResponse, queryToPath, readBody } from '../lib/proxy'
+export const config = { runtime: 'edge' }
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+function subpathFromRequest(request: Request): string {
+  const pathname = new URL(request.url).pathname
+  const prefix = '/api/backend/'
+  if (!pathname.startsWith(prefix)) return ''
+  return pathname.slice(prefix.length)
+}
+
+export default async function handler(request: Request): Promise<Response> {
   const backendBase = process.env.BACKEND_URL?.replace(/\/+$/, '')
 
   if (!backendBase) {
-    res.status(503).json({
-      error: 'Backend not configured',
-      hint: 'Set BACKEND_URL in Vercel to your deployed backend (e.g. Render/Railway), or run locally via scripts/start.ps1',
-    })
-    return
+    return Response.json(
+      {
+        error: 'Backend not configured',
+        hint: 'Set BACKEND_URL in Vercel to your deployed backend (e.g. Render/Railway)',
+      },
+      { status: 503 },
+    )
   }
 
-  const parts = queryToPath(req.query.path)
-  const upstreamPath = parts.join('/')
-  const search = req.url?.includes('?') ? req.url.slice(req.url.indexOf('?')) : ''
-  const url = `${backendBase}/api/${upstreamPath}${search}`
+  const subpath = subpathFromRequest(request)
+  const search = new URL(request.url).search
+  const upstreamUrl = `${backendBase}/api/${subpath}${search}`
+
+  const headers = new Headers()
+  const contentType = request.headers.get('content-type')
+  if (contentType) headers.set('Content-Type', contentType)
+  const accept = request.headers.get('accept')
+  if (accept) headers.set('Accept', accept)
+  const authorization = request.headers.get('authorization')
+  if (authorization) headers.set('Authorization', authorization)
+
+  let body: ArrayBuffer | undefined
+  if (request.method !== 'GET' && request.method !== 'HEAD') {
+    const buf = await request.arrayBuffer()
+    if (buf.byteLength > 0) body = buf
+  }
 
   try {
-    const headers = pickForwardHeaders(req) as Record<string, string>
-    const body = await readBody(req)
-
-    const upstream = await fetch(url, {
-      method: req.method,
+    const upstream = await fetch(upstreamUrl, {
+      method: request.method,
       headers,
-      body: body as BodyInit | undefined,
+      body,
     })
 
-    await pipeProxyResponse(upstream, res)
+    return new Response(upstream.body, {
+      status: upstream.status,
+      headers: upstream.headers,
+    })
   } catch (error) {
     console.error('[backend proxy]', error)
-    res.status(502).json({
-      error: 'Backend proxy failed',
-      detail: error instanceof Error ? error.message : 'Unknown error',
-    })
+    return Response.json(
+      {
+        error: 'Backend proxy failed',
+        detail: error instanceof Error ? error.message : 'Unknown error',
+      },
+      { status: 502 },
+    )
   }
-}
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
 }

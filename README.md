@@ -93,7 +93,7 @@ git push -u origin main
 
 | URL | 期望 |
 |-----|------|
-| `https://你的域名/api/openclaw/health` | JSON：`ok: true`，`hasToken: true` |
+| `https://你的域名/api/openclaw/health` | JSON：`ok: true`，`runtime: edge`，`hasToken: true` |
 | `https://你的域名/api/openclaw/v1/models` | JSON：`data` 模型列表（200） |
 | `https://你的域名/openclaw-api/v1/models` | 同上（兼容别名，经 rewrite） |
 
