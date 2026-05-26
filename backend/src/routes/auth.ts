@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs'
 import { Router } from 'express'
 import { db, type UserRow } from '../db.js'
 import { requireAuth, signToken } from '../middleware/auth.js'
-import { isSmtpConfigured } from '../mail.js'
+import { isSmtpConfigured, verifySmtpConnection } from '../mail.js'
 import {
   normalizeEmail,
   requestVerificationCode,
@@ -13,10 +13,21 @@ import {
 
 export const authRouter = Router()
 
-authRouter.get('/health', (_req, res) => {
+authRouter.get('/health', async (_req, res) => {
+  const smtp = isSmtpConfigured()
+  let smtpReachable = false
+  if (smtp) {
+    try {
+      await verifySmtpConnection()
+      smtpReachable = true
+    } catch (error) {
+      console.warn('[BurnPal] SMTP verify failed:', error)
+    }
+  }
   res.json({
     ok: true,
-    smtp: isSmtpConfigured(),
+    smtp,
+    smtpReachable,
   })
 })
 

@@ -1,7 +1,7 @@
 import { randomInt } from 'node:crypto'
 import bcrypt from 'bcryptjs'
 import { db, type EmailVerificationRow } from './db.js'
-import { sendVerificationEmail } from './mail.js'
+import { formatSmtpError, sendVerificationEmail } from './mail.js'
 
 const RESEND_COOLDOWN_MS = 60_000
 const EXPIRY_MS = 10 * 60_000
@@ -52,10 +52,12 @@ export async function requestVerificationCode(email: string): Promise<void> {
        attempts = 0`,
   ).run(normalized, codeHash, expiresAt, now)
 
-  // Respond to API immediately; SMTP can take several seconds on Render.
-  void sendVerificationEmail(normalized, code).catch((error) => {
+  try {
+    await sendVerificationEmail(normalized, code)
+  } catch (error) {
     console.error('[BurnPal] Verification email delivery failed:', error)
-  })
+    throw new VerificationError(formatSmtpError(error), 503)
+  }
 }
 
 export function verifyRegistrationCode(email: string, code: string): void {

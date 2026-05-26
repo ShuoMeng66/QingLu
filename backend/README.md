@@ -55,6 +55,14 @@ SMTP_FROM=轻鹭 BurnPal <3067938917@qq.com>
 
 启动后若看到 `SMTP ready — sending mail as 3067938917@qq.com` 即表示配置成功。
 
+### Gmail 收不到验证码？
+
+1. **接口曾“已发送”但邮箱没有**：旧版会在邮件真正发出前就返回成功；请部署最新后端，失败时会返回 503 与具体 SMTP 错误。
+2. **QQ 邮箱发 Gmail**：邮件常进 **垃圾邮件** 或 **推广**，请搜索主题「轻鹭 BurnPal」。
+3. **`GET /api/auth/health`**：`smtp: true` 只表示配置了变量；`smtpReachable: true` 表示已连上 SMTP 服务器。
+4. 在 Render **Logs** 中搜索 `Verification email accepted` 或 `delivery failed` 确认是否投递成功。
+5. 长期方案：改用 SendGrid / Resend 等事务邮件服务，送达率更高。
+
 ## Scripts
 
 - `npm run dev` — start with hot reload
