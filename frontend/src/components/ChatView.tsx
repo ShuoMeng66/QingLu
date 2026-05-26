@@ -181,12 +181,13 @@ export function ChatView({
     async (prompt: string) => {
       if (isBusy) return
 
-      onInputChange(prompt)
-
       if (connected) {
+        onInputChange('')
         onQuickPrompt(prompt)
         return
       }
+
+      onInputChange('')
 
       setDemoMessages((current) => [
         ...current,

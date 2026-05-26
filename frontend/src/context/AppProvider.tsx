@@ -242,7 +242,7 @@ export function AppProvider({ children }: AppProviderProps) {
     async (text?: string, meta?: QuickPromptMeta) => {
       const content = (text ?? input).trim()
       if (!content) return
-      if (text === undefined) setInput('')
+      setInput('')
 
       if (messages.length > 0) {
         markTrajectoryFollowUp(activeId)
