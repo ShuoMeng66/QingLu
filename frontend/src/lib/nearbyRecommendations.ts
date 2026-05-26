@@ -1,3 +1,4 @@
+import { formatLocationLabel } from './citySkyline'
 import {
   distanceMeters,
   formatDistance,
@@ -89,14 +90,25 @@ async function queryOverpass(query: string): Promise<Array<{ lat: number; lon: n
   return elements
 }
 
-function buildAddress(tags: Record<string, string>): string {
+function buildAddress(tags: Record<string, string>, location: UserLocation): string {
   const parts = [
+    tags['addr:province'] ?? tags['addr:state'],
     tags['addr:city'] ?? tags['addr:suburb'] ?? tags['addr:district'],
     tags['addr:street'],
     tags['addr:housenumber'],
   ].filter(Boolean)
   if (parts.length > 0) return parts.join('')
-  return tags['addr:full'] ?? tags['addr:place'] ?? '地址见地图'
+  const fallback = tags['addr:full'] ?? tags['addr:place'] ?? tags['name'] ?? ''
+  if (fallback) return fallback
+  return formatLocationLabel(location.city, location.region)
+}
+
+export function formatPlaceAddress(place: NearbyPlace, location: UserLocation): string {
+  const area = formatLocationLabel(location.city, location.region)
+  if (place.address.includes(location.city) || place.address.length > 12) {
+    return place.address
+  }
+  return `${place.address} · ${area}`
 }
 
 function mapElements(
@@ -137,7 +149,7 @@ function mapElements(
         id: `${kind}-${element.tags._osm_id ?? name}`,
         kind,
         name,
-        address: buildAddress(element.tags),
+        address: buildAddress(element.tags, location),
         lat: element.lat,
         lon: element.lon,
         distanceM,
@@ -146,6 +158,80 @@ function mapElements(
     })
     .filter((place): place is NearbyPlace => place != null)
     .sort((a, b) => a.distanceM - b.distanceM)
+}
+
+const NOMINATIM_HEADERS = {
+  Accept: 'application/json',
+  'Accept-Language': 'zh-CN',
+  'User-Agent': 'BurnPal/1.0 (local fitness assistant)',
+}
+
+async function searchFoodViaNominatim(location: UserLocation): Promise<NearbyPlace[]> {
+  const queries = [
+    `餐厅 ${location.city}`,
+    `轻食 ${location.city}`,
+    `饭店 ${location.region || location.city}`,
+  ]
+
+  const seen = new Set<string>()
+  const results: NearbyPlace[] = []
+
+  for (const q of queries) {
+    if (results.length >= 3) break
+    try {
+      const url = new URL('https://nominatim.openstreetmap.org/search')
+      url.searchParams.set('format', 'json')
+      url.searchParams.set('limit', '6')
+      url.searchParams.set('addressdetails', '1')
+      url.searchParams.set('lat', String(location.lat))
+      url.searchParams.set('lon', String(location.lon))
+      url.searchParams.set('q', q)
+
+      const response = await fetch(url.toString(), { headers: NOMINATIM_HEADERS })
+      if (!response.ok) continue
+
+      const rows = (await response.json()) as Array<{
+        place_id: number
+        lat: string
+        lon: string
+        display_name?: string
+        name?: string
+        type?: string
+        class?: string
+      }>
+
+      for (const row of rows) {
+        const name = row.name ?? row.display_name?.split(',')[0]
+        if (!name) continue
+        const key = name.trim().toLowerCase()
+        if (seen.has(key)) continue
+        seen.add(key)
+
+        const lat = Number(row.lat)
+        const lon = Number(row.lon)
+        if (!Number.isFinite(lat) || !Number.isFinite(lon)) continue
+
+        const distanceM = distanceMeters(location, { lat, lon })
+        if (distanceM > 8000) continue
+
+        results.push({
+          id: `food-nom-${row.place_id}`,
+          kind: 'food',
+          name,
+          address: row.display_name ?? formatLocationLabel(location.city, location.region),
+          lat,
+          lon,
+          distanceM,
+          tags: ['附近餐饮'],
+        })
+        if (results.length >= 3) break
+      }
+    } catch {
+      /* try next query */
+    }
+  }
+
+  return results.sort((a, b) => a.distanceM - b.distanceM)
 }
 
 export async function fetchNearbyRecommendations(location: UserLocation): Promise<NearbyPlace[]> {
@@ -185,7 +271,10 @@ export async function fetchNearbyRecommendations(location: UserLocation): Promis
     queryOverpass(recoveryQuery).catch(() => []),
   ])
 
-  const food = mapElements(foodElements, 'food', location).slice(0, 1)
+  let food = mapElements(foodElements, 'food', location).slice(0, 3)
+  if (food.length === 0) {
+    food = await searchFoodViaNominatim(location)
+  }
   const gym = mapElements(gymElements, 'gym', location).slice(0, 1)
   const recovery = mapElements(recoveryElements, 'recovery', location).slice(0, 1)
   const places = [...food, ...gym, ...recovery]
@@ -194,10 +283,11 @@ export async function fetchNearbyRecommendations(location: UserLocation): Promis
   return places
 }
 
-export function placeToRichCardData(place: NearbyPlace) {
+export function placeToRichCardData(place: NearbyPlace, location?: UserLocation | null) {
   const distance = formatDistance(place.distanceM)
   const walk = formatWalkMinutes(place.distanceM)
   const geo = { lat: place.lat, lon: place.lon, kind: place.kind }
+  const addressLabel = location ? formatPlaceAddress(place, location) : place.address
 
   if (place.kind === 'food') {
     return {
@@ -210,7 +300,7 @@ export function placeToRichCardData(place: NearbyPlace) {
         { label: '距离', value: distance },
         { label: '步行', value: walk },
       ],
-      location: `${distance} · ${place.address}`,
+      location: `${distance} · ${addressLabel}`,
       imageGradient: 'linear-gradient(135deg, #d1fae5 0%, #99f6e4 100%)',
       iconType: 'food' as const,
     }
@@ -227,7 +317,7 @@ export function placeToRichCardData(place: NearbyPlace) {
         { label: '距离', value: distance },
         { label: '步行', value: walk },
       ],
-      location: `${distance} · ${place.address}`,
+      location: `${distance} · ${addressLabel}`,
       imageGradient: 'linear-gradient(135deg, #ecfccb 0%, #d9f99d 100%)',
       iconType: 'food' as const,
     }
@@ -243,7 +333,7 @@ export function placeToRichCardData(place: NearbyPlace) {
       { label: '距离', value: distance },
       { label: '步行', value: walk },
     ],
-    location: `${distance} · ${place.address}`,
+    location: `${distance} · ${addressLabel}`,
     imageGradient: 'linear-gradient(135deg, #dbeafe 0%, #93c5fd 100%)',
     iconType: 'gym' as const,
   }

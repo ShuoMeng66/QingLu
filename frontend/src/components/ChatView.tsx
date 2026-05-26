@@ -140,7 +140,8 @@ export function ChatView({
   const { location, loading: locationLoading } = useUserLocation({
     enabled: preferences.locationShare,
   })
-  const { food, gym, recovery, loading: nearbyLoading } = useNearbyRecommendations(location)
+  const { food, foodPlaces, gym, recovery, loading: nearbyLoading } =
+    useNearbyRecommendations(location)
 
   const useDemo = !connected && status !== 'checking'
   const connectionLabel =
@@ -495,7 +496,7 @@ export function ChatView({
                           ? getConversationRecommendationCards(
                               prevMessage.content,
                               location,
-                              food,
+                              foodPlaces,
                               gym,
                               recovery,
                               {

@@ -42,10 +42,26 @@ function geoUrl(lat: number, lon: number, label?: string): string {
   return `geo:${lat},${lon}?q=${lat},${lon}(${name})`
 }
 
-/** 高德 Web URI（国内常用，非开源） */
-function amapUrl(lat: number, lon: number, label?: string): string {
+/** 高德 Web URI — 标记点 */
+function amapMarkerUrl(lat: number, lon: number, label?: string): string {
   const name = encodeURIComponent(label?.trim() || '目的地')
   return `https://uri.amap.com/marker?position=${lon},${lat}&name=${name}&coordinate=gaode&callnative=1`
+}
+
+/** 高德 Web URI — 步行导航（国内推荐） */
+function amapNavigationUrl(
+  lat: number,
+  lon: number,
+  label?: string,
+  origin?: NavigationOrigin,
+): string {
+  const dest = encodeURIComponent(label?.trim() || '目的地')
+  const to = `${lon},${lat},${dest}`
+  if (origin) {
+    const from = `${origin.lon},${origin.lat},${encodeURIComponent('我的位置')}`
+    return `https://uri.amap.com/navigation?from=${from}&to=${to}&mode=walk&callnative=1`
+  }
+  return `https://uri.amap.com/navigation?to=${to}&mode=walk&callnative=1`
 }
 
 export function isChinaRegion(meta?: { country?: string; region?: string } | null): boolean {
@@ -68,7 +84,7 @@ export function openSmartNavigation(
   regionMeta?: { country?: string; region?: string },
 ) {
   if (isChinaRegion(regionMeta)) {
-    openNavigationWithProvider(lat, lon, label, 'amap', origin)
+    openUrl(amapNavigationUrl(lat, lon, label, origin))
     return
   }
   openExternalNavigation(lat, lon, label, origin)
@@ -107,7 +123,9 @@ export function openNavigationWithProvider(
 ) {
   const urls: Record<typeof provider, string> = {
     osm: origin ? osmDirectionsUrl(lat, lon, origin) : osmMarkerUrl(lat, lon),
-    amap: amapUrl(lat, lon, label),
+    amap: origin
+      ? amapNavigationUrl(lat, lon, label, origin)
+      : amapMarkerUrl(lat, lon, label),
     geo: geoUrl(lat, lon, label),
   }
   openUrl(urls[provider])

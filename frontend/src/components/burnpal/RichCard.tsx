@@ -96,7 +96,9 @@ export function RichCard({
               ))}
             </dl>
           )}
-          {location && <p className="truncate text-[10px] text-slate-500">{location}</p>}
+          {location && (
+            <p className="line-clamp-2 text-[10px] leading-snug text-slate-600">{location}</p>
+          )}
           <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-white/60 pt-2">
             {canNavigate && (
               <motion.button

@@ -42,9 +42,10 @@ export function useNearbyRecommendations(location: UserLocation | null) {
     }
   }, [location?.lat, location?.lon, location?.fetchedAt])
 
-  const food = places.find((place) => place.kind === 'food') ?? null
+  const foodPlaces = places.filter((place) => place.kind === 'food')
+  const food = foodPlaces[0] ?? null
   const gym = places.find((place) => place.kind === 'gym') ?? null
   const recovery = places.find((place) => place.kind === 'recovery') ?? null
 
-  return { food, gym, recovery, places, loading, error }
+  return { food, foodPlaces, gym, recovery, places, loading, error }
 }

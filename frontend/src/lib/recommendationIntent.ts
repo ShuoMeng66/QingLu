@@ -5,7 +5,7 @@ import type { UserLocation } from './userLocation'
 import type { DetailSheetData } from '../components/burnpal/DetailBottomSheet'
 
 const FOOD_PATTERN =
-  /吃什么|去哪吃|饮食|餐厅|轻食|外卖|聚餐|附近.*吃|推荐.*吃|午餐|晚餐|早餐|夜宵|卡路里.*吃|吃啥|觅食|点餐|店铺|店家|导航过去|晚饭|午饭|下班.*吃/i
+  /吃什么|去哪吃|饮食|餐厅|轻食|外卖|聚餐|附近.*吃|推荐.*吃|午餐|晚餐|早餐|夜宵|卡路里.*吃|吃啥|觅食|点餐|店铺|店家|导航|地址|晚饭|午饭|下班.*吃|饿了|餐/i
 const GYM_PATTERN =
   /健身房|去哪练|力量训练|附近.*练|推荐.*健身房|团课|器械|运动场所|去练|撸铁/i
 const RECOVERY_PATTERN =
@@ -19,7 +19,7 @@ const FOOD_SCENES = new Set([
 ])
 
 const VENUE_HINT_PATTERN =
-  /推荐|附近|步行|距离|公里|导航|地图|餐厅|轻食|健身|沙拉|外卖|店名|人均/i
+  /推荐|附近|步行|距离|公里|导航|地图|餐厅|轻食|健身|沙拉|外卖|店名|人均|地址|去哪/i
 
 export function isFoodIntent(text: string): boolean {
   return shouldShowNearbyFood(text)
@@ -38,7 +38,7 @@ export function shouldShowNearbyFood(text: string): boolean {
   if (!trimmed) return false
   if (FOOD_PATTERN.test(trimmed)) return true
   const route = routeDietScene(trimmed)
-  if (FOOD_SCENES.has(route.sceneId) && route.confidence >= 0.55) return true
+  if (FOOD_SCENES.has(route.sceneId) && route.confidence >= 0.5) return true
   return false
 }
 
@@ -53,7 +53,7 @@ function mentionsNearbyVenue(text: string): boolean {
 export function getConversationRecommendationCards(
   userText: string,
   location: UserLocation | null,
-  food: NearbyPlace | null,
+  foodPlaces: NearbyPlace[],
   gym: NearbyPlace | null,
   recovery: NearbyPlace | null,
   options?: { citeNearby?: boolean; assistantText?: string },
@@ -62,16 +62,24 @@ export function getConversationRecommendationCards(
 
   const combined = `${userText}\n${options?.assistantText ?? ''}`.trim()
   const venueHint = mentionsNearbyVenue(combined)
+  const showFood = (shouldShowNearbyFood(combined) || venueHint) && foodPlaces.length > 0
+  const showGym =
+    (shouldShowNearbyGym(combined) || (venueHint && /健身|力量|器械|团课/i.test(combined))) &&
+    Boolean(gym)
 
   const cards: DetailSheetData[] = []
-  if ((shouldShowNearbyFood(combined) || venueHint) && food) {
-    cards.push(placeToRichCardData(food))
+
+  if (showFood) {
+    for (const place of foodPlaces.slice(0, 3)) {
+      cards.push(placeToRichCardData(place, location))
+    }
   }
-  if ((shouldShowNearbyGym(combined) || (venueHint && /健身|力量|器械|团课/i.test(combined))) && gym) {
-    cards.push(placeToRichCardData(gym))
+  if (showGym && gym) {
+    cards.push(placeToRichCardData(gym, location))
   }
   if (isRecoveryIntent(combined) && recovery) {
-    cards.push(placeToRichCardData(recovery))
+    cards.push(placeToRichCardData(recovery, location))
   }
+
   return cards
 }

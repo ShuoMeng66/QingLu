@@ -48,7 +48,9 @@ export function buildUserContextPrompt(): string {
   const hasLocation = Boolean(location || profile.location_city?.trim())
   const rules: string[] = []
   if (hasLocation) {
-    rules.push('禁止再次询问用户住在哪个区/城市或配送地址，直接按上方位置推荐附近可点的外卖或到店选项')
+    rules.push(
+      '禁止再次询问用户住在哪个区/城市或配送地址；推荐到店选项时写出店名，并提示用户点对话下方卡片的「一键导航」',
+    )
   }
   if (budget != null && budget > 0) {
     rules.push('禁止让用户重复报「今天吃了多少」；按剩余额度给套餐，若记录为空可注明「按剩余额度估算」并给 2–3 套具体组合')
