@@ -16,10 +16,16 @@ function normalizeBaseUrl(baseUrl: string): string {
   return baseUrl.replace(/\/+$/, '')
 }
 
+/** Relative /openclaw-api — Vercel/Vite proxy injects API key on the server */
+function usesServerProxy(baseUrl: string): boolean {
+  return baseUrl.startsWith('/')
+}
+
 export async function testConnection(config: OpenClawConfig): Promise<ConnectionResult> {
   const baseUrl = normalizeBaseUrl(config.baseUrl)
+  const proxied = usesServerProxy(baseUrl)
 
-  if (!config.token.trim()) {
+  if (!proxied && !config.token.trim()) {
     return {
       ok: false,
       models: [],
@@ -41,7 +47,11 @@ export async function testConnection(config: OpenClawConfig): Promise<Connection
       return {
         ok: false,
         models: [],
-        message: `连接失败（${response.status}）${detail ? `：${detail}` : ''}${hint}`,
+        message: `连接失败（${response.status}）${detail ? `：${detail}` : ''}${hint}${
+          proxied && response.status === 401
+            ? ' 请在 Vercel 环境变量中配置 OPENCLAW_TOKEN（百炼 API Key）。'
+            : ''
+        }`,
       }
     }
 

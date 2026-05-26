@@ -98,7 +98,7 @@ export function ChatComposer({
         className={`relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
           listening
             ? 'bg-red-100 text-red-500 ring-2 ring-red-300/60 dark:bg-red-950/40 dark:text-red-400'
-            : 'text-gray-600 hover:bg-white/40'
+            : 'text-body-secondary hover:bg-white/40'
         }`}
         aria-label={listening ? t('composer.voiceStop') : t('composer.voiceStart')}
         aria-pressed={listening}

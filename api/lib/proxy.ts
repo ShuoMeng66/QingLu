@@ -3,15 +3,19 @@ import type { IncomingMessage, ServerResponse } from 'node:http'
 type QueryValue = string | string[] | undefined
 
 export function queryToPath(value: QueryValue): string[] {
-  if (Array.isArray(value)) return value
-  if (typeof value === 'string' && value.length > 0) return [value]
+  if (Array.isArray(value)) {
+    return value.flatMap((part) => queryToPath(part))
+  }
+  if (typeof value === 'string' && value.length > 0) {
+    return value.split('/').filter(Boolean)
+  }
   return []
 }
 
 export async function readBody(req: IncomingMessage): Promise<Buffer | undefined> {
   if (req.method === 'GET' || req.method === 'HEAD') return undefined
 
-  const chunks: Buffer[] = []
+  const chunks: Uint8Array[] = []
   for await (const chunk of req) {
     chunks.push(typeof chunk === 'string' ? Buffer.from(chunk) : chunk)
   }

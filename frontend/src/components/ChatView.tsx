@@ -405,7 +405,7 @@ export function ChatView({
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                className="glass-panel flex h-9 w-9 items-center justify-center rounded-full text-slate-600 shadow-glass lg:hidden"
+                className="glass-panel flex h-9 w-9 items-center justify-center rounded-full text-body-secondary shadow-glass lg:hidden"
                 aria-label={t('chat.openHistory')}
                 onClick={() => setSidebarOpen((open) => !open)}
               >
@@ -417,7 +417,7 @@ export function ChatView({
               <div className="ml-auto flex items-center gap-3">
                 <UserAccountAvatar showLabel={false} />
                 <span
-                  className={`text-xs font-medium ${connected ? 'text-emerald-400' : 'text-slate-500'}`}
+                  className={`text-xs font-medium ${connected ? 'text-emerald-500' : 'text-body-secondary'}`}
                 >
                   {connected
                     ? loading
@@ -426,7 +426,7 @@ export function ChatView({
                     : t('chat.statusOffline')}
                 </span>
                 {location && (
-                  <span className="hidden text-xs text-slate-400 sm:inline">
+                  <span className="hidden text-xs text-body-secondary/70 sm:inline">
                     {formatLocationLabel(location.city, location.region)}
                   </span>
                 )}
@@ -457,7 +457,7 @@ export function ChatView({
               <div className="burnpal-chat-column">
               {isEmpty ? (
                 <div className="flex min-h-[calc(100dvh-12rem)] flex-col items-center justify-center px-2 py-10 text-center">
-                  <h2 className="font-display-serif text-3xl font-semibold text-slate-800 sm:text-[2.5rem]">
+                  <h2 className="font-display-serif text-3xl font-semibold text-body-primary sm:text-[2.5rem]">
                     {t('chat.emptyTitle')}
                   </h2>
                   <p className="mt-3 max-w-xl text-base leading-relaxed text-slate-500">

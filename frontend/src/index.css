@@ -5,24 +5,24 @@
 @theme {
   --color-background: #f0fdf4;
   --color-surface: #f0fdf4;
-  --color-foreground: #1f2937;
-  --color-primary: #34d399;
+  --color-foreground: #1a202c;
+  --color-primary: #4ade80;
   --color-primary-foreground: #ffffff;
-  --color-secondary: #2dd4bf;
+  --color-secondary: #20c997;
   --color-secondary-foreground: #ffffff;
-  --color-card: rgba(255, 255, 255, 0.6);
-  --color-accent: #2dd4bf;
-  --color-accent-foreground: #1f2937;
+  --color-card: #ffffff;
+  --color-accent: #20c997;
+  --color-accent-foreground: #1a202c;
   --color-muted: rgba(255, 255, 255, 0.65);
-  --color-muted-foreground: #64748b;
+  --color-muted-foreground: #4a5568;
   --color-border: rgba(255, 255, 255, 0.8);
   --color-destructive: #ef4444;
-  --color-gray-900: #1f2937;
-  --color-gray-600: #64748b;
-  --color-slate-800: #1f2937;
-  --color-slate-500: #64748b;
-  --color-ink: #1f2937;
-  --color-body: #64748b;
+  --color-gray-900: #1a202c;
+  --color-gray-600: #4a5568;
+  --color-slate-800: #1a202c;
+  --color-slate-500: #4a5568;
+  --color-ink: #1a202c;
+  --color-body: #4a5568;
   --font-display: "Inter", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
   --font-body: "Inter", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
   --radius-2xl: 24px;
@@ -45,7 +45,7 @@ body,
 body {
   margin: 0;
   background-color: #f0fdf4;
-  color: #1f2937;
+  color: #1a202c;
 }
 
 button {

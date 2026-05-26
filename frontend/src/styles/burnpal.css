@@ -35,9 +35,23 @@
     0 8px 32px rgba(16, 185, 129, 0.06);
 }
 
-/* Primary CTA — emerald → teal gradient */
+/* Primary CTA — vibrant mint → teal gradient */
 .btn-vitality {
-  background: linear-gradient(to right, #34d399, #2dd4bf);
+  background: var(--gradient-primary);
+  color: #ffffff;
+  box-shadow: var(--shadow-vitality-btn);
+}
+
+.gradient-vitality {
+  background: var(--gradient-primary);
+}
+
+.gradient-vitality-br {
+  background: var(--gradient-primary-br);
+}
+
+.bubble-user {
+  background: var(--gradient-primary);
   color: #ffffff;
   box-shadow: var(--shadow-vitality-btn);
 }
@@ -53,7 +67,7 @@
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
   border: 1px solid rgba(255, 255, 255, 0.8);
-  color: #1f2937;
+  color: var(--ink);
   box-shadow:
     var(--shadow-glass-inner),
     0 8px 32px rgba(16, 185, 129, 0.06);
@@ -81,11 +95,11 @@
 }
 
 .text-body-primary {
-  color: #1f2937;
+  color: var(--ink);
 }
 
 .text-body-secondary {
-  color: #64748b;
+  color: var(--body);
 }
 
 .font-display-serif {
@@ -132,7 +146,7 @@
   border-radius: 28px;
   box-shadow:
     var(--shadow-glass-inner),
-    0 8px 32px rgba(16, 185, 129, 0.06);
+    var(--shadow-soft);
 }
 
 .burnpal-shell-divider {

@@ -4,9 +4,14 @@ import { DEFAULT_CONFIG, STORAGE_KEYS } from '../types/openclaw'
 export function loadConfig(): OpenClawConfig {
   const defaults = { ...DEFAULT_CONFIG }
 
-  // .env.local 中配置了 token 时，始终以环境变量为准（避免旧 localStorage 导致离线）
-  if (import.meta.env.VITE_OPENCLAW_TOKEN?.trim()) {
-    return defaults
+  // Build-time env overrides localStorage (production uses server proxy + OPENCLAW_TOKEN).
+  const envBaseUrl = import.meta.env.VITE_OPENCLAW_BASE_URL?.trim()
+  if (import.meta.env.VITE_OPENCLAW_TOKEN?.trim() || envBaseUrl) {
+    return {
+      baseUrl: envBaseUrl || defaults.baseUrl,
+      token: defaults.token,
+      agent: import.meta.env.VITE_OPENCLAW_AGENT?.trim() || defaults.agent,
+    }
   }
 
   try {
@@ -14,8 +19,14 @@ export function loadConfig(): OpenClawConfig {
     if (!raw) return defaults
 
     const saved = JSON.parse(raw) as Partial<OpenClawConfig>
+    const savedBase = saved.baseUrl?.trim()
+    const baseUrl =
+      defaults.baseUrl.startsWith('/') && savedBase && !savedBase.startsWith('/')
+        ? defaults.baseUrl
+        : savedBase || defaults.baseUrl
+
     return {
-      baseUrl: saved.baseUrl?.trim() || defaults.baseUrl,
+      baseUrl,
       token: saved.token?.trim() || defaults.token,
       agent: saved.agent?.trim() || defaults.agent,
     }

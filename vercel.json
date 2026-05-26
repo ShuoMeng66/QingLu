@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "npm install --prefix frontend",
+  "installCommand": "npm install && npm install --prefix frontend",
   "buildCommand": "npm run build --prefix frontend",
   "outputDirectory": "frontend/dist",
   "framework": null,
@@ -10,8 +10,8 @@
       "destination": "/api/openclaw/:path*"
     },
     {
-      "source": "/api/:path*",
-      "destination": "/api/backend/:path*"
+      "source": "/api/(?!openclaw(?:/|$))(.*)",
+      "destination": "/api/backend/$1"
     },
     {
       "source": "/((?!api/).*)",

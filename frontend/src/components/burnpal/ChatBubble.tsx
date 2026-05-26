@@ -178,7 +178,7 @@ export function ChatBubble({
                 exit={{ opacity: 0, y: -6 }}
                 transition={EDIT_TRANSITION}
               >
-                <div className="rounded-2xl rounded-tr-sm bg-gradient-to-r from-emerald-400 to-teal-400 px-5 py-3.5 text-base leading-relaxed text-white shadow-glow-emerald">
+                <div className="bubble-user rounded-2xl rounded-tr-sm px-5 py-3.5 text-base leading-relaxed">
                   {message.content}
                   {message.streaming && <span className="cursor-blink" />}
                 </div>
@@ -213,9 +213,9 @@ export function ChatBubble({
     >
       <QingluAvatar size={40} />
       <div className="min-w-0 max-w-[min(92%,44rem)] flex-1">
-        <p className="mb-1 text-xs font-medium text-gray-600">轻鹭</p>
+        <p className="mb-1 text-xs font-medium text-body-secondary">轻鹭</p>
         <div
-          className={`ai-bubble-glass rounded-[20px] px-5 py-3.5 text-base leading-relaxed text-gray-900 ${
+          className={`ai-bubble-glass rounded-[20px] px-5 py-3.5 text-base leading-relaxed text-body-primary ${
             isError ? 'text-destructive' : ''
           } ${isAborted ? 'opacity-70' : ''}`}
         >

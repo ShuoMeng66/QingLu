@@ -1,15 +1,17 @@
-/* BurnPal 轻鹭 · 晨光薄荷 design tokens */
+/* BurnPal 轻鹭 · Youthful Fresh Mint design tokens */
 :root {
   --scroll-y: 0;
 
+  /* Background — soft pale mint gradient */
   --background: #f0fdf4;
-  --foreground: #1f2937;
-  --primary: #34d399;
+  --background-soft: #e6f7ef;
+  --foreground: #1a202c;
+  --primary: #4ade80;
   --primary-foreground: #ffffff;
-  --secondary: #2dd4bf;
+  --secondary: #20c997;
   --secondary-foreground: #ffffff;
-  --accent: #2dd4bf;
-  --accent-foreground: #1f2937;
+  --accent: #20c997;
+  --accent-foreground: #1a202c;
   --muted-bg: rgba(255, 255, 255, 0.65);
   --muted: rgba(255, 255, 255, 0.65);
   --border: rgba(255, 255, 255, 0.8);
@@ -17,21 +19,24 @@
 
   --canvas: #f0fdf4;
   --canvas-base: #f0fdf4;
-  --canvas-morning: linear-gradient(165deg, #d1fae5 0%, #ecfccb 42%, #f0fdf4 100%);
-  --ink: #1f2937;
-  --body: #64748b;
-  --body-strong: #1f2937;
-  --ink-soft: #64748b;
-  --muted-foreground: #64748b;
+  --canvas-morning: linear-gradient(165deg, #d1fae5 0%, #e6f7ef 42%, #f0fdf4 100%);
+  --ink: #1a202c;
+  --body: #4a5568;
+  --body-strong: #2d3436;
+  --ink-soft: #4a5568;
+  --muted-foreground: #4a5568;
   --hairline: rgba(255, 255, 255, 0.8);
   --hairline-soft: rgba(255, 255, 255, 0.6);
   --line: rgba(255, 255, 255, 0.8);
-  --line-strong: rgba(52, 211, 153, 0.25);
+  --line-strong: rgba(74, 222, 128, 0.25);
 
-  --accent-green: #34d399;
-  --accent-green-deep: #2dd4bf;
-  --accent-teal: #2dd4bf;
-  --accent-teal-deep: #34d399;
+  --accent-from: #4ade80;
+  --accent-to: #20c997;
+  --accent-deep: #00b894;
+  --accent-green: #4ade80;
+  --accent-green-deep: #00b894;
+  --accent-teal: #20c997;
+  --accent-teal-deep: #00b894;
   --accent-teal-light: #a7f3d0;
 
   --on-primary: #ffffff;
@@ -40,20 +45,20 @@
 
   --surface: rgba(255, 255, 255, 0.6);
   --surface-soft: rgba(255, 255, 255, 0.65);
-  --surface-card: rgba(255, 255, 255, 0.6);
+  --surface-card: #ffffff;
   --surface-cream-strong: rgba(255, 255, 255, 0.7);
   --surface-strong: rgba(255, 255, 255, 0.8);
   --sidebar-bg: rgba(255, 255, 255, 0.72);
 
   --bg: #f0fdf4;
-  --bg-deep: #dcfce7;
+  --bg-deep: #e6f7ef;
   --bg-soft: rgba(255, 255, 255, 0.65);
 
   --brand: var(--accent-teal);
   --brand-bright: var(--secondary);
-  --brand-deep: var(--accent-green);
-  --brand-muted: rgba(52, 211, 153, 0.12);
-  --success: #34d399;
+  --brand-deep: var(--accent-deep);
+  --brand-muted: rgba(74, 222, 128, 0.12);
+  --success: #4ade80;
   --danger: var(--destructive);
   --warning: #fcd34d;
 
@@ -62,8 +67,8 @@
   --shadow-custom: 0 8px 32px rgba(16, 185, 129, 0.06);
   --shadow-glass: 0 8px 32px rgba(16, 185, 129, 0.06);
   --shadow-glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.8);
-  --shadow-vitality-btn: 0 8px 20px -4px rgba(52, 211, 153, 0.4);
-  --shadow-spot: 0 4px 16px rgba(52, 211, 153, 0.15);
+  --shadow-vitality-btn: 0 8px 20px -4px rgba(32, 201, 151, 0.4);
+  --shadow-spot: 0 4px 16px rgba(32, 201, 151, 0.15);
   --shadow-clay: var(--shadow-custom);
 
   --glass-bg: rgba(255, 255, 255, 0.6);
@@ -72,7 +77,9 @@
   --glass-blur: blur(40px);
   --glass-shadow: var(--shadow-custom);
 
-  --gradient-spot: linear-gradient(135deg, #34d399 0%, #2dd4bf 100%);
+  --gradient-primary: linear-gradient(to right, #4ade80, #20c997);
+  --gradient-primary-br: linear-gradient(to bottom right, #4ade80, #20c997);
+  --gradient-spot: linear-gradient(135deg, #4ade80 0%, #00b894 100%);
   --gradient-warm-soft: linear-gradient(155deg, rgba(167, 243, 208, 0.25) 0%, rgba(255, 255, 255, 0.6) 72%);
   --gradient-soft: linear-gradient(155deg, rgba(167, 243, 208, 0.25) 0%, rgba(255, 255, 255, 0.6) 72%);
 

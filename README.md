@@ -76,11 +76,13 @@ git push -u origin main
 
 | 变量 | 说明 | 示例 |
 |------|------|------|
-| `OPENCLAW_TOKEN` | 百炼 API Key（服务端代理注入，勿提交到 Git） | `sk-xxx` |
-| `OPENCLAW_PROXY_TARGET` | 可选 | `https://dashscope.aliyuncs.com` |
-| `OPENCLAW_PROXY_PATH` | 可选 | `/compatible-mode` |
-| `VITE_OPENCLAW_BASE_URL` | 前端构建用 | `/openclaw-api/v1` |
-| `VITE_OPENCLAW_AGENT` | 模型 | `qwen-plus` |
+| `OPENCLAW_TOKEN` | 百炼 API Key（**服务端**代理注入，必填） | `sk-xxx` |
+| `OPENCLAW_PROXY_TARGET` | 可选，服务端上游 | `https://dashscope.aliyuncs.com` |
+| `OPENCLAW_PROXY_PATH` | 可选，服务端路径前缀 | `/compatible-mode` |
+| `VITE_OPENCLAW_BASE_URL` | **构建时**写入前端，需 redeploy | `/openclaw-api/v1` |
+| `VITE_OPENCLAW_AGENT` | **构建时**默认模型，需 redeploy | `qwen-plus` |
+
+勿在生产设置 `VITE_OPENCLAW_TOKEN`（会打进前端 bundle）。`VITE_OPENCLAW_PROXY_*` 仅本地 Vite 开发代理用，Vercel 上请用 `OPENCLAW_PROXY_*`。
 | `BACKEND_URL` | 已部署的后端公网地址（账户/云同步） | `https://your-api.onrender.com` |
 
 生产环境 OpenClaw 走 Vercel Serverless 代理（`/api/openclaw`），API Key 放在 `OPENCLAW_TOKEN`，不要写进前端 bundle。

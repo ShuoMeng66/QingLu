@@ -26,6 +26,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!headers.authorization && process.env.DASHSCOPE_API_KEY?.trim()) {
       headers.authorization = `Bearer ${process.env.DASHSCOPE_API_KEY.trim()}`
     }
+
+    if (!headers.authorization) {
+      res.status(503).json({
+        error: 'OPENCLAW_TOKEN not configured',
+        hint: 'Set OPENCLAW_TOKEN (DashScope API key) in Vercel project environment variables',
+      })
+      return
+    }
+
     const body = await readBody(req)
 
     const upstream = await fetch(url, {

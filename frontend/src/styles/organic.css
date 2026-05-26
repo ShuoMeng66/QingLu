@@ -23,7 +23,7 @@
   top: 0;
   z-index: 20;
   border-bottom: 1px solid var(--hairline);
-  background: rgba(249, 247, 242, 0.92);
+  background: rgba(240, 253, 244, 0.92);
   backdrop-filter: blur(12px);
 }
 

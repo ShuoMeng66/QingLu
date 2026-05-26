@@ -39,9 +39,9 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
           className="group relative w-full overflow-hidden rounded-[22px] p-[1px] text-left shadow-glow-emerald transition-transform active:scale-[0.99]"
           onClick={onOpenProfile}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 opacity-90" />
+          <div className="absolute inset-0 gradient-vitality opacity-90" />
           <div className="relative flex items-center gap-4 rounded-[21px] bg-gradient-to-br from-emerald-50/95 to-white/90 px-4 py-4 dark:from-emerald-950/90 dark:to-slate-900/90">
-            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-400 to-teal-400 text-white shadow-glow-emerald">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl gradient-vitality-br text-white shadow-glow-emerald">
               <Sparkles className="h-6 w-6" />
             </div>
             <div className="min-w-0 flex-1">
