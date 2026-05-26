@@ -27,6 +27,7 @@ export function ChatPage() {
       loading={ctx.loading}
       connected={ctx.connected}
       status={ctx.status}
+      statusMessage={ctx.statusMessage}
       clusterTurn={ctx.clusterTurn}
       yiqidongConfig={ctx.yiqidongConfig}
       activeConversation={ctx.activeConversation}

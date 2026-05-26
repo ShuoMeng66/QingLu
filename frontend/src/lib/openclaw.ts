@@ -38,12 +38,20 @@ export async function testConnection(config: OpenClawConfig): Promise<Connection
       headers: buildHeaders(config.token),
     })
 
+    const contentType = response.headers.get('content-type') ?? ''
+    const raw = await response.text()
+
     if (!response.ok) {
-      const detail = await response.text()
+      const isHtml = contentType.includes('text/html') || raw.trimStart().startsWith('<!')
+      const detail = isHtml
+        ? '接口返回了网页而非 JSON，请检查 Vercel 路由（vercel.json）是否把 API 转到了首页。'
+        : raw.slice(0, 200)
       const hint =
         response.status === 401
           ? ' 访问密钥无效或已过期，请检查后重试。'
-          : ''
+          : response.status === 503
+            ? ' 请在 Vercel 环境变量中配置 OPENCLAW_TOKEN（百炼 API Key）并重新部署。'
+            : ''
       return {
         ok: false,
         models: [],
@@ -55,7 +63,25 @@ export async function testConnection(config: OpenClawConfig): Promise<Connection
       }
     }
 
-    const payload = (await response.json()) as { data?: Array<{ id: string }> }
+    if (contentType.includes('text/html') || raw.trimStart().startsWith('<!')) {
+      return {
+        ok: false,
+        models: [],
+        message:
+          '接口返回了网页而非 JSON，请检查 Vercel 部署是否包含 api/openclaw 且路由未把 /openclaw-api 转到 index.html。',
+      }
+    }
+
+    let payload: { data?: Array<{ id: string }> }
+    try {
+      payload = JSON.parse(raw) as { data?: Array<{ id: string }> }
+    } catch {
+      return {
+        ok: false,
+        models: [],
+        message: `连接失败：响应不是有效 JSON（${raw.slice(0, 120)}）`,
+      }
+    }
     const models = payload.data?.map((item) => ({ id: item.id })) ?? []
 
     return {

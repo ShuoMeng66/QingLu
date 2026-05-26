@@ -87,6 +87,19 @@ git push -u origin main
 
 生产环境 OpenClaw 走 Vercel Serverless 代理（`/api/openclaw`），API Key 放在 `OPENCLAW_TOKEN`，不要写进前端 bundle。
 
+### 部署后自检（OpenClaw）
+
+在 Vercel **Redeploy** 最新 `main` 后，浏览器打开：
+
+| URL | 期望 |
+|-----|------|
+| `https://你的域名/api/openclaw/health` | JSON：`ok: true`，`hasToken: true` |
+| `https://你的域名/openclaw-api/v1/models` | JSON：`data` 模型列表（200） |
+
+若返回整页 HTML 或 404，说明路由/部署未更新；若 `hasToken: false`，说明 `OPENCLAW_TOKEN` 未注入当前 Production 部署。
+
+聊天页若仍演示模式，横幅会显示具体失败原因；也可清除站点 localStorage 后硬刷新。
+
 ### 4. 账户后端（云同步 / 注册）
 
 SQLite 后端不适合 Vercel Serverless 持久化，请单独部署 `backend/` 到 Render、Railway、Fly.io 等，然后在 Vercel 设置 `BACKEND_URL`。

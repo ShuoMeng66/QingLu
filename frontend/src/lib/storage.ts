@@ -1,11 +1,24 @@
 import type { OpenClawConfig } from '../types/openclaw'
 import { DEFAULT_CONFIG, STORAGE_KEYS } from '../types/openclaw'
 
-export function loadConfig(): OpenClawConfig {
-  const defaults = { ...DEFAULT_CONFIG }
+const PRODUCTION_PROXY_BASE = '/openclaw-api/v1'
 
-  // Build-time env overrides localStorage (production uses server proxy + OPENCLAW_TOKEN).
+function productionConfig(): OpenClawConfig {
+  return {
+    baseUrl: import.meta.env.VITE_OPENCLAW_BASE_URL?.trim() || PRODUCTION_PROXY_BASE,
+    token: '',
+    agent: import.meta.env.VITE_OPENCLAW_AGENT?.trim() || DEFAULT_CONFIG.agent,
+  }
+}
+
+export function loadConfig(): OpenClawConfig {
+  if (import.meta.env.PROD) {
+    return productionConfig()
+  }
+
+  const defaults = { ...DEFAULT_CONFIG }
   const envBaseUrl = import.meta.env.VITE_OPENCLAW_BASE_URL?.trim()
+
   if (import.meta.env.VITE_OPENCLAW_TOKEN?.trim() || envBaseUrl) {
     return {
       baseUrl: envBaseUrl || defaults.baseUrl,
@@ -36,6 +49,7 @@ export function loadConfig(): OpenClawConfig {
 }
 
 export function saveConfig(config: OpenClawConfig): void {
+  if (import.meta.env.PROD) return
   localStorage.setItem(STORAGE_KEYS.config, JSON.stringify(config))
 }
 

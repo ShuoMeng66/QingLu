@@ -44,6 +44,7 @@ interface ChatViewProps {
   loading: boolean
   connected: boolean
   status: ConnectionStatus
+  statusMessage?: string
   clusterTurn: ClusterTurn
   yiqidongConfig: YiqidongConfig
   activeConversation: Conversation | undefined
@@ -100,6 +101,7 @@ export function ChatView({
   input,
   loading,
   connected,
+  statusMessage = '',
   clusterTurn,
   activeConversation,
   historyConversations,
@@ -444,6 +446,9 @@ export function ChatView({
                   {t('chat.demoBannerLink')}
                 </Link>
                 {t('chat.demoBannerExtra')}
+                {statusMessage ? (
+                  <span className="mt-1 block text-[11px] font-medium opacity-90">{statusMessage}</span>
+                ) : null}
               </p>
             </div>
           )}
