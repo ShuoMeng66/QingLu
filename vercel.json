@@ -10,11 +10,15 @@
       "destination": "/api/openclaw/:path*"
     },
     {
-      "source": "/api/(?!openclaw(?:/|$))(.*)",
-      "destination": "/api/backend/$1"
+      "source": "/api/auth/:path*",
+      "destination": "/api/backend/auth/:path*"
     },
     {
-      "source": "/((?!api/).*)",
+      "source": "/api/user/:path*",
+      "destination": "/api/backend/user/:path*"
+    },
+    {
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
