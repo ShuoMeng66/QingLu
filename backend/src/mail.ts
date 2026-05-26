@@ -11,21 +11,66 @@ function envTrim(key: string): string {
     .replace(/^['"]|['"]$/g, '')
 }
 
+/** Resend keys only — strips Bearer prefix, whitespace, BOM, placeholder mistakes */
+export function normalizeResendApiKey(raw?: string): string {
+  let key = String(raw ?? envTrim('RESEND_API_KEY'))
+    .replace(/^\uFEFF/, '')
+    .trim()
+    .replace(/^['"]|['"]$/g, '')
+
+  if (/^bearer\s+/i.test(key)) {
+    key = key.replace(/^bearer\s+/i, '').trim()
+  }
+
+  return key.replace(/[\s\r\n\t]/g, '')
+}
+
 export function isResendConfigured(): boolean {
-  return Boolean(envTrim('RESEND_API_KEY'))
+  return Boolean(normalizeResendApiKey())
 }
 
 export function resendKeyDiagnostics(): {
   present: boolean
   formatOk: boolean
+  looksPlaceholder: boolean
+  length: number
   prefix: string | null
+  suffix: string | null
 } {
-  const key = envTrim('RESEND_API_KEY')
+  const key = normalizeResendApiKey()
+  const looksPlaceholder =
+    !key ||
+    /^re_x{3,}$/i.test(key) ||
+    /your|example|changeme|placeholder|xxxxxxxx/i.test(key)
+
   return {
     present: Boolean(key),
-    formatOk: /^re_[a-zA-Z0-9_]{8,}$/.test(key),
-    prefix: key ? `${key.slice(0, 6)}…` : null,
+    formatOk: /^re_[A-Za-z0-9]{10,}$/.test(key),
+    looksPlaceholder,
+    length: key.length,
+    prefix: key.length >= 7 ? key.slice(0, 7) : null,
+    suffix: key.length >= 4 ? key.slice(-4) : null,
   }
+}
+
+function assertResendApiKeyUsable(): string {
+  const key = normalizeResendApiKey()
+  const diag = resendKeyDiagnostics()
+
+  if (!key) {
+    throw new Error('RESEND_API_KEY 未配置')
+  }
+  if (diag.looksPlaceholder) {
+    throw new Error(
+      'RESEND_API_KEY 仍是占位符（如 re_xxxxxxxx）。请到 resend.com/api-keys 创建新密钥并完整粘贴到 Render',
+    )
+  }
+  if (!diag.formatOk) {
+    throw new Error(
+      `RESEND_API_KEY 格式异常（长度 ${diag.length}）。请重新复制以 re_ 开头的完整密钥，不要包含 Bearer 或引号`,
+    )
+  }
+  return key
 }
 
 export function isSmtpConfigured(): boolean {
@@ -122,17 +167,7 @@ function parseResendApiError(status: number, body: string): string {
 }
 
 export async function verifyResendConnection(): Promise<void> {
-  const apiKey = envTrim('RESEND_API_KEY')
-  if (!apiKey) {
-    throw new Error('RESEND_API_KEY is not configured')
-  }
-
-  const { formatOk } = resendKeyDiagnostics()
-  if (!formatOk) {
-    throw new Error(
-      'RESEND_API_KEY 格式不正确，应以 re_ 开头（在 Render 环境变量中填写，不要加引号）',
-    )
-  }
+  const apiKey = assertResendApiKeyUsable()
 
   const response = await fetch('https://api.resend.com/domains', {
     method: 'GET',
@@ -154,7 +189,7 @@ export async function verifyEmailDelivery(): Promise<void> {
 }
 
 async function sendViaResend(email: string, code: string): Promise<void> {
-  const apiKey = envTrim('RESEND_API_KEY')
+  const apiKey = assertResendApiKeyUsable()
   const { subject, html } = verificationContent(code)
 
   const response = await fetch('https://api.resend.com/emails', {
@@ -244,8 +279,8 @@ export function formatSmtpError(error: unknown): string {
 export function formatResendError(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error)
   if (/格式不正确|re_/i.test(message)) return message
-  if (/Resend 401|API 401|invalid.*key|unauthorized/i.test(message)) {
-    return 'Resend API 密钥无效。请在 Render（后端）环境变量设置 RESEND_API_KEY，并重新 Deploy'
+  if (/Resend 400|Resend 401|Resend 403|API 400|API 401|invalid.*key|unauthorized/i.test(message)) {
+    return 'Resend 拒绝了当前 API Key（400/401/403）。请在 resend.com/api-keys 删除旧 Key → 新建 Full access → 完整复制到 Render 的 RESEND_API_KEY → Manual Deploy。勿用示例 re_xxxxxxxx，勿只配在 Vercel。'
   }
   if (/Resend 403|API 403/i.test(message)) {
     return 'Resend API 权限不足，请重新创建具备 Sending access 的 API Key'
