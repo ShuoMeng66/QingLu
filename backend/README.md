@@ -65,7 +65,9 @@ Codes expire after 10 minutes. Resend is limited to once per 60 seconds. After 5
 | health 字段 | 含义 |
 |-------------|------|
 | `resendKeyFormatOk: false` | Key 不是 `re_` 开头，或 Render 里多加了引号/空格 |
-| `resendReachable: false` + `resendError` | Key 无效、过期，或填在了 Vercel 而非 Render |
+| `resendKeySource: "render-env"` 且 invalid | Render 上的 Key 与 Resend 控制台不一致 |
+| `resendKeySource: "vercel-proxy"` | 使用 Vercel 转发的 Key（需 `BURNPAL_PROXY_SECRET` 配对） |
+| `resendReachable: false` + `resendError` | Key 被 Resend 拒绝，或改 env 后未 Redeploy |
 | `Resend 400: API key is invalid` | Render 里的 Key **不是** Resend 控制台当前有效的完整密钥（见下方） |
 | `resendKeyLooksPlaceholder: true` | 仍在使用 `re_xxxxxxxx` 等示例，非真实 Key |
 | `verifyError` 仍是 SMTP 文案 | 请部署最新后端（已修复诊断逻辑） |
