@@ -79,7 +79,7 @@ git push -u origin main
 | `OPENCLAW_TOKEN` | 百炼 API Key（**服务端**代理注入，必填） | `sk-xxx` |
 | `OPENCLAW_PROXY_TARGET` | 可选，服务端上游 | `https://dashscope.aliyuncs.com` |
 | `OPENCLAW_PROXY_PATH` | 可选，服务端路径前缀 | `/compatible-mode` |
-| `VITE_OPENCLAW_BASE_URL` | **构建时**写入前端，需 redeploy | `/openclaw-api/v1` |
+| `VITE_OPENCLAW_BASE_URL` | **构建时**写入前端，需 redeploy | `/api/openclaw/v1`（推荐；勿用 `/openclaw-api`） |
 | `VITE_OPENCLAW_AGENT` | **构建时**默认模型，需 redeploy | `qwen-plus` |
 
 勿在生产设置 `VITE_OPENCLAW_TOKEN`（会打进前端 bundle）。`VITE_OPENCLAW_PROXY_*` 仅本地 Vite 开发代理用，Vercel 上请用 `OPENCLAW_PROXY_*`。
@@ -94,7 +94,8 @@ git push -u origin main
 | URL | 期望 |
 |-----|------|
 | `https://你的域名/api/openclaw/health` | JSON：`ok: true`，`hasToken: true` |
-| `https://你的域名/openclaw-api/v1/models` | JSON：`data` 模型列表（200） |
+| `https://你的域名/api/openclaw/v1/models` | JSON：`data` 模型列表（200） |
+| `https://你的域名/openclaw-api/v1/models` | 同上（兼容别名，经 rewrite） |
 
 若返回整页 HTML 或 404，说明路由/部署未更新；若 `hasToken: false`，说明 `OPENCLAW_TOKEN` 未注入当前 Production 部署。
 

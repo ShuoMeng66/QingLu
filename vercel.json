@@ -16,10 +16,10 @@
     {
       "source": "/api/user/:path*",
       "destination": "/api/backend/user/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
-  ],
-  "routes": [
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

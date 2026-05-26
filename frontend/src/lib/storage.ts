@@ -1,11 +1,19 @@
 import type { OpenClawConfig } from '../types/openclaw'
 import { DEFAULT_CONFIG, STORAGE_KEYS } from '../types/openclaw'
 
-const PRODUCTION_PROXY_BASE = '/openclaw-api/v1'
+/** Direct serverless path — avoids /openclaw-api rewrite + SPA fallback conflicts on Vercel */
+const PRODUCTION_PROXY_BASE = '/api/openclaw/v1'
+
+function resolveProductionBaseUrl(): string {
+  const envBase = import.meta.env.VITE_OPENCLAW_BASE_URL?.trim()
+  if (!envBase) return PRODUCTION_PROXY_BASE
+  if (envBase.startsWith('/openclaw-api')) return PRODUCTION_PROXY_BASE
+  return envBase
+}
 
 function productionConfig(): OpenClawConfig {
   return {
-    baseUrl: import.meta.env.VITE_OPENCLAW_BASE_URL?.trim() || PRODUCTION_PROXY_BASE,
+    baseUrl: resolveProductionBaseUrl(),
     token: '',
     agent: import.meta.env.VITE_OPENCLAW_AGENT?.trim() || DEFAULT_CONFIG.agent,
   }
