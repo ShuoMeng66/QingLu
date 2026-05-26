@@ -206,6 +206,30 @@ function toApiMessages(messages: ChatMessage[], systemPrompt?: string): ApiChatM
   return payload
 }
 
+/** 百炼 OpenAI 兼容接口下 DeepSeek V4 系列（见阿里云 Model Studio 文档） */
+function isBailianDeepSeekV4Model(model: string): boolean {
+  return /^deepseek-v4(-pro|-flash)?$/i.test(model.trim())
+}
+
+function buildChatCompletionBody(
+  config: OpenClawConfig,
+  messages: ChatMessage[],
+  userId: string,
+  systemPrompt: string | undefined,
+  stream: boolean,
+): Record<string, unknown> {
+  const body: Record<string, unknown> = {
+    model: config.agent,
+    stream,
+    user: userId,
+    messages: toApiMessages(messages, systemPrompt),
+  }
+  if (isBailianDeepSeekV4Model(config.agent)) {
+    body.enable_thinking = true
+  }
+  return body
+}
+
 export async function streamChat(
   config: OpenClawConfig,
   messages: ChatMessage[],
@@ -220,12 +244,7 @@ export async function streamChat(
     method: 'POST',
     headers: buildHeaders(config.token),
     signal,
-    body: JSON.stringify({
-      model: config.agent,
-      stream: true,
-      user: userId,
-      messages: toApiMessages(messages, systemPrompt),
-    }),
+    body: JSON.stringify(buildChatCompletionBody(config, messages, userId, systemPrompt, true)),
   })
 
   if (!response.ok) {
@@ -294,12 +313,7 @@ export async function sendChat(
     method: 'POST',
     headers: buildHeaders(config.token),
     signal,
-    body: JSON.stringify({
-      model: config.agent,
-      stream: false,
-      user: userId,
-      messages: toApiMessages(messages, systemPrompt),
-    }),
+    body: JSON.stringify(buildChatCompletionBody(config, messages, userId, systemPrompt, false)),
   })
 
   if (!response.ok) {

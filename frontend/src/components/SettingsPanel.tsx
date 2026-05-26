@@ -3,6 +3,8 @@ import { useI18n } from '../hooks/useI18n'
 import type { ConnectionStatus, OpenClawConfig, OpenClawModel } from '../types/openclaw'
 import { DEFAULT_CONFIG } from '../types/openclaw'
 
+const BAILIAN_MODEL_PRESETS = ['deepseek-v4-flash', 'deepseek-v4-pro', 'qwen-plus'] as const
+
 interface SettingsPanelProps {
   config: OpenClawConfig
   activeConfig: OpenClawConfig
@@ -120,6 +122,22 @@ export function SettingsPanel({
                 placeholder={DEFAULT_CONFIG.agent}
               />
             </label>
+
+            <div className="model-list">
+              <span className="model-list__label">百炼常用模型</span>
+              <div className="model-list__items">
+                {BAILIAN_MODEL_PRESETS.map((modelId) => (
+                  <button
+                    key={modelId}
+                    type="button"
+                    className={`model-chip pressable ${config.agent === modelId ? 'model-chip--active' : ''}`}
+                    onClick={() => onChange({ ...config, agent: modelId })}
+                  >
+                    {modelId}
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {models.length > 0 && (
               <div className="model-list">

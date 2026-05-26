@@ -80,7 +80,7 @@ git push -u origin main
 | `OPENCLAW_PROXY_TARGET` | 可选，服务端上游 | `https://dashscope.aliyuncs.com` |
 | `OPENCLAW_PROXY_PATH` | 可选，服务端路径前缀 | `/compatible-mode` |
 | `VITE_OPENCLAW_BASE_URL` | **构建时**写入前端，需 redeploy | `/api/openclaw/v1`（推荐；勿用 `/openclaw-api`） |
-| `VITE_OPENCLAW_AGENT` | **构建时**默认模型，需 redeploy | `qwen-plus` |
+| `VITE_OPENCLAW_AGENT` | **构建时**默认模型，需 redeploy | `deepseek-v4-flash`（百炼免费 DeepSeek V4）或 `qwen-plus` |
 
 勿在生产设置 `VITE_OPENCLAW_TOKEN`（会打进前端 bundle）。`VITE_OPENCLAW_PROXY_*` 仅本地 Vite 开发代理用，Vercel 上请用 `OPENCLAW_PROXY_*`。
 | `BACKEND_URL` | 已部署的后端公网地址（账户/云同步） | `https://your-api.onrender.com` |
@@ -106,7 +106,9 @@ API Key 不要写进前端 bundle。
 
 若返回整页 HTML 或 404，说明路由/部署未更新；若 `hasToken: false`，说明 `OPENCLAW_TOKEN` 未注入当前 Production 部署。
 
-若设置页报 **502 `fetch failed`**：多半是 Vercel 里 `OPENCLAW_PROXY_TARGET` 误填了 `127.0.0.1` / 本地地址，或百炼 Key 与 DeepSeek 上游混用。请设为 `https://dashscope.aliyuncs.com` + `OPENCLAW_PROXY_PATH=/compatible-mode`，模型用 `qwen-plus`（构建变量 `VITE_OPENCLAW_AGENT`），然后 Redeploy。DeepSeek 需另配 `https://api.deepseek.com` 与 DeepSeek API Key。
+若设置页报 **502 `fetch failed`**：多半是 Vercel 里 `OPENCLAW_PROXY_TARGET` 误填了 `127.0.0.1` / 本地地址。请设为 `https://dashscope.aliyuncs.com` + `OPENCLAW_PROXY_PATH=/compatible-mode`，`OPENCLAW_TOKEN` 填**百炼**控制台 API Key（不是 DeepSeek 官网 Key），然后 Redeploy。
+
+**百炼免费 DeepSeek V4**：模型 ID 用 `deepseek-v4-flash` 或 `deepseek-v4-pro`（见[百炼 DeepSeek 文档](https://help.aliyun.com/zh/model-studio/deepseek-api)），`VITE_OPENCLAW_AGENT=deepseek-v4-flash`。不要填 `api.deepseek.com` 作为代理地址。
 
 账户 API 自检（需已设置 `BACKEND_URL` 并完成 Redeploy）：
 

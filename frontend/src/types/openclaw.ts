@@ -36,7 +36,7 @@ export interface ConnectionResult {
 export const DEFAULT_CONFIG: OpenClawConfig = {
   baseUrl: import.meta.env.VITE_OPENCLAW_BASE_URL || '/openclaw-api/v1',
   token: import.meta.env.VITE_OPENCLAW_TOKEN || '',
-  agent: import.meta.env.VITE_OPENCLAW_AGENT || 'qwen-plus',
+  agent: import.meta.env.VITE_OPENCLAW_AGENT || 'deepseek-v4-flash',
 }
 
 export const STORAGE_KEYS = {
