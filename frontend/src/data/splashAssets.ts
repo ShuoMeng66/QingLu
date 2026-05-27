@@ -3,12 +3,14 @@ import { Dumbbell, MapPin, Sparkles, Utensils, UtensilsCrossed, Waves } from 'lu
 import type { MessageKey } from '../lib/i18n/messages'
 
 /** Splash / landing page carousel */
-export type SplashSlideId = 'food' | 'dining' | 'swim'
+export type SplashSlideId = 'volleyball' | 'food' | 'dining' | 'swim'
 
 export interface SplashCarouselSlide {
   id: SplashSlideId
   src: string
   altKey: MessageKey
+  /** Tailwind object-position utility suffix, e.g. `center 20%` */
+  objectPosition?: string
   badges: Array<{
     icon: LucideIcon
     labelKey: MessageKey
@@ -17,6 +19,29 @@ export interface SplashCarouselSlide {
 }
 
 export const SPLASH_CAROUSEL: SplashCarouselSlide[] = [
+  {
+    id: 'volleyball',
+    src: '/images/splash/volleyball-hero.png',
+    altKey: 'splash.heroAlt',
+    objectPosition: 'center 20%',
+    badges: [
+      {
+        icon: Dumbbell,
+        labelKey: 'splash.badge1',
+        tone: 'from-emerald-300/35 to-green-200/40',
+      },
+      {
+        icon: MapPin,
+        labelKey: 'splash.badge2',
+        tone: 'from-lime-200/40 to-emerald-200/35',
+      },
+      {
+        icon: Sparkles,
+        labelKey: 'splash.badge3',
+        tone: 'from-lime-200/45 to-yellow-100/35',
+      },
+    ],
+  },
   {
     id: 'food',
     src: '/images/splash/hero-night-market.png',
@@ -85,4 +110,8 @@ export const SPLASH_CAROUSEL: SplashCarouselSlide[] = [
   },
 ]
 
-export const SPLASH_CAROUSEL_INTERVAL_MS = 5_500
+/** 单张停留时长（含叠化过渡） */
+export const SPLASH_CAROUSEL_INTERVAL_MS = 6_800
+
+/** 图片/徽章叠化时长（秒） */
+export const SPLASH_CROSSFADE_SEC = 1.35

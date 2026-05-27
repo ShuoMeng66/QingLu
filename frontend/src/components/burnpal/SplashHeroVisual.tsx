@@ -1,7 +1,13 @@
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useCallback, useEffect, useState } from 'react'
-import { SPLASH_CAROUSEL, SPLASH_CAROUSEL_INTERVAL_MS } from '../../data/splashAssets'
+import {
+  SPLASH_CAROUSEL,
+  SPLASH_CAROUSEL_INTERVAL_MS,
+  SPLASH_CROSSFADE_SEC,
+} from '../../data/splashAssets'
 import { useI18n } from '../../hooks/useI18n'
+
+const EASE_SMOOTH = [0.22, 1, 0.36, 1] as const
 
 const FLOAT = {
   animate: { y: [0, -12, 0] },
@@ -14,11 +20,15 @@ const BADGE_POSITIONS = [
   'bottom-[8%] left-[10%]',
 ] as const
 
+const fadeTransition = {
+  duration: SPLASH_CROSSFADE_SEC,
+  ease: EASE_SMOOTH,
+}
+
 export function SplashHeroVisual() {
   const { t } = useI18n()
   const [index, setIndex] = useState(0)
   const slideCount = SPLASH_CAROUSEL.length
-  const slide = SPLASH_CAROUSEL[index]!
 
   const goTo = useCallback(
     (next: number) => {
@@ -27,12 +37,12 @@ export function SplashHeroVisual() {
     [slideCount],
   )
 
-  const goNext = useCallback(() => goTo(index + 1), [goTo, index])
-
   useEffect(() => {
-    const timer = window.setInterval(goNext, SPLASH_CAROUSEL_INTERVAL_MS)
+    const timer = window.setInterval(() => {
+      setIndex((current) => (current + 1) % slideCount)
+    }, SPLASH_CAROUSEL_INTERVAL_MS)
     return () => window.clearInterval(timer)
-  }, [goNext])
+  }, [slideCount])
 
   useEffect(() => {
     SPLASH_CAROUSEL.forEach((item) => {
@@ -54,21 +64,28 @@ export function SplashHeroVisual() {
         <div className="absolute -inset-3 rounded-[36px] bg-gradient-to-br from-emerald-200/50 via-lime-200/40 to-yellow-100/25 blur-xl" />
 
         <div className="relative overflow-hidden rounded-[32px] border border-white/80 bg-white/40 p-2 shadow-glass backdrop-blur-sm">
-          <div className="relative aspect-[4/5] w-full sm:aspect-[5/6]">
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.img
-                key={slide.id}
-                src={slide.src}
-                alt={t(slide.altKey)}
-                className="absolute inset-0 h-full w-full rounded-[24px] object-cover object-center"
-                draggable={false}
-                initial={{ opacity: 0, scale: 1.03 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.98 }}
-                transition={{ duration: 0.55, ease: 'easeInOut' }}
-              />
-            </AnimatePresence>
-            <div className="pointer-events-none absolute inset-0 rounded-[24px] bg-gradient-to-t from-emerald-900/15 via-transparent to-lime-50/20" />
+          <div className="relative aspect-[4/5] w-full bg-emerald-950/5 sm:aspect-[5/6]">
+            {SPLASH_CAROUSEL.map((item, i) => {
+              const active = i === index
+              return (
+                <motion.img
+                  key={item.id}
+                  src={item.src}
+                  alt={t(item.altKey)}
+                  className="absolute inset-0 h-full w-full rounded-[24px] object-cover"
+                  style={{ objectPosition: item.objectPosition ?? 'center' }}
+                  draggable={false}
+                  initial={false}
+                  animate={{
+                    opacity: active ? 1 : 0,
+                    scale: active ? 1 : 1.045,
+                  }}
+                  transition={fadeTransition}
+                  aria-hidden={!active}
+                />
+              )
+            })}
+            <div className="pointer-events-none absolute inset-0 z-[1] rounded-[24px] bg-gradient-to-t from-emerald-900/15 via-transparent to-lime-50/20" />
           </div>
 
           <div
@@ -83,7 +100,7 @@ export function SplashHeroVisual() {
                 role="tab"
                 aria-selected={i === index}
                 aria-label={t(item.altKey)}
-                className={`h-2 rounded-full transition-all ${
+                className={`h-2 rounded-full transition-all duration-500 ease-out ${
                   i === index ? 'w-7 bg-emerald-500' : 'w-2 bg-white/70 hover:bg-white'
                 }`}
                 onClick={() => goTo(i)}
@@ -92,37 +109,48 @@ export function SplashHeroVisual() {
           </div>
         </div>
 
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={slide.id}
-            className="absolute inset-0"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.35 }}
-          >
-            {slide.badges.map((badge, badgeIndex) => {
-              const Icon = badge.icon
-              return (
-                <motion.div
-                  key={`${slide.id}-${badge.labelKey}`}
-                  className={`glass-panel absolute ${BADGE_POSITIONS[badgeIndex]} flex items-center gap-2 rounded-full px-3 py-2 shadow-glass`}
-                  animate={{ y: [0, badgeIndex % 2 === 0 ? -6 : 6, 0] }}
-                  transition={{ duration: 4 + badgeIndex, repeat: Infinity, ease: 'easeInOut' }}
-                >
-                  <span
-                    className={`flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br ${badge.tone} text-emerald-600`}
-                  >
-                    <Icon className="h-4 w-4" />
-                  </span>
-                  <span className="whitespace-nowrap text-xs font-semibold text-slate-700 sm:text-sm">
-                    {t(badge.labelKey)}
-                  </span>
-                </motion.div>
-              )
-            })}
-          </motion.div>
-        </AnimatePresence>
+        <div className="pointer-events-none absolute inset-0">
+          {SPLASH_CAROUSEL.map((item, i) => {
+            const active = i === index
+            return (
+              <motion.div
+                key={item.id}
+                className="absolute inset-0"
+                initial={false}
+                animate={{ opacity: active ? 1 : 0 }}
+                transition={{ ...fadeTransition, duration: SPLASH_CROSSFADE_SEC * 0.85 }}
+                aria-hidden={!active}
+              >
+                {item.badges.map((badge, badgeIndex) => {
+                  const Icon = badge.icon
+                  return (
+                    <motion.div
+                      key={`${item.id}-${badge.labelKey}`}
+                      className={`glass-panel absolute ${BADGE_POSITIONS[badgeIndex]} flex items-center gap-2 rounded-full px-3 py-2 shadow-glass`}
+                      animate={{
+                        y: active ? [0, badgeIndex % 2 === 0 ? -6 : 6, 0] : 0,
+                        opacity: active ? 1 : 0,
+                      }}
+                      transition={{
+                        opacity: fadeTransition,
+                        y: { duration: 4 + badgeIndex, repeat: Infinity, ease: 'easeInOut' },
+                      }}
+                    >
+                      <span
+                        className={`flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br ${badge.tone} text-emerald-600`}
+                      >
+                        <Icon className="h-4 w-4" />
+                      </span>
+                      <span className="whitespace-nowrap text-xs font-semibold text-slate-700 sm:text-sm">
+                        {t(badge.labelKey)}
+                      </span>
+                    </motion.div>
+                  )
+                })}
+              </motion.div>
+            )
+          })}
+        </div>
       </motion.div>
     </div>
   )
