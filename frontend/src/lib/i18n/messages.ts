@@ -281,6 +281,19 @@ export type MessageKey =
   | 'splash.headline1'
   | 'splash.headline2'
   | 'splash.heroAlt'
+  | 'splash.heroAltFood'
+  | 'splash.heroAltDining'
+  | 'splash.heroAltSwim'
+  | 'splash.carouselLabel'
+  | 'splash.slideFood.badge1'
+  | 'splash.slideFood.badge2'
+  | 'splash.slideFood.badge3'
+  | 'splash.slideDining.badge1'
+  | 'splash.slideDining.badge2'
+  | 'splash.slideDining.badge3'
+  | 'splash.slideSwim.badge1'
+  | 'splash.slideSwim.badge2'
+  | 'splash.slideSwim.badge3'
   | 'splash.subtitle'
   | 'splash.tagline'
   | 'splash.wakeBtn'
@@ -645,6 +658,19 @@ const ZH: Record<MessageKey, string> = {
   'splash.headline1': '轻盈随行，',
   'splash.headline2': '乐享生活',
   'splash.heroAlt': '轻鹭 · 排球运动场景',
+  'splash.heroAltFood': '轻鹭 · 夜市美食与热量管理',
+  'splash.heroAltDining': '轻鹭 · 外出就餐与营养搭配',
+  'splash.heroAltSwim': '轻鹭 · 游泳有氧与场馆推荐',
+  'splash.carouselLabel': '产品场景轮播',
+  'splash.slideFood.badge1': '夜市美食 · 热量记录',
+  'splash.slideFood.badge2': '附近步行可达',
+  'splash.slideFood.badge3': 'AI 饮食建议',
+  'splash.slideDining.badge1': '外出就餐指引',
+  'splash.slideDining.badge2': '营养均衡搭配',
+  'splash.slideDining.badge3': '社交也要健康',
+  'splash.slideSwim.badge1': '游泳 · 有氧燃脂',
+  'splash.slideSwim.badge2': '附近场馆推荐',
+  'splash.slideSwim.badge3': '练后恢复计划',
   'splash.subtitle': '和轻鹭聊聊饮食、热量与运动计划',
   'splash.tagline': '智慧本地 · 全天候 AI 减脂管家',
   'splash.wakeBtn': '唤醒管家',
@@ -1010,6 +1036,19 @@ const EN: Record<MessageKey, string> = {
   'splash.headline1': 'Travel light,',
   'splash.headline2': 'live well',
   'splash.heroAlt': 'Qinglu · volleyball scene',
+  'splash.heroAltFood': 'Qinglu · night-market food & calories',
+  'splash.heroAltDining': 'Qinglu · dining out & nutrition',
+  'splash.heroAltSwim': 'Qinglu · swimming & nearby pools',
+  'splash.carouselLabel': 'Product scene carousel',
+  'splash.slideFood.badge1': 'Street food · calorie log',
+  'splash.slideFood.badge2': 'Walkable nearby',
+  'splash.slideFood.badge3': 'AI meal tips',
+  'splash.slideDining.badge1': 'Dining out guide',
+  'splash.slideDining.badge2': 'Balanced nutrition',
+  'splash.slideDining.badge3': 'Stay healthy socially',
+  'splash.slideSwim.badge1': 'Swim · cardio burn',
+  'splash.slideSwim.badge2': 'Nearby venues',
+  'splash.slideSwim.badge3': 'Post-workout recovery',
   'splash.subtitle': 'Chat with Qinglu about meals, calories, and workouts',
   'splash.tagline': 'Smart local · 24/7 AI fitness companion',
   'splash.wakeBtn': 'Wake assistant',
@@ -1375,6 +1414,19 @@ const JA: Record<MessageKey, string> = {
   'splash.headline1': '軽やかに、',
   'splash.headline2': '楽しく生きる',
   'splash.heroAlt': '軽鹭 · バレーシーン',
+  'splash.heroAltFood': '軽鹭 · 夜市グルメとカロリー',
+  'splash.heroAltDining': '軽鹭 · 外食と栄養バランス',
+  'splash.heroAltSwim': '軽鹭 · 水泳と近くのプール',
+  'splash.carouselLabel': 'シーンカルーセル',
+  'splash.slideFood.badge1': '夜市 · カロリー記録',
+  'splash.slideFood.badge2': '徒歩で行ける',
+  'splash.slideFood.badge3': 'AI 食事アドバイス',
+  'splash.slideDining.badge1': '外食ガイド',
+  'splash.slideDining.badge2': '栄養バランス',
+  'splash.slideDining.badge3': '社交もヘルシーに',
+  'splash.slideSwim.badge1': '水泳 · 有酸素',
+  'splash.slideSwim.badge2': '近くの施設',
+  'splash.slideSwim.badge3': '練後リカバリー',
   'splash.subtitle': '軽鹭と食事・カロリー・運動について話そう',
   'splash.tagline': 'スマートローカル · 24時間 AI 減脂管家',
   'splash.wakeBtn': '管家を起動',
@@ -1740,6 +1792,19 @@ const KO: Record<MessageKey, string> = {
   'splash.headline1': '가볍게,',
   'splash.headline2': '즐겁게 살기',
   'splash.heroAlt': '경록 · 배구 장면',
+  'splash.heroAltFood': '경록 · 야시장 음식과 칼로리',
+  'splash.heroAltDining': '경록 · 외식과 영양 균형',
+  'splash.heroAltSwim': '경록 · 수영과 근처 수영장',
+  'splash.carouselLabel': '제품 장면 캐러셀',
+  'splash.slideFood.badge1': '야시장 · 칼로리 기록',
+  'splash.slideFood.badge2': '도보 거리 추천',
+  'splash.slideFood.badge3': 'AI 식단 조언',
+  'splash.slideDining.badge1': '외식 가이드',
+  'splash.slideDining.badge2': '영양 균형',
+  'splash.slideDining.badge3': '모임도 건강하게',
+  'splash.slideSwim.badge1': '수영 · 유산소',
+  'splash.slideSwim.badge2': '근처 시설 추천',
+  'splash.slideSwim.badge3': '운동 후 회복',
   'splash.subtitle': '경록과 식사·칼로리·운동 이야기',
   'splash.tagline': '스마트 로컬 · 24시간 AI 감량 매니저',
   'splash.wakeBtn': '매니저 깨우기',
