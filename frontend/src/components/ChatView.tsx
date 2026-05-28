@@ -1,6 +1,15 @@
-import { AnimatePresence } from 'framer-motion'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { AnimatePresence, motion } from 'framer-motion'
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import {
+  LayoutDashboard,
+  Maximize2,
+  Menu,
+  MessageSquarePlus,
+  Minimize2,
+  PanelLeftClose,
+  PanelLeftOpen,
+  X,
+} from 'lucide-react'
 import { Link, useLocation as useRouteLocation } from 'react-router-dom'
 import type { ChatMessage } from '../types/openclaw'
 import type { ConnectionStatus } from '../types/openclaw'
@@ -32,6 +41,36 @@ import { TrainingProfileSheet } from './burnpal/TrainingProfileSheet'
 import { QuickActionBar } from './burnpal/QuickActionBar'
 import { RichCard } from './burnpal/RichCard'
 import { PageTransition } from './layout/PageTransition'
+import { usePersistedBoolean } from '../hooks/usePersistedBoolean'
+
+const STORAGE_HISTORY_COLLAPSED = 'burnpal.chat.historyCollapsed'
+const STORAGE_DASHBOARD_COLLAPSED = 'burnpal.chat.dashboardCollapsed'
+
+function ChromeToggleButton({
+  active,
+  label,
+  onClick,
+  children,
+}: {
+  active?: boolean
+  label: string
+  onClick: () => void
+  children: ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      className={`glass-panel flex h-9 w-9 items-center justify-center rounded-full shadow-glass transition-colors ${
+        active ? 'text-lime-700 ring-1 ring-lime-400/50' : 'text-body-secondary'
+      }`}
+      aria-label={label}
+      title={label}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  )
+}
 
 export interface QuickPromptMeta {
   starterId?: string
@@ -127,6 +166,9 @@ export function ChatView({
   const pinnedToBottomRef = useRef(true)
   const [showScrollFab, setShowScrollFab] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [historyCollapsed, setHistoryCollapsed] = usePersistedBoolean(STORAGE_HISTORY_COLLAPSED, false)
+  const [dashboardCollapsed, setDashboardCollapsed] = usePersistedBoolean(STORAGE_DASHBOARD_COLLAPSED, false)
+  const focusMode = historyCollapsed && dashboardCollapsed
   const routeLocation = useRouteLocation()
   const { toast } = useToast()
   const { preferences, t } = usePreferences()
@@ -372,8 +414,29 @@ export function ChatView({
     <AppShell>
       <PageTransition className="flex h-dvh flex-1 overflow-hidden p-3 lg:p-4">
         <div className="relative flex h-full min-h-0 w-full flex-1 gap-3 lg:gap-4">
+          {historyCollapsed && (
+            <aside className="burnpal-shell-panel hidden w-12 shrink-0 flex-col items-center gap-2 py-4 lg:flex">
+              <ChromeToggleButton
+                label={t('chat.expandSidebar')}
+                onClick={() => setHistoryCollapsed(false)}
+              >
+                <PanelLeftOpen className="h-4 w-4" />
+              </ChromeToggleButton>
+              <button
+                type="button"
+                className="glass-panel flex h-9 w-9 items-center justify-center rounded-full text-lime-700 shadow-glass"
+                aria-label={t('sidebar.newChat')}
+                title={t('sidebar.newChat')}
+                disabled={loading}
+                onClick={onCreateConversation}
+              >
+                <MessageSquarePlus className="h-4 w-4" />
+              </button>
+            </aside>
+          )}
+
           <ChatHistorySidebar
-            className="hidden lg:flex"
+            className={`hidden lg:flex ${historyCollapsed ? 'lg:hidden' : ''}`}
             activeConversation={activeConversation}
             historyConversations={historyConversations}
             activeId={activeId}
@@ -416,7 +479,7 @@ export function ChatView({
 
           <div className="burnpal-shell-panel relative flex min-h-0 min-w-0 flex-1 flex-col">
           <header className="relative z-50 shrink-0 overflow-visible px-4 pt-4 pb-2 lg:px-6">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <button
                 type="button"
                 className="glass-panel flex h-9 w-9 items-center justify-center rounded-full text-body-secondary shadow-glass lg:hidden"
@@ -424,6 +487,60 @@ export function ChatView({
                 onClick={() => setSidebarOpen((open) => !open)}
               >
                 {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              </button>
+              <div className="hidden items-center gap-2 lg:flex">
+                <ChromeToggleButton
+                  active={!historyCollapsed}
+                  label={historyCollapsed ? t('chat.expandSidebar') : t('chat.collapseSidebar')}
+                  onClick={() => setHistoryCollapsed((collapsed) => !collapsed)}
+                >
+                  {historyCollapsed ? (
+                    <PanelLeftOpen className="h-4 w-4" />
+                  ) : (
+                    <PanelLeftClose className="h-4 w-4" />
+                  )}
+                </ChromeToggleButton>
+                <ChromeToggleButton
+                  active={!dashboardCollapsed}
+                  label={
+                    dashboardCollapsed ? t('chat.expandDashboard') : t('chat.collapseDashboard')
+                  }
+                  onClick={() => setDashboardCollapsed((collapsed) => !collapsed)}
+                >
+                  <LayoutDashboard className="h-4 w-4" />
+                </ChromeToggleButton>
+                <ChromeToggleButton
+                  active={focusMode}
+                  label={focusMode ? t('chat.exitFocusMode') : t('chat.focusMode')}
+                  onClick={() => {
+                    if (focusMode) {
+                      setHistoryCollapsed(false)
+                      setDashboardCollapsed(false)
+                    } else {
+                      setHistoryCollapsed(true)
+                      setDashboardCollapsed(true)
+                    }
+                  }}
+                >
+                  {focusMode ? (
+                    <Minimize2 className="h-4 w-4" />
+                  ) : (
+                    <Maximize2 className="h-4 w-4" />
+                  )}
+                </ChromeToggleButton>
+              </div>
+              <button
+                type="button"
+                className="glass-panel flex h-9 w-9 items-center justify-center rounded-full text-body-secondary shadow-glass lg:hidden"
+                aria-label={
+                  dashboardCollapsed ? t('chat.expandDashboard') : t('chat.collapseDashboard')
+                }
+                title={
+                  dashboardCollapsed ? t('chat.expandDashboard') : t('chat.collapseDashboard')
+                }
+                onClick={() => setDashboardCollapsed((collapsed) => !collapsed)}
+              >
+                <LayoutDashboard className="h-4 w-4" />
               </button>
               <div className="lg:hidden">
                 <BurnPalLogo compact />
@@ -447,7 +564,20 @@ export function ChatView({
             </div>
           </header>
 
-          <ChatDashboardBar onOpenProfile={() => setProfileSheetOpen(true)} />
+          <AnimatePresence initial={false}>
+            {!dashboardCollapsed && (
+              <motion.div
+                key="chat-dashboard"
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.22, ease: 'easeOut' }}
+                className="shrink-0 overflow-hidden"
+              >
+                <ChatDashboardBar onOpenProfile={() => setProfileSheetOpen(true)} />
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {useDemo && (
             <div className="burnpal-chat-column px-4 pb-2">
