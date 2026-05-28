@@ -1,4 +1,4 @@
-import type { AppLocale } from '../appPreferences'
+import type { AppLocale } from './localeIds'
 
 export type MessageKey =
   | 'about.description'

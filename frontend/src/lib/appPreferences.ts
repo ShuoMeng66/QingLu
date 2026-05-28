@@ -1,23 +1,14 @@
+import {
+  isAppLocale,
+  LOCALE_BCP47,
+  VALID_LOCALES,
+  type AppLocale,
+} from './i18n/localeIds'
 import { notifyUserDataChanged } from './userDataSync'
 
 export type AppTheme = 'light' | 'dark'
-export type AppLocale = 'zh' | 'zh-HK' | 'zh-TW' | 'en' | 'ja' | 'ko'
-
-export const VALID_LOCALES: AppLocale[] = ['zh', 'zh-HK', 'zh-TW', 'en', 'ja', 'ko']
-
-/** BCP 47 tag for document.lang, speech recognition, Intl */
-export const LOCALE_BCP47: Record<AppLocale, string> = {
-  zh: 'zh-CN',
-  'zh-HK': 'zh-HK',
-  'zh-TW': 'zh-TW',
-  en: 'en',
-  ja: 'ja',
-  ko: 'ko',
-}
-
-function isAppLocale(value: unknown): value is AppLocale {
-  return typeof value === 'string' && (VALID_LOCALES as string[]).includes(value)
-}
+export type { AppLocale }
+export { LOCALE_BCP47, VALID_LOCALES }
 export type AiTone = 'friendly' | 'professional' | 'coach'
 export type AiDetail = 'concise' | 'balanced' | 'detailed'
 

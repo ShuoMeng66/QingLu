@@ -2,7 +2,7 @@ import { Mic, MicOff, Send, Square } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { useToast } from '../../context/ToastContext'
 import { usePreferences } from '../../context/PreferencesContext'
-import { LOCALE_BCP47 } from '../../lib/appPreferences'
+import { LOCALE_BCP47 } from '../../lib/i18n/localeIds'
 import { useI18n } from '../../hooks/useI18n'
 import { useSpeechRecognition } from '../../hooks/useSpeechRecognition'
 

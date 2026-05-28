@@ -12,11 +12,11 @@ import {
   loadAppPreferences,
   saveAppPreferences,
   type AiPreferences,
-  LOCALE_BCP47,
   type AppLocale,
   type AppPreferences,
   type AppTheme,
 } from '../lib/appPreferences'
+import { LOCALE_BCP47 } from '../lib/i18n/localeIds'
 import { translate, type MessageKey } from '../lib/i18n/messages'
 import { areMealRemindersEnabled, setMealRemindersEnabled } from '../lib/mealLog'
 

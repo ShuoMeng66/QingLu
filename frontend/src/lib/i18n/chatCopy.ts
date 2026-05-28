@@ -1,4 +1,4 @@
-import { VALID_LOCALES, type AppLocale } from '../appPreferences'
+import { VALID_LOCALES, type AppLocale } from './localeIds'
 import type { MessageKey } from './messages'
 import { translate } from './messages'
 import type { MealSlot } from '../mealLog'
@@ -55,14 +55,23 @@ export function getDefaultConversationTitle(locale: AppLocale): string {
   return translate(locale, 'chat.defaultTitle')
 }
 
-const DEFAULT_TITLE_VALUES = new Set(
-  VALID_LOCALES.map((locale) => getDefaultConversationTitle(locale)),
-)
+function buildDefaultTitleValues(): Set<string> {
+  const values = new Set(
+    VALID_LOCALES.map((locale) => getDefaultConversationTitle(locale)),
+  )
+  values.add('新对话')
+  return values
+}
 
-DEFAULT_TITLE_VALUES.add('新对话')
+let defaultTitleValues: Set<string> | null = null
+
+function getDefaultTitleValues(): Set<string> {
+  if (!defaultTitleValues) defaultTitleValues = buildDefaultTitleValues()
+  return defaultTitleValues
+}
 
 export function isDefaultConversationTitle(title: string): boolean {
-  return DEFAULT_TITLE_VALUES.has(title)
+  return getDefaultTitleValues().has(title)
 }
 
 export function displayConversationTitle(title: string, locale: AppLocale): string {
