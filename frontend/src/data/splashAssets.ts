@@ -1,9 +1,17 @@
 import type { LucideIcon } from 'lucide-react'
-import { Dumbbell, MapPin, Sparkles, Utensils, UtensilsCrossed, Waves } from 'lucide-react'
+import {
+  Activity,
+  Dumbbell,
+  HeartPulse,
+  MapPin,
+  Sparkles,
+  Utensils,
+  Users,
+} from 'lucide-react'
 import type { MessageKey } from '../lib/i18n/messages'
 
 /** Splash / landing page carousel */
-export type SplashSlideId = 'volleyball' | 'food' | 'dining' | 'swim'
+export type SplashSlideId = 'outdoor' | 'meal' | 'gym' | 'recovery'
 
 export interface SplashCarouselSlide {
   id: SplashSlideId
@@ -20,13 +28,13 @@ export interface SplashCarouselSlide {
 
 export const SPLASH_CAROUSEL: SplashCarouselSlide[] = [
   {
-    id: 'volleyball',
-    src: '/images/splash/volleyball-hero.png',
+    id: 'outdoor',
+    src: '/images/splash/hero-outdoor-play.png',
     altKey: 'splash.heroAlt',
-    objectPosition: 'center 20%',
+    objectPosition: 'center 22%',
     badges: [
       {
-        icon: Dumbbell,
+        icon: Activity,
         labelKey: 'splash.badge1',
         tone: 'from-emerald-300/35 to-green-200/40',
       },
@@ -43,9 +51,10 @@ export const SPLASH_CAROUSEL: SplashCarouselSlide[] = [
     ],
   },
   {
-    id: 'food',
-    src: '/images/splash/hero-night-market.png',
+    id: 'meal',
+    src: '/images/splash/hero-healthy-meal.png',
     altKey: 'splash.heroAltFood',
+    objectPosition: 'center 18%',
     badges: [
       {
         icon: Utensils,
@@ -53,7 +62,7 @@ export const SPLASH_CAROUSEL: SplashCarouselSlide[] = [
         tone: 'from-amber-200/45 to-orange-200/40',
       },
       {
-        icon: MapPin,
+        icon: Users,
         labelKey: 'splash.slideFood.badge2',
         tone: 'from-lime-200/40 to-emerald-200/35',
       },
@@ -65,14 +74,15 @@ export const SPLASH_CAROUSEL: SplashCarouselSlide[] = [
     ],
   },
   {
-    id: 'dining',
-    src: '/images/splash/hero-fine-dining.png',
+    id: 'gym',
+    src: '/images/splash/hero-gym-training.png',
     altKey: 'splash.heroAltDining',
+    objectPosition: 'center 15%',
     badges: [
       {
-        icon: UtensilsCrossed,
+        icon: Dumbbell,
         labelKey: 'splash.slideDining.badge1',
-        tone: 'from-rose-100/45 to-amber-100/40',
+        tone: 'from-sky-200/45 to-cyan-200/40',
       },
       {
         icon: Sparkles,
@@ -87,22 +97,23 @@ export const SPLASH_CAROUSEL: SplashCarouselSlide[] = [
     ],
   },
   {
-    id: 'swim',
-    src: '/images/splash/hero-swimming.png',
+    id: 'recovery',
+    src: '/images/splash/hero-recovery-stretch.png',
     altKey: 'splash.heroAltSwim',
+    objectPosition: 'center 20%',
     badges: [
       {
-        icon: Waves,
+        icon: HeartPulse,
         labelKey: 'splash.slideSwim.badge1',
-        tone: 'from-sky-200/45 to-cyan-200/40',
+        tone: 'from-rose-100/45 to-pink-100/40',
       },
       {
-        icon: Dumbbell,
+        icon: Activity,
         labelKey: 'splash.slideSwim.badge2',
         tone: 'from-emerald-300/35 to-green-200/40',
       },
       {
-        icon: MapPin,
+        icon: Sparkles,
         labelKey: 'splash.slideSwim.badge3',
         tone: 'from-lime-200/40 to-emerald-200/35',
       },
