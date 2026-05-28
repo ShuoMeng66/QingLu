@@ -1,11 +1,12 @@
 /**
- * Generate locales/zh-HK.ts (OpenCC s2hk) and locales/zh-TW.ts (s2twp) from locales/zh.ts.
+ * Generate locales/zh-HK.ts (OpenCC s2hk + Cantonese rules) and locales/zh-TW.ts (s2twp).
  * Run: npm run i18n:traditional
  */
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { Converter } from 'opencc-js'
+import { applyCantoneseRules } from './apply-cantonese-rules.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const root = path.join(__dirname, '..')
@@ -62,7 +63,12 @@ const zhHK = {}
 const zhTW = {}
 
 for (const [key, value] of Object.entries(zh)) {
-  zhHK[key] = hkOverrides[key] ?? hkConverter(value)
+  if (hkOverrides[key] != null) {
+    zhHK[key] = hkOverrides[key]
+  } else {
+    const traditional = hkConverter(value)
+    zhHK[key] = applyCantoneseRules(traditional, key)
+  }
   zhTW[key] = twOverrides[key] ?? twConverter(value)
 }
 
@@ -70,7 +76,7 @@ writeLocaleFile(
   'ZH_HK',
   'zh-HK.ts',
   zhHK,
-  'AUTO-GENERATED — Hong Kong Traditional (OpenCC s2hk). Edit zh.ts + overrides, then npm run i18n:traditional',
+  'AUTO-GENERATED — 粵語（香港）: OpenCC s2hk + cantonese rules + overrides. Run npm run i18n:traditional',
 )
 writeLocaleFile(
   'ZH_TW',

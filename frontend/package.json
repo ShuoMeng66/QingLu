@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "evolve-skills": "python ../Agent/trace2skill/run_pipeline.py",
     "eval:snapshot": "node scripts/eval-snapshot.mjs",
-    "i18n:traditional": "node scripts/generate-traditional-locales.mjs"
+    "i18n:traditional": "node scripts/generate-traditional-locales.mjs",
+    "i18n:lint:hk": "node scripts/lint-zh-HK-cantonese.mjs"
   },
   "dependencies": {
     "framer-motion": "^12.40.0",

@@ -38,7 +38,8 @@ export function getQuickActions(locale: AppLocale): LocalizedQuickAction[] {
 export function buildLocaleReplyInstruction(locale: AppLocale): string {
   const instructions: Record<AppLocale, string> = {
     zh: '请使用简体中文回复用户。',
-    'zh-HK': '請使用香港繁體中文回覆用戶（港式用詞，如的士、軟件、設定）。',
+    'zh-HK':
+      '請用香港書面粵語回覆（用嘅、唔、冇、喺、佢、嚟、點樣等；可用嘅士、軟件、設定等港式詞彙）。',
     'zh-TW': '請使用台灣繁體中文回覆用戶（台式用詞，如計程車、軟體、設定）。',
     en: 'Reply to the user in English.',
     ja: 'ユーザーには日本語で回答してください。',
