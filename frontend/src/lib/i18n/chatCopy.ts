@@ -1,4 +1,4 @@
-import type { AppLocale } from '../appPreferences'
+import { VALID_LOCALES, type AppLocale } from '../appPreferences'
 import type { MessageKey } from './messages'
 import { translate } from './messages'
 import type { MealSlot } from '../mealLog'
@@ -38,6 +38,8 @@ export function getQuickActions(locale: AppLocale): LocalizedQuickAction[] {
 export function buildLocaleReplyInstruction(locale: AppLocale): string {
   const instructions: Record<AppLocale, string> = {
     zh: '请使用简体中文回复用户。',
+    'zh-HK': '請使用香港繁體中文回覆用戶（港式用詞，如的士、軟件、設定）。',
+    'zh-TW': '請使用台灣繁體中文回覆用戶（台式用詞，如計程車、軟體、設定）。',
     en: 'Reply to the user in English.',
     ja: 'ユーザーには日本語で回答してください。',
     ko: '사용자에게 한국어로 답변하세요.',
@@ -54,7 +56,7 @@ export function getDefaultConversationTitle(locale: AppLocale): string {
 }
 
 const DEFAULT_TITLE_VALUES = new Set(
-  (['zh', 'en', 'ja', 'ko'] as AppLocale[]).map((locale) => getDefaultConversationTitle(locale)),
+  VALID_LOCALES.map((locale) => getDefaultConversationTitle(locale)),
 )
 
 DEFAULT_TITLE_VALUES.add('新对话')

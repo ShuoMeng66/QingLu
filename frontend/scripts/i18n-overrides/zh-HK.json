@@ -1,0 +1,14 @@
+{
+  "about.description": "基於 OpenClaw 的本地生活減脂搭子——在真實場景裏給你可執行的飲食與運動建議。",
+  "auth.backToChat": "返回對話",
+  "profile.title": "健身檔案 · 訓練與營養",
+  "profile.tierBeginner": "新手",
+  "profile.tierAdvanced": "老手",
+  "settings.title": "設定",
+  "settings.language": "顯示語言",
+  "settings.saved": "偏好已儲存",
+  "sidebar.settings": "設定",
+  "lang.zh": "簡體中文",
+  "lang.zh-HK": "港式繁體",
+  "lang.zh-TW": "台式繁體"
+}

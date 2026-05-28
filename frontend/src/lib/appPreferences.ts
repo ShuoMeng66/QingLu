@@ -1,7 +1,23 @@
 import { notifyUserDataChanged } from './userDataSync'
 
 export type AppTheme = 'light' | 'dark'
-export type AppLocale = 'zh' | 'en' | 'ja' | 'ko'
+export type AppLocale = 'zh' | 'zh-HK' | 'zh-TW' | 'en' | 'ja' | 'ko'
+
+export const VALID_LOCALES: AppLocale[] = ['zh', 'zh-HK', 'zh-TW', 'en', 'ja', 'ko']
+
+/** BCP 47 tag for document.lang, speech recognition, Intl */
+export const LOCALE_BCP47: Record<AppLocale, string> = {
+  zh: 'zh-CN',
+  'zh-HK': 'zh-HK',
+  'zh-TW': 'zh-TW',
+  en: 'en',
+  ja: 'ja',
+  ko: 'ko',
+}
+
+function isAppLocale(value: unknown): value is AppLocale {
+  return typeof value === 'string' && (VALID_LOCALES as string[]).includes(value)
+}
 export type AiTone = 'friendly' | 'professional' | 'coach'
 export type AiDetail = 'concise' | 'balanced' | 'detailed'
 
@@ -40,9 +56,11 @@ export function loadAppPreferences(): AppPreferences {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return { ...DEFAULT_PREFERENCES, ai: { ...DEFAULT_PREFERENCES.ai } }
     const parsed = JSON.parse(raw) as Partial<AppPreferences>
+    const locale = isAppLocale(parsed.locale) ? parsed.locale : DEFAULT_PREFERENCES.locale
     return {
       ...DEFAULT_PREFERENCES,
       ...parsed,
+      locale,
       ai: { ...DEFAULT_PREFERENCES.ai, ...parsed.ai },
     }
   } catch {

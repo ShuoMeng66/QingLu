@@ -2,6 +2,7 @@ import { Info, MessageSquarePlus, Settings, Trash2, Zap } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import type { Conversation } from '../../types/conversation'
 import { formatConversationTime } from '../../types/conversation'
+import { LOCALE_BCP47 } from '../../lib/appPreferences'
 import { useI18n } from '../../hooks/useI18n'
 import { displayConversationTitle } from '../../lib/i18n/chatCopy'
 import { BurnPalLogo } from './BurnPalLogo'
@@ -59,7 +60,7 @@ function HistoryItem({
         </div>
         <p className="mt-0.5 line-clamp-1 text-xs text-body-secondary">{preview}</p>
         <p className="mt-1 text-[10px] text-body-secondary/80">
-          {formatConversationTime(conversation.updatedAt)}
+          {formatConversationTime(conversation.updatedAt, LOCALE_BCP47[locale])}
         </p>
       </button>
       <button

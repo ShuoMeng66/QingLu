@@ -12,6 +12,7 @@ import {
   loadAppPreferences,
   saveAppPreferences,
   type AiPreferences,
+  LOCALE_BCP47,
   type AppLocale,
   type AppPreferences,
   type AppTheme,
@@ -36,7 +37,7 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     applyTheme(preferences.theme)
-    document.documentElement.lang = preferences.locale === 'zh' ? 'zh-CN' : preferences.locale
+    document.documentElement.lang = LOCALE_BCP47[preferences.locale]
   }, [preferences.theme, preferences.locale])
 
   useEffect(() => {

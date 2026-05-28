@@ -1,6 +1,8 @@
 import { Mic, MicOff, Send, Square } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import { useToast } from '../../context/ToastContext'
+import { usePreferences } from '../../context/PreferencesContext'
+import { LOCALE_BCP47 } from '../../lib/appPreferences'
 import { useI18n } from '../../hooks/useI18n'
 import { useSpeechRecognition } from '../../hooks/useSpeechRecognition'
 
@@ -24,7 +26,9 @@ export function ChatComposer({
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const voiceBaseRef = useRef('')
   const { t } = useI18n()
+  const { preferences } = usePreferences()
   const { toast } = useToast()
+  const speechLang = LOCALE_BCP47[preferences.locale]
 
   const appendTranscript = (base: string, chunk: string) => {
     const trimmedChunk = chunk.trim()
@@ -35,7 +39,7 @@ export function ChatComposer({
   }
 
   const { listening, supported, toggle, stop } = useSpeechRecognition({
-    lang: 'zh-CN',
+    lang: speechLang,
     onInterim: (transcript) => {
       onInputChange(appendTranscript(voiceBaseRef.current, transcript))
     },

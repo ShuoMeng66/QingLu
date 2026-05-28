@@ -215,7 +215,10 @@ export function isPrimaryConversation(id: string, conversations: Conversation[])
   return Boolean(primaryId && id === primaryId)
 }
 
-export function formatConversationTime(timestamp: number): string {
+export function formatConversationTime(
+  timestamp: number,
+  locale: string = 'zh-CN',
+): string {
   const date = new Date(timestamp)
   const now = new Date()
   const isToday =
@@ -224,8 +227,8 @@ export function formatConversationTime(timestamp: number): string {
     date.getDate() === now.getDate()
 
   if (isToday) {
-    return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
+    return date.toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })
   }
 
-  return date.toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' })
+  return date.toLocaleDateString(locale, { month: 'numeric', day: 'numeric' })
 }

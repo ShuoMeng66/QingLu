@@ -15,7 +15,7 @@ import { locationSourceLabel } from '../lib/i18n/chatCopy'
 import type { AiDetail, AiTone, AppLocale, AppTheme } from '../lib/appPreferences'
 import { saveUserProfile } from '../lib/userProfile'
 
-const LOCALES: AppLocale[] = ['zh', 'en', 'ja', 'ko']
+const LOCALES: AppLocale[] = ['zh', 'zh-HK', 'zh-TW', 'en', 'ja', 'ko']
 const TONES: AiTone[] = ['friendly', 'professional', 'coach']
 const DETAILS: AiDetail[] = ['concise', 'balanced', 'detailed']
 
