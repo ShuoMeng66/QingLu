@@ -11,10 +11,32 @@ import {
   getGoalOptions,
 } from '../../lib/i18n/chatCopy'
 import {
+  getBeginnerEatingOutOptions,
+  getBeginnerSessionOptions,
+  getBeginnerStyleOptions,
+  getBlockPhaseOptions,
+  getCardioStyleOptions,
+  getCarbStrategyOptions,
+  getEquipmentOptions,
+  getLimitationOptions,
+  getMealTimingOptions,
+  getMuscleGroupOptions,
+  getProfileTierOptions,
+  getRpeOptions,
+  getTrainingExperienceOptions,
+  getTrainingFocusOptions,
+  getTrainingSplitOptions,
+  PROTEIN_G_PER_KG_OPTIONS,
+  REFEED_DAY_OPTIONS,
+} from '../../lib/profileOptions'
+import {
   finalizeUserProfile,
+  getProfileTier,
   loadUserProfile,
   saveUserProfile,
   type FitnessGoal,
+  type PreferredTrainingTime,
+  type ProfileTier,
   type UserProfile,
 } from '../../lib/userProfile'
 
@@ -38,6 +60,30 @@ export function TrainingProfileSheet({ open, onClose }: TrainingProfileSheetProp
     setProfile(next)
   }
 
+  const updateTraining = (patch: NonNullable<UserProfile['training_profile']>) => {
+    updateProfile({
+      training_profile: { ...profile.training_profile, ...patch },
+    })
+  }
+
+  const updateNutrition = (patch: NonNullable<UserProfile['nutrition_advanced']>) => {
+    updateProfile({
+      nutrition_advanced: { ...profile.nutrition_advanced, ...patch },
+    })
+  }
+
+  const updateRecovery = (patch: NonNullable<UserProfile['recovery']>) => {
+    updateProfile({
+      recovery: { ...profile.recovery, ...patch },
+    })
+  }
+
+  const updateBeginner = (patch: NonNullable<UserProfile['beginner_summary']>) => {
+    updateProfile({
+      beginner_summary: { ...profile.beginner_summary, ...patch },
+    })
+  }
+
   const handleSave = () => {
     if (!profile.height_cm || !profile.weight_kg || !profile.goal) {
       toast(t('profile.validationMissing'), 'error')
@@ -53,6 +99,10 @@ export function TrainingProfileSheet({ open, onClose }: TrainingProfileSheetProp
   const goalOptions = getGoalOptions(locale)
   const cuisineOptions = getCuisineOptions(locale)
   const avoidOptions = getAvoidOptions(locale)
+  const tp = profile.training_profile
+  const tier = getProfileTier(profile)
+  const isAdvanced = tier === 'advanced'
+  const bs = profile.beginner_summary
 
   return (
     <AnimatePresence>
@@ -71,7 +121,7 @@ export function TrainingProfileSheet({ open, onClose }: TrainingProfileSheetProp
             role="dialog"
             aria-modal="true"
             aria-labelledby="profile-sheet-title"
-            className="fixed inset-x-0 bottom-0 z-[60] flex max-h-[85dvh] w-full flex-col rounded-t-[32px] glass-panel shadow-glass backdrop-blur-2xl"
+            className="fixed inset-x-0 bottom-0 z-[60] flex max-h-[90dvh] w-full flex-col rounded-t-[32px] glass-panel shadow-glass backdrop-blur-2xl"
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
@@ -93,93 +143,505 @@ export function TrainingProfileSheet({ open, onClose }: TrainingProfileSheetProp
               <h2 id="profile-sheet-title" className="mb-1 text-lg font-semibold text-slate-800">
                 {t('profile.title')}
               </h2>
-              <p className="mb-4 text-xs leading-relaxed text-slate-500">{t('profile.hint')}</p>
+              <p className="mb-3 text-xs leading-relaxed text-slate-500">{t('profile.hint')}</p>
 
-              <div className="mb-4 flex flex-wrap gap-2">
-                {goalOptions.map((option) => (
-                  <button
-                    key={option.id}
-                    type="button"
-                    className={`rounded-full px-3 py-1.5 text-xs font-medium ${
-                      profile.goal === option.id ? 'btn-vitality' : 'bg-white/60 text-slate-500'
-                    }`}
-                    onClick={() => updateProfile({ goal: option.id as FitnessGoal })}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
+              <ProfileSection title={t('profile.sectionTier')}>
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {getProfileTierOptions(locale).map((option) => (
+                    <ChipButton
+                      key={option.id}
+                      active={tier === option.id}
+                      label={option.label}
+                      onClick={() =>
+                        updateProfile({ profile_tier: option.id as ProfileTier })
+                      }
+                    />
+                  ))}
+                </div>
+                <p className="text-[11px] leading-relaxed text-slate-400">
+                  {t(isAdvanced ? 'profile.tierHintAdvanced' : 'profile.tierHintBeginner')}
+                </p>
+              </ProfileSection>
 
-              <div className="grid grid-cols-2 gap-3">
-                <ProfileField label={t('profile.nickname')}>
-                  <input
-                    value={profile.nickname ?? ''}
-                    className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
-                    onChange={(event) => updateProfile({ nickname: event.target.value })}
-                  />
-                </ProfileField>
-                <ProfileField label={t('profile.sex')}>
-                  <select
-                    value={profile.sex ?? ''}
-                    className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
-                    onChange={(event) =>
-                      updateProfile({ sex: event.target.value as 'male' | 'female' })
-                    }
-                  >
-                    <option value="">{t('profile.sexSelect')}</option>
-                    <option value="male">{t('profile.sexMale')}</option>
-                    <option value="female">{t('profile.sexFemale')}</option>
-                  </select>
-                </ProfileField>
-                <ProfileField label={t('profile.age')}>
-                  <input
-                    type="number"
-                    value={profile.age ?? ''}
-                    className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
-                    onChange={(event) =>
-                      updateProfile({ age: Number(event.target.value) || undefined })
-                    }
-                  />
-                </ProfileField>
-                <ProfileField label={t('profile.activity')}>
-                  <select
-                    value={profile.activity_level ?? 'moderate'}
-                    className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
-                    onChange={(event) =>
-                      updateProfile({
-                        activity_level: event.target.value as UserProfile['activity_level'],
+              <ProfileSection title={t('profile.sectionGoal')}>
+                <div className="flex flex-wrap gap-2">
+                  {goalOptions.map((option) => (
+                    <button
+                      key={option.id}
+                      type="button"
+                      className={`rounded-full px-3 py-1.5 text-xs font-medium ${
+                        profile.goal === option.id ? 'btn-vitality' : 'bg-white/60 text-slate-500'
+                      }`}
+                      onClick={() => updateProfile({ goal: option.id as FitnessGoal })}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </ProfileSection>
+
+              <ProfileSection title={t('profile.sectionBody')}>
+                <div className="grid grid-cols-2 gap-3">
+                  <ProfileField label={t('profile.nickname')}>
+                    <input
+                      value={profile.nickname ?? ''}
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      onChange={(e) => updateProfile({ nickname: e.target.value })}
+                    />
+                  </ProfileField>
+                  <ProfileField label={t('profile.sex')}>
+                    <select
+                      value={profile.sex ?? ''}
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      onChange={(e) =>
+                        updateProfile({ sex: e.target.value as 'male' | 'female' })
+                      }
+                    >
+                      <option value="">{t('profile.sexSelect')}</option>
+                      <option value="male">{t('profile.sexMale')}</option>
+                      <option value="female">{t('profile.sexFemale')}</option>
+                    </select>
+                  </ProfileField>
+                  <ProfileField label={t('profile.age')}>
+                    <input
+                      type="number"
+                      value={profile.age ?? ''}
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      onChange={(e) =>
+                        updateProfile({ age: Number(e.target.value) || undefined })
+                      }
+                    />
+                  </ProfileField>
+                  <ProfileField label={t('profile.activity')}>
+                    <select
+                      value={profile.activity_level ?? 'moderate'}
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      onChange={(e) =>
+                        updateProfile({
+                          activity_level: e.target.value as UserProfile['activity_level'],
+                        })
+                      }
+                    >
+                      <option value="sedentary">{t('profile.activitySedentary')}</option>
+                      <option value="light">{t('profile.activityLight')}</option>
+                      <option value="moderate">{t('profile.activityModerate')}</option>
+                      <option value="active">{t('profile.activityActive')}</option>
+                    </select>
+                  </ProfileField>
+                  <ProfileField label={t('profile.height')}>
+                    <input
+                      type="number"
+                      value={profile.height_cm ?? ''}
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      onChange={(e) =>
+                        updateProfile({ height_cm: Number(e.target.value) || undefined })
+                      }
+                    />
+                  </ProfileField>
+                  <ProfileField label={t('profile.weight')}>
+                    <input
+                      type="number"
+                      value={profile.weight_kg ?? ''}
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      onChange={(e) =>
+                        updateProfile({ weight_kg: Number(e.target.value) || undefined })
+                      }
+                    />
+                  </ProfileField>
+                  {isAdvanced && (
+                    <>
+                      <ProfileField label={t('profile.bodyFat')}>
+                        <input
+                          type="number"
+                          step="0.1"
+                          placeholder="—"
+                          value={profile.body_fat_pct ?? ''}
+                          className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                          onChange={(e) =>
+                            updateProfile({ body_fat_pct: Number(e.target.value) || undefined })
+                          }
+                        />
+                      </ProfileField>
+                      <ProfileField label={t('profile.targetWeight')}>
+                        <input
+                          type="number"
+                          step="0.1"
+                          placeholder="—"
+                          value={profile.target_weight_kg ?? ''}
+                          className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                          onChange={(e) =>
+                            updateProfile({
+                              target_weight_kg: Number(e.target.value) || undefined,
+                            })
+                          }
+                        />
+                      </ProfileField>
+                    </>
+                  )}
+                </div>
+              </ProfileSection>
+
+              {!isAdvanced && (
+                <ProfileSection title={t('profile.sectionBeginner')}>
+                  <p className="mb-1.5 text-[11px] font-medium text-slate-500">
+                    {t('profile.beginnerSessions')}
+                  </p>
+                  <div className="mb-3 flex flex-wrap gap-2">
+                    {getBeginnerSessionOptions(locale).map((option) => (
+                      <ChipButton
+                        key={option.id}
+                        active={bs?.weekly_sessions === option.id}
+                        label={option.label}
+                        onClick={() => updateBeginner({ weekly_sessions: option.id })}
+                      />
+                    ))}
+                  </div>
+                  <p className="mb-1.5 text-[11px] font-medium text-slate-500">
+                    {t('profile.beginnerStyle')}
+                  </p>
+                  <div className="mb-3 flex flex-wrap gap-2">
+                    {getBeginnerStyleOptions(locale).map((option) => (
+                      <ChipButton
+                        key={option.id}
+                        active={bs?.workout_style === option.id}
+                        label={option.label}
+                        onClick={() => updateBeginner({ workout_style: option.id })}
+                      />
+                    ))}
+                  </div>
+                  <p className="mb-1.5 text-[11px] font-medium text-slate-500">
+                    {t('profile.beginnerEatingOut')}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {getBeginnerEatingOutOptions(locale).map((option) => (
+                      <ChipButton
+                        key={option.id}
+                        active={bs?.eating_out === option.id}
+                        label={option.label}
+                        onClick={() => updateBeginner({ eating_out: option.id })}
+                      />
+                    ))}
+                  </div>
+                </ProfileSection>
+              )}
+
+              {isAdvanced && (
+              <ProfileSection title={t('profile.sectionTraining')}>
+                <p className="mb-2 text-[11px] text-slate-400">{t('profile.sectionTrainingHint')}</p>
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {getTrainingExperienceOptions(locale).map((option) => (
+                    <ChipButton
+                      key={option.id}
+                      active={tp?.experience === option.id}
+                      label={option.label}
+                      onClick={() => updateTraining({ experience: option.id })}
+                    />
+                  ))}
+                </div>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">{t('profile.split')}</p>
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {getTrainingSplitOptions(locale).map((option) => (
+                    <ChipButton
+                      key={option.id}
+                      active={tp?.split === option.id}
+                      label={option.label}
+                      onClick={() => updateTraining({ split: option.id })}
+                    />
+                  ))}
+                </div>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">{t('profile.focus')}</p>
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {getTrainingFocusOptions(locale).map((option) => (
+                    <ChipButton
+                      key={option.id}
+                      active={tp?.focus === option.id}
+                      label={option.label}
+                      onClick={() => updateTraining({ focus: option.id })}
+                    />
+                  ))}
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  <ProfileField label={t('profile.frequency')}>
+                    <input
+                      type="number"
+                      min={1}
+                      max={7}
+                      placeholder="4"
+                      value={tp?.frequency_per_week ?? ''}
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      onChange={(e) =>
+                        updateTraining({
+                          frequency_per_week: Number(e.target.value) || undefined,
+                        })
+                      }
+                    />
+                  </ProfileField>
+                  <ProfileField label={t('profile.sessionMinutes')}>
+                    <input
+                      type="number"
+                      min={20}
+                      max={120}
+                      placeholder="50"
+                      value={tp?.session_minutes ?? ''}
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      onChange={(e) =>
+                        updateTraining({
+                          session_minutes: Number(e.target.value) || undefined,
+                        })
+                      }
+                    />
+                  </ProfileField>
+                  <ProfileField label={t('profile.preferredTime')}>
+                    <select
+                      value={tp?.preferred_time ?? ''}
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      onChange={(e) => {
+                        const v = e.target.value
+                        updateTraining({
+                          preferred_time: v
+                            ? (v as PreferredTrainingTime)
+                            : undefined,
+                        })
+                      }}
+                    >
+                      <option value="">{t('profile.timeAuto')}</option>
+                      <option value="morning">{t('profile.timeMorning')}</option>
+                      <option value="afternoon">{t('profile.timeAfternoon')}</option>
+                      <option value="evening">{t('profile.timeEvening')}</option>
+                    </select>
+                  </ProfileField>
+                  <ProfileField label={t('profile.equipment')}>
+                    <select
+                      value={tp?.equipment ?? ''}
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      onChange={(e) =>
+                        updateTraining({
+                          equipment: (e.target.value || undefined) as
+                            | NonNullable<UserProfile['training_profile']>['equipment']
+                            | undefined,
+                        })
+                      }
+                    >
+                      <option value="">{t('profile.equipSelect')}</option>
+                      {getEquipmentOptions(locale).map((o) => (
+                        <option key={o.id} value={o.id}>
+                          {o.label}
+                        </option>
+                      ))}
+                    </select>
+                  </ProfileField>
+                </div>
+                <p className="mb-2 mt-3 text-xs font-medium text-slate-500">{t('profile.muscleFocus')}</p>
+                <TagCloud
+                  options={getMuscleGroupOptions(locale)}
+                  selected={tp?.focus_muscle_groups ?? []}
+                  onChange={(next) => updateTraining({ focus_muscle_groups: next })}
+                />
+                <p className="mb-2 mt-3 text-xs font-medium text-slate-500">{t('profile.limitations')}</p>
+                <TagCloud
+                  options={getLimitationOptions(locale)}
+                  selected={tp?.limitations ?? []}
+                  onChange={(next) => updateTraining({ limitations: next })}
+                />
+                <div className="mt-3 grid grid-cols-2 gap-3">
+                  <ProfileField label={t('profile.trainingYears')}>
+                    <input
+                      type="number"
+                      min={0}
+                      max={40}
+                      placeholder="3"
+                      value={tp?.training_years ?? ''}
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      onChange={(e) =>
+                        updateTraining({
+                          training_years: Number(e.target.value) || undefined,
+                        })
+                      }
+                    />
+                  </ProfileField>
+                  <ProfileField label={t('profile.weeklySteps')}>
+                    <input
+                      type="number"
+                      step={500}
+                      min={3000}
+                      max={25000}
+                      placeholder="8000"
+                      value={tp?.weekly_steps_target ?? ''}
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      onChange={(e) =>
+                        updateTraining({
+                          weekly_steps_target: Number(e.target.value) || undefined,
+                        })
+                      }
+                    />
+                  </ProfileField>
+                </div>
+                <p className="mb-1.5 mt-3 text-[11px] font-medium text-slate-500">
+                  {t('profile.blockPhase')}
+                </p>
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {getBlockPhaseOptions(locale).map((option) => (
+                    <ChipButton
+                      key={option.id}
+                      active={tp?.block_phase === option.id}
+                      label={option.label}
+                      onClick={() => updateTraining({ block_phase: option.id })}
+                    />
+                  ))}
+                </div>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">
+                  {t('profile.cardioStyle')}
+                </p>
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {getCardioStyleOptions(locale).map((option) => (
+                    <ChipButton
+                      key={option.id}
+                      active={tp?.cardio_style === option.id}
+                      label={option.label}
+                      onClick={() => updateTraining({ cardio_style: option.id })}
+                    />
+                  ))}
+                </div>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">
+                  {t('profile.rpePreference')}
+                </p>
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {getRpeOptions(locale).map((option) => (
+                    <ChipButton
+                      key={option.id}
+                      active={tp?.rpe_preference === option.id}
+                      label={option.label}
+                      onClick={() => updateTraining({ rpe_preference: option.id })}
+                    />
+                  ))}
+                </div>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">
+                  {t('profile.refeedDays')}
+                </p>
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {REFEED_DAY_OPTIONS.map((days) => (
+                    <ChipButton
+                      key={days}
+                      active={tp?.refeed_days_per_week === days}
+                      label={String(days)}
+                      onClick={() => updateTraining({ refeed_days_per_week: days })}
+                    />
+                  ))}
+                </div>
+                <ProfileField label={t('profile.periodizationNotes')}>
+                  <textarea
+                    rows={2}
+                    placeholder="—"
+                    value={tp?.periodization_notes ?? ''}
+                    className="w-full resize-none rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                    onChange={(e) =>
+                      updateTraining({
+                        periodization_notes: e.target.value || undefined,
                       })
                     }
-                  >
-                    <option value="sedentary">{t('profile.activitySedentary')}</option>
-                    <option value="light">{t('profile.activityLight')}</option>
-                    <option value="moderate">{t('profile.activityModerate')}</option>
-                    <option value="active">{t('profile.activityActive')}</option>
-                  </select>
-                </ProfileField>
-                <ProfileField label={t('profile.height')}>
-                  <input
-                    type="number"
-                    value={profile.height_cm ?? ''}
-                    className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
-                    onChange={(event) =>
-                      updateProfile({ height_cm: Number(event.target.value) || undefined })
-                    }
                   />
                 </ProfileField>
-                <ProfileField label={t('profile.weight')}>
-                  <input
-                    type="number"
-                    value={profile.weight_kg ?? ''}
-                    className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
-                    onChange={(event) =>
-                      updateProfile({ weight_kg: Number(event.target.value) || undefined })
-                    }
-                  />
-                </ProfileField>
-              </div>
+              </ProfileSection>
+              )}
 
-              <div className="mt-5">
+              {isAdvanced && (
+              <ProfileSection title={t('profile.sectionNutrition')}>
+                <p className="mb-2 text-[11px] text-slate-400">{t('profile.sectionNutritionHint')}</p>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">{t('profile.proteinPerKg')}</p>
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {PROTEIN_G_PER_KG_OPTIONS.map((g) => (
+                    <ChipButton
+                      key={g}
+                      active={profile.nutrition_advanced?.protein_g_per_kg === g}
+                      label={`${g} g/kg`}
+                      onClick={() => updateNutrition({ protein_g_per_kg: g })}
+                    />
+                  ))}
+                </div>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">{t('profile.carbStrategy')}</p>
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {getCarbStrategyOptions(locale).map((option) => (
+                    <ChipButton
+                      key={option.id}
+                      active={profile.nutrition_advanced?.carb_strategy === option.id}
+                      label={option.label}
+                      onClick={() => updateNutrition({ carb_strategy: option.id })}
+                    />
+                  ))}
+                </div>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">
+                  {t('profile.mealTiming')}
+                </p>
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {getMealTimingOptions(locale).map((option) => (
+                    <ChipButton
+                      key={option.id}
+                      active={profile.nutrition_advanced?.meal_timing === option.id}
+                      label={option.label}
+                      onClick={() => updateNutrition({ meal_timing: option.id })}
+                    />
+                  ))}
+                </div>
+                <ProfileField label={t('profile.kcalOverride')}>
+                  <input
+                    type="number"
+                    placeholder={t('profile.kcalOverridePlaceholder')}
+                    value={profile.nutrition_advanced?.kcal_override ?? ''}
+                    className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                    onChange={(e) =>
+                      updateNutrition({
+                        kcal_override: Number(e.target.value) || undefined,
+                      })
+                    }
+                  />
+                </ProfileField>
+              </ProfileSection>
+              )}
+
+              {isAdvanced && (
+              <ProfileSection title={t('profile.sectionRecovery')}>
+                <div className="grid grid-cols-2 gap-3">
+                  <ProfileField label={t('profile.sleepHours')}>
+                    <input
+                      type="number"
+                      step="0.5"
+                      min={4}
+                      max={12}
+                      placeholder="7"
+                      value={profile.recovery?.sleep_hours ?? ''}
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      onChange={(e) =>
+                        updateRecovery({
+                          sleep_hours: Number(e.target.value) || undefined,
+                        })
+                      }
+                    />
+                  </ProfileField>
+                  <ProfileField label={t('profile.stress')}>
+                    <select
+                      value={profile.recovery?.stress_level ?? ''}
+                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      onChange={(e) =>
+                        updateRecovery({
+                          stress_level: (e.target.value || undefined) as
+                            | 'low'
+                            | 'medium'
+                            | 'high'
+                            | undefined,
+                        })
+                      }
+                    >
+                      <option value="">{t('profile.stressSelect')}</option>
+                      <option value="low">{t('profile.stressLow')}</option>
+                      <option value="medium">{t('profile.stressMedium')}</option>
+                      <option value="high">{t('profile.stressHigh')}</option>
+                    </select>
+                  </ProfileField>
+                </div>
+              </ProfileSection>
+              )}
+
+              <ProfileSection title={t('profile.sectionDiet')}>
                 <p className="mb-2 text-xs font-medium text-slate-500">{t('profile.cuisines')}</p>
                 <TagCloud
                   options={cuisineOptions}
@@ -200,14 +662,17 @@ export function TrainingProfileSheet({ open, onClose }: TrainingProfileSheetProp
                     })
                   }
                 />
-              </div>
+              </ProfileSection>
 
               {profile.profile_complete && profile.daily_targets?.kcal && (
-                <p className="mt-4 text-xs text-emerald-400">
-                  {t('profile.dailyTarget', {
+                <p className="mt-4 rounded-xl bg-emerald-50/80 px-3 py-2 text-xs leading-relaxed text-emerald-700">
+                  {t('profile.dailyTargetFull', {
                     kcal: profile.daily_targets.kcal,
                     protein: profile.daily_targets.protein_g ?? 0,
+                    carb: profile.daily_targets.carb_g ?? 0,
+                    fat: profile.daily_targets.fat_g ?? 0,
                     session: profile.training?.typical_session ?? '—',
+                    freq: profile.training?.frequency_per_week ?? '—',
                   })}
                 </p>
               )}
@@ -227,11 +692,42 @@ export function TrainingProfileSheet({ open, onClose }: TrainingProfileSheetProp
   )
 }
 
+function ProfileSection({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="mb-5 rounded-[20px] border border-white/70 bg-white/45 p-4 shadow-glass">
+      <h3 className="mb-3 text-sm font-semibold text-slate-800">{title}</h3>
+      {children}
+    </section>
+  )
+}
+
 function ProfileField({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="flex flex-col gap-1 text-xs text-slate-500">
       {label}
       {children}
     </label>
+  )
+}
+
+function ChipButton({
+  active,
+  label,
+  onClick,
+}: {
+  active?: boolean
+  label: string
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      className={`rounded-full px-3 py-1.5 text-xs font-medium transition ${
+        active ? 'btn-vitality' : 'bg-white/60 text-slate-500'
+      }`}
+      onClick={onClick}
+    >
+      {label}
+    </button>
   )
 }

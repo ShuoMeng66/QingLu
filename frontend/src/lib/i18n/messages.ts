@@ -189,19 +189,124 @@ export type MessageKey =
   | 'profile.activitySedentary'
   | 'profile.age'
   | 'profile.avoid'
+  | 'profile.bodyFat'
+  | 'profile.carbBalanced'
+  | 'profile.carbHighTraining'
+  | 'profile.carbLow'
+  | 'profile.carbStrategy'
   | 'profile.cuisines'
   | 'profile.dailyTarget'
+  | 'profile.dailyTargetFull'
+  | 'profile.equipCommercial'
+  | 'profile.equipHome'
+  | 'profile.equipMinimal'
+  | 'profile.equipSelect'
+  | 'profile.equipment'
+  | 'profile.expAdvanced'
+  | 'profile.expBeginner'
+  | 'profile.expIntermediate'
+  | 'profile.focus'
+  | 'profile.focusAthletic'
+  | 'profile.focusEndurance'
+  | 'profile.focusFatLoss'
+  | 'profile.focusHypertrophy'
+  | 'profile.focusStrength'
+  | 'profile.frequency'
   | 'profile.height'
   | 'profile.hint'
+  | 'profile.kcalOverride'
+  | 'profile.kcalOverridePlaceholder'
+  | 'profile.limit.knee'
+  | 'profile.limit.lower_back'
+  | 'profile.limit.neck'
+  | 'profile.limit.shoulder'
+  | 'profile.limit.wrist'
+  | 'profile.limitations'
+  | 'profile.muscle.arms'
+  | 'profile.muscle.back'
+  | 'profile.muscle.chest'
+  | 'profile.muscle.core'
+  | 'profile.muscle.glutes'
+  | 'profile.muscle.legs'
+  | 'profile.muscle.shoulders'
+  | 'profile.muscleFocus'
   | 'profile.nickname'
+  | 'profile.preferredTime'
+  | 'profile.proteinPerKg'
   | 'profile.save'
   | 'profile.savedToast'
+  | 'profile.sectionBody'
+  | 'profile.sectionDiet'
+  | 'profile.sectionGoal'
+  | 'profile.sectionNutrition'
+  | 'profile.sectionNutritionHint'
+  | 'profile.sectionRecovery'
+  | 'profile.sectionTraining'
+  | 'profile.sectionTrainingHint'
+  | 'profile.sessionMinutes'
   | 'profile.sex'
   | 'profile.sexFemale'
   | 'profile.sexMale'
   | 'profile.sexSelect'
+  | 'profile.sleepHours'
+  | 'profile.split'
+  | 'profile.splitBro'
+  | 'profile.splitCustom'
+  | 'profile.splitFullBody'
+  | 'profile.splitPpl'
+  | 'profile.splitUpperLower'
+  | 'profile.stress'
+  | 'profile.stressHigh'
+  | 'profile.stressLow'
+  | 'profile.stressMedium'
+  | 'profile.stressSelect'
+  | 'profile.targetWeight'
+  | 'profile.timeAfternoon'
+  | 'profile.timeAuto'
+  | 'profile.timeEvening'
+  | 'profile.timeMorning'
+  | 'profile.beginnerEatOften'
+  | 'profile.beginnerEatRare'
+  | 'profile.beginnerEatWeekly'
+  | 'profile.beginnerEatingOut'
+  | 'profile.beginnerSessions'
+  | 'profile.beginnerSessions23'
+  | 'profile.beginnerSessions45'
+  | 'profile.beginnerSessions6'
+  | 'profile.beginnerStyle'
+  | 'profile.beginnerStyleActive'
+  | 'profile.beginnerStyleGym'
+  | 'profile.beginnerStyleLight'
+  | 'profile.blockBulk'
+  | 'profile.blockCut'
+  | 'profile.blockMaintain'
+  | 'profile.blockPhase'
+  | 'profile.blockRecomp'
+  | 'profile.cardioHiit'
+  | 'profile.cardioLiss'
+  | 'profile.cardioMixed'
+  | 'profile.cardioNone'
+  | 'profile.cardioStyle'
+  | 'profile.mealTiming'
+  | 'profile.periodizationNotes'
+  | 'profile.refeedDays'
+  | 'profile.rpeAggressive'
+  | 'profile.rpeConservative'
+  | 'profile.rpeModerate'
+  | 'profile.rpePreference'
+  | 'profile.sectionBeginner'
+  | 'profile.sectionTier'
+  | 'profile.tierAdvanced'
+  | 'profile.tierBeginner'
+  | 'profile.tierHintAdvanced'
+  | 'profile.tierHintBeginner'
+  | 'profile.timingIntermittent'
+  | 'profile.timingPreWorkout'
+  | 'profile.timingStandard'
   | 'profile.title'
+  | 'profile.trainingYears'
   | 'profile.validationMissing'
+  | 'profile.weeklySteps'
   | 'profile.weight'
   | 'quick.customPlan'
   | 'quick.defaultHint'
@@ -561,19 +666,125 @@ const ZH: Record<MessageKey, string> = {
   'profile.activitySedentary': '久坐',
   'profile.age': '年龄',
   'profile.avoid': '需要避开',
+  'profile.bodyFat': '体脂率 (%)',
+  'profile.carbBalanced': '均衡碳水',
+  'profile.carbHighTraining': '练日高碳',
+  'profile.carbLow': '低碳',
+  'profile.carbStrategy': '碳水策略',
   'profile.cuisines': '喜欢的菜系',
   'profile.dailyTarget': '每日目标 {kcal} kcal · 蛋白质 {protein}g · {session}',
+  'profile.dailyTargetFull':
+    '每日 {kcal} kcal · 蛋白 {protein}g · 碳水 {carb}g · 脂肪 {fat}g · 每周 {freq} 练 · {session}',
+  'profile.equipCommercial': '商业健身房',
+  'profile.equipHome': '家庭器械',
+  'profile.equipMinimal': '徒手/极简',
+  'profile.equipSelect': '场地条件',
+  'profile.equipment': '训练场地',
+  'profile.expAdvanced': '进阶 (2年+)',
+  'profile.expBeginner': '入门 (<1年)',
+  'profile.expIntermediate': '中级 (1–2年)',
+  'profile.focus': '训练侧重',
+  'profile.focusAthletic': '综合体能',
+  'profile.focusEndurance': '有氧耐力',
+  'profile.focusFatLoss': '减脂表现',
+  'profile.focusHypertrophy': '肌肥大',
+  'profile.focusStrength': '力量表现',
+  'profile.frequency': '每周训练 (次)',
   'profile.height': '身高 (cm)',
-  'profile.hint': '填写身体数据与目标，轻鹭会生成每日热量预算与训练安排。',
+  'profile.hint': '选择新手或老手模式，填写对应档案后轻鹭将生成热量与训练建议。',
+  'profile.sectionTier': '填写模式',
+  'profile.tierBeginner': '新手',
+  'profile.tierAdvanced': '老手',
+  'profile.tierHintBeginner': '只需目标、基础身体数据与简单习惯，适合刚开始记录的用户。',
+  'profile.tierHintAdvanced': '可填写体脂、周期分化、营养策略等专业项，获得更精细的 TDEE 与训练建议。',
+  'profile.sectionBeginner': '运动与饮食习惯',
+  'profile.beginnerSessions': '每周大概练几次',
+  'profile.beginnerSessions23': '每周 2–3 次',
+  'profile.beginnerSessions45': '每周 4–5 次',
+  'profile.beginnerSessions6': '每周 6 次以上',
+  'profile.beginnerStyle': '目前运动方式',
+  'profile.beginnerStyleLight': '散步/居家轻量',
+  'profile.beginnerStyleGym': '健身房基础器械',
+  'profile.beginnerStyleActive': '已有固定训练',
+  'profile.beginnerEatingOut': '外食频率',
+  'profile.beginnerEatRare': '很少外食',
+  'profile.beginnerEatWeekly': '每周几次',
+  'profile.beginnerEatOften': '经常外食',
+  'profile.trainingYears': '系统训练年限',
+  'profile.blockPhase': '当前周期',
+  'profile.blockCut': '减脂期',
+  'profile.blockBulk': '增肌期',
+  'profile.blockMaintain': '维持期',
+  'profile.blockRecomp': '重组期',
+  'profile.cardioStyle': '有氧方式',
+  'profile.cardioNone': '几乎不做',
+  'profile.cardioLiss': '低强度 LISS',
+  'profile.cardioHiit': 'HIIT',
+  'profile.cardioMixed': '混合',
+  'profile.rpePreference': '强度偏好 (RPE)',
+  'profile.rpeConservative': '保守留力',
+  'profile.rpeModerate': '适中',
+  'profile.rpeAggressive': '接近力竭',
+  'profile.refeedDays': '每周高碳/补给日',
+  'profile.weeklySteps': '每日步数目标',
+  'profile.periodizationNotes': '周期化备注',
+  'profile.mealTiming': '进食节奏',
+  'profile.timingStandard': '常规三餐',
+  'profile.timingIntermittent': '间歇性断食',
+  'profile.timingPreWorkout': '练前营养侧重',
+  'profile.kcalOverride': '自定义每日热量 (可选)',
+  'profile.kcalOverridePlaceholder': '留空则按 TDEE 自动计算',
+  'profile.limit.knee': '膝关节',
+  'profile.limit.lower_back': '腰背',
+  'profile.limit.neck': '颈椎',
+  'profile.limit.shoulder': '肩袖',
+  'profile.limit.wrist': '手腕',
+  'profile.limitations': '伤病 / 限制部位',
+  'profile.muscle.arms': '手臂',
+  'profile.muscle.back': '背部',
+  'profile.muscle.chest': '胸',
+  'profile.muscle.core': '核心',
+  'profile.muscle.glutes': '臀',
+  'profile.muscle.legs': '腿',
+  'profile.muscle.shoulders': '肩',
+  'profile.muscleFocus': '周期重点肌群',
   'profile.nickname': '昵称',
+  'profile.preferredTime': '偏好训练时段',
+  'profile.proteinPerKg': '蛋白质 (g/kg 体重)',
   'profile.save': '保存并更新计划',
-  'profile.savedToast': '减脂档案已保存，热量与训练计划已生成',
+  'profile.savedToast': '健身档案已保存，宏量与训练周期已更新',
+  'profile.sectionBody': '身体成分',
+  'profile.sectionDiet': '饮食偏好',
+  'profile.sectionGoal': '阶段目标',
+  'profile.sectionNutrition': '营养策略',
+  'profile.sectionNutritionHint': '蛋白系数与碳水策略会影响宏量分配；高手可填自定义热量。',
+  'profile.sectionRecovery': '恢复与负荷',
+  'profile.sectionTraining': '训练配置',
+  'profile.sectionTrainingHint': '分化、侧重与场地决定推荐话术与附近场馆类型。',
+  'profile.sessionMinutes': '单次时长 (分钟)',
   'profile.sex': '性别',
   'profile.sexFemale': '女',
   'profile.sexMale': '男',
   'profile.sexSelect': '请选择',
-  'profile.title': '减脂档案 · 训练计划',
-  'profile.validationMissing': '请填写身高、体重和健身目标',
+  'profile.sleepHours': '平均睡眠 (小时)',
+  'profile.split': '训练分化',
+  'profile.splitBro': '部位分化',
+  'profile.splitCustom': '自定义',
+  'profile.splitFullBody': '全身',
+  'profile.splitPpl': '推拉腿 PPL',
+  'profile.splitUpperLower': '上下肢',
+  'profile.stress': '近期压力',
+  'profile.stressHigh': '偏高',
+  'profile.stressLow': '较低',
+  'profile.stressMedium': '中等',
+  'profile.stressSelect': '可选',
+  'profile.targetWeight': '目标体重 (kg)',
+  'profile.timeAfternoon': '下午',
+  'profile.timeAuto': '自动',
+  'profile.timeEvening': '晚间',
+  'profile.timeMorning': '早晨',
+  'profile.title': '健身档案 · 训练与营养',
+  'profile.validationMissing': '请至少填写身高、体重和阶段目标',
   'profile.weight': '体重 (kg)',
   'quick.customPlan': '定制今日计划',
   'quick.defaultHint': '点击咨询',
@@ -939,19 +1150,125 @@ const EN: Record<MessageKey, string> = {
   'profile.activitySedentary': 'Sedentary',
   'profile.age': 'Age',
   'profile.avoid': 'Avoid',
+  'profile.bodyFat': 'Body fat (%)',
+  'profile.carbBalanced': 'Balanced carbs',
+  'profile.carbHighTraining': 'High carb on training days',
+  'profile.carbLow': 'Lower carb',
+  'profile.carbStrategy': 'Carb strategy',
   'profile.cuisines': 'Favorite cuisines',
   'profile.dailyTarget': 'Daily {kcal} kcal · protein {protein}g · {session}',
+  'profile.dailyTargetFull':
+    'Daily {kcal} kcal · P {protein}g · C {carb}g · F {fat}g · {freq}x/wk · {session}',
+  'profile.equipCommercial': 'Commercial gym',
+  'profile.equipHome': 'Home gym',
+  'profile.equipMinimal': 'Minimal / bodyweight',
+  'profile.equipSelect': 'Select equipment',
+  'profile.equipment': 'Training setup',
+  'profile.expAdvanced': 'Advanced (2y+)',
+  'profile.expBeginner': 'Beginner (<1y)',
+  'profile.expIntermediate': 'Intermediate',
+  'profile.focus': 'Training focus',
+  'profile.focusAthletic': 'Athletic',
+  'profile.focusEndurance': 'Endurance',
+  'profile.focusFatLoss': 'Fat-loss performance',
+  'profile.focusHypertrophy': 'Hypertrophy',
+  'profile.focusStrength': 'Strength',
+  'profile.frequency': 'Sessions / week',
   'profile.height': 'Height (cm)',
-  'profile.hint': 'Enter your stats and goals — Qinglu will set daily calories and training.',
+  'profile.hint': 'Pick beginner or advanced mode — Qinglu tailors calories and training guidance.',
+  'profile.sectionTier': 'Profile mode',
+  'profile.tierBeginner': 'Beginner',
+  'profile.tierAdvanced': 'Advanced',
+  'profile.tierHintBeginner': 'Goals, basics, and simple habits — fewer fields to get started.',
+  'profile.tierHintAdvanced': 'Body comp, splits, macros, and periodization for sharper TDEE & plans.',
+  'profile.sectionBeginner': 'Activity & eating habits',
+  'profile.beginnerSessions': 'Sessions per week',
+  'profile.beginnerSessions23': '2–3 / week',
+  'profile.beginnerSessions45': '4–5 / week',
+  'profile.beginnerSessions6': '6+ / week',
+  'profile.beginnerStyle': 'How you move now',
+  'profile.beginnerStyleLight': 'Light / home',
+  'profile.beginnerStyleGym': 'Gym basics',
+  'profile.beginnerStyleActive': 'Already training',
+  'profile.beginnerEatingOut': 'Eating out',
+  'profile.beginnerEatRare': 'Rarely',
+  'profile.beginnerEatWeekly': 'A few times / week',
+  'profile.beginnerEatOften': 'Often',
+  'profile.trainingYears': 'Years of structured training',
+  'profile.blockPhase': 'Current block',
+  'profile.blockCut': 'Cut',
+  'profile.blockBulk': 'Bulk',
+  'profile.blockMaintain': 'Maintain',
+  'profile.blockRecomp': 'Recomp',
+  'profile.cardioStyle': 'Cardio style',
+  'profile.cardioNone': 'Minimal',
+  'profile.cardioLiss': 'LISS',
+  'profile.cardioHiit': 'HIIT',
+  'profile.cardioMixed': 'Mixed',
+  'profile.rpePreference': 'Intensity (RPE)',
+  'profile.rpeConservative': 'Conservative',
+  'profile.rpeModerate': 'Moderate',
+  'profile.rpeAggressive': 'Near failure',
+  'profile.refeedDays': 'Refeed days / week',
+  'profile.weeklySteps': 'Daily step target',
+  'profile.periodizationNotes': 'Periodization notes',
+  'profile.mealTiming': 'Meal timing',
+  'profile.timingStandard': 'Standard meals',
+  'profile.timingIntermittent': 'Intermittent fasting',
+  'profile.timingPreWorkout': 'Pre-workout focus',
+  'profile.kcalOverride': 'Custom daily calories (optional)',
+  'profile.kcalOverridePlaceholder': 'Leave blank for auto TDEE',
+  'profile.limit.knee': 'Knee',
+  'profile.limit.lower_back': 'Lower back',
+  'profile.limit.neck': 'Neck',
+  'profile.limit.shoulder': 'Shoulder',
+  'profile.limit.wrist': 'Wrist',
+  'profile.limitations': 'Injuries / limitations',
+  'profile.muscle.arms': 'Arms',
+  'profile.muscle.back': 'Back',
+  'profile.muscle.chest': 'Chest',
+  'profile.muscle.core': 'Core',
+  'profile.muscle.glutes': 'Glutes',
+  'profile.muscle.legs': 'Legs',
+  'profile.muscle.shoulders': 'Shoulders',
+  'profile.muscleFocus': 'Priority muscle groups',
   'profile.nickname': 'Nickname',
+  'profile.preferredTime': 'Preferred time',
+  'profile.proteinPerKg': 'Protein (g/kg bodyweight)',
   'profile.save': 'Save & update plan',
-  'profile.savedToast': 'Profile saved — calorie and training plans updated',
+  'profile.savedToast': 'Profile saved — macros and training cycle updated',
+  'profile.sectionBody': 'Body composition',
+  'profile.sectionDiet': 'Food preferences',
+  'profile.sectionGoal': 'Phase goal',
+  'profile.sectionNutrition': 'Nutrition strategy',
+  'profile.sectionNutritionHint': 'Protein factor and carb strategy shape macro split.',
+  'profile.sectionRecovery': 'Recovery & load',
+  'profile.sectionTraining': 'Training setup',
+  'profile.sectionTrainingHint': 'Split and focus drive venue and program suggestions.',
+  'profile.sessionMinutes': 'Session length (min)',
   'profile.sex': 'Sex',
   'profile.sexFemale': 'Female',
   'profile.sexMale': 'Male',
   'profile.sexSelect': 'Select',
-  'profile.title': 'Profile · training plan',
-  'profile.validationMissing': 'Enter height, weight, and fitness goal',
+  'profile.sleepHours': 'Avg sleep (hours)',
+  'profile.split': 'Training split',
+  'profile.splitBro': 'Bro split',
+  'profile.splitCustom': 'Custom',
+  'profile.splitFullBody': 'Full body',
+  'profile.splitPpl': 'Push / pull / legs',
+  'profile.splitUpperLower': 'Upper / lower',
+  'profile.stress': 'Stress level',
+  'profile.stressHigh': 'High',
+  'profile.stressLow': 'Low',
+  'profile.stressMedium': 'Medium',
+  'profile.stressSelect': 'Optional',
+  'profile.targetWeight': 'Target weight (kg)',
+  'profile.timeAfternoon': 'Afternoon',
+  'profile.timeAuto': 'Auto',
+  'profile.timeEvening': 'Evening',
+  'profile.timeMorning': 'Morning',
+  'profile.title': 'Fitness profile · training & nutrition',
+  'profile.validationMissing': 'Enter height, weight, and phase goal',
   'profile.weight': 'Weight (kg)',
   'quick.customPlan': 'Custom plan',
   'quick.defaultHint': 'Tap to ask',
@@ -1317,19 +1634,125 @@ const JA: Record<MessageKey, string> = {
   'profile.activitySedentary': '座りがち',
   'profile.age': '年齢',
   'profile.avoid': '避けたいもの',
+  'profile.bodyFat': '体脂肪率 (%)',
+  'profile.carbBalanced': '均衡',
+  'profile.carbHighTraining': '練習日高炭水',
+  'profile.carbLow': '低炭水',
+  'profile.carbStrategy': '炭水化物的戦略',
   'profile.cuisines': '好きな料理',
   'profile.dailyTarget': '1日 {kcal} kcal · タンパク質 {protein}g · {session}',
+  'profile.dailyTargetFull':
+    '1日 {kcal} kcal · P{protein}g · C{carb}g · F{fat}g · 週{freq}回 · {session}',
+  'profile.equipCommercial': 'ジム',
+  'profile.equipHome': '自宅',
+  'profile.equipMinimal': 'ミニマル',
+  'profile.equipSelect': '選択',
+  'profile.equipment': '場所',
+  'profile.expAdvanced': '上級',
+  'profile.expBeginner': '初心者',
+  'profile.expIntermediate': '中級',
+  'profile.focus': '重点',
+  'profile.focusAthletic': '総合',
+  'profile.focusEndurance': '持久力',
+  'profile.focusFatLoss': '減脂',
+  'profile.focusHypertrophy': '筋肥大',
+  'profile.focusStrength': '筋力',
+  'profile.frequency': '週の回数',
   'profile.height': '身長 (cm)',
-  'profile.hint': '身体データと目標を入力 — 軽鹭がカロリーとトレーニングを設定。',
+  'profile.hint': '初心者/上級者モードを選び、対応する項目を入力してください。',
+  'profile.sectionTier': '入力モード',
+  'profile.tierBeginner': '初心者',
+  'profile.tierAdvanced': '上級者',
+  'profile.tierHintBeginner': '目標・基本データ・簡単な習慣だけでOK。',
+  'profile.tierHintAdvanced': '体脂肪・分割・栄養戦略など詳細設定が可能。',
+  'profile.sectionBeginner': '運動・外食の習慣',
+  'profile.beginnerSessions': '週の運動回数',
+  'profile.beginnerSessions23': '週2–3回',
+  'profile.beginnerSessions45': '週4–5回',
+  'profile.beginnerSessions6': '週6回以上',
+  'profile.beginnerStyle': '今の運動スタイル',
+  'profile.beginnerStyleLight': '軽い運動/自宅',
+  'profile.beginnerStyleGym': 'ジム基礎',
+  'profile.beginnerStyleActive': '既にトレーニング中',
+  'profile.beginnerEatingOut': '外食の頻度',
+  'profile.beginnerEatRare': 'ほぼしない',
+  'profile.beginnerEatWeekly': '週に数回',
+  'profile.beginnerEatOften': 'よくする',
+  'profile.trainingYears': '系統的トレ年数',
+  'profile.blockPhase': '現在のブロック',
+  'profile.blockCut': '減量',
+  'profile.blockBulk': '増量',
+  'profile.blockMaintain': '維持',
+  'profile.blockRecomp': 'リコンプ',
+  'profile.cardioStyle': '有酸素',
+  'profile.cardioNone': 'ほぼなし',
+  'profile.cardioLiss': 'LISS',
+  'profile.cardioHiit': 'HIIT',
+  'profile.cardioMixed': '混合',
+  'profile.rpePreference': '強度 (RPE)',
+  'profile.rpeConservative': '控えめ',
+  'profile.rpeModerate': '中程度',
+  'profile.rpeAggressive': '高強度',
+  'profile.refeedDays': 'リフィード日/週',
+  'profile.weeklySteps': '1日の歩数目標',
+  'profile.periodizationNotes': '周期化メモ',
+  'profile.mealTiming': '食事タイミング',
+  'profile.timingStandard': '通常',
+  'profile.timingIntermittent': '間欠的断食',
+  'profile.timingPreWorkout': 'トレ前重視',
+  'profile.kcalOverride': 'カスタムカロリー',
+  'profile.kcalOverridePlaceholder': '空欄で自動',
+  'profile.limit.knee': '膝',
+  'profile.limit.lower_back': '腰',
+  'profile.limit.neck': '首',
+  'profile.limit.shoulder': '肩',
+  'profile.limit.wrist': '手首',
+  'profile.limitations': '制限部位',
+  'profile.muscle.arms': '腕',
+  'profile.muscle.back': '背中',
+  'profile.muscle.chest': '胸',
+  'profile.muscle.core': '体幹',
+  'profile.muscle.glutes': '臀',
+  'profile.muscle.legs': '脚',
+  'profile.muscle.shoulders': '肩',
+  'profile.muscleFocus': '重点筋',
   'profile.nickname': 'ニックネーム',
+  'profile.preferredTime': '時間帯',
+  'profile.proteinPerKg': 'タンパク (g/kg)',
   'profile.save': '保存してプラン更新',
-  'profile.savedToast': 'プロフィール保存 — カロリーとトレーニング更新',
+  'profile.savedToast': 'プロフィール保存 — マクロと周期更新',
+  'profile.sectionBody': '体組成',
+  'profile.sectionDiet': '食事嗜好',
+  'profile.sectionGoal': 'フェーズ目標',
+  'profile.sectionNutrition': '栄養戦略',
+  'profile.sectionNutritionHint': 'タンパク係数と炭水戦略。',
+  'profile.sectionRecovery': '回復',
+  'profile.sectionTraining': 'トレーニング',
+  'profile.sectionTrainingHint': '分割と重点で提案が変わります。',
+  'profile.sessionMinutes': '1回 (分)',
   'profile.sex': '性別',
   'profile.sexFemale': '女性',
   'profile.sexMale': '男性',
   'profile.sexSelect': '選択',
-  'profile.title': '減脂プロフィール · トレーニング',
-  'profile.validationMissing': '身長・体重・目標を入力してください',
+  'profile.sleepHours': '睡眠 (時間)',
+  'profile.split': '分割',
+  'profile.splitBro': '部位別',
+  'profile.splitCustom': 'カスタム',
+  'profile.splitFullBody': '全身',
+  'profile.splitPpl': 'PPL',
+  'profile.splitUpperLower': '上下',
+  'profile.stress': 'ストレス',
+  'profile.stressHigh': '高',
+  'profile.stressLow': '低',
+  'profile.stressMedium': '中',
+  'profile.stressSelect': '任意',
+  'profile.targetWeight': '目標体重 (kg)',
+  'profile.timeAfternoon': '午後',
+  'profile.timeAuto': '自動',
+  'profile.timeEvening': '夜',
+  'profile.timeMorning': '朝',
+  'profile.title': 'フィットネス · トレーニングと栄養',
+  'profile.validationMissing': '身長・体重・目標を入力',
   'profile.weight': '体重 (kg)',
   'quick.customPlan': '今日のプランを作成',
   'quick.defaultHint': 'タップして相談',
@@ -1695,18 +2118,124 @@ const KO: Record<MessageKey, string> = {
   'profile.activitySedentary': '거의 없음',
   'profile.age': '나이',
   'profile.avoid': '피할 것',
+  'profile.bodyFat': '체지방률 (%)',
+  'profile.carbBalanced': '균형',
+  'profile.carbHighTraining': '훈련일 고탄수',
+  'profile.carbLow': '저탄수',
+  'profile.carbStrategy': '탄수 전략',
   'profile.cuisines': '선호 요리',
   'profile.dailyTarget': '일일 {kcal} kcal · 단백질 {protein}g · {session}',
+  'profile.dailyTargetFull':
+    '일일 {kcal} kcal · P{protein}g · C{carb}g · F{fat}g · 주{freq}회 · {session}',
+  'profile.equipCommercial': '상업 헬스장',
+  'profile.equipHome': '홈짐',
+  'profile.equipMinimal': '맨몸/미니멀',
+  'profile.equipSelect': '선택',
+  'profile.equipment': '운동 환경',
+  'profile.expAdvanced': '고급',
+  'profile.expBeginner': '초급',
+  'profile.expIntermediate': '중급',
+  'profile.focus': '운동 초점',
+  'profile.focusAthletic': '체력',
+  'profile.focusEndurance': '지구력',
+  'profile.focusFatLoss': '감량',
+  'profile.focusHypertrophy': '근비대',
+  'profile.focusStrength': '근력',
+  'profile.frequency': '주간 횟수',
   'profile.height': '키 (cm)',
-  'profile.hint': '신체 데이터와 목표 입력 — 경록이 칼로리·운동 계획 생성.',
+  'profile.hint': '초보/숙련 모드를 선택하고 해당 항목을 입력하세요.',
+  'profile.sectionTier': '입력 모드',
+  'profile.tierBeginner': '초보',
+  'profile.tierAdvanced': '숙련',
+  'profile.tierHintBeginner': '목표·기본 신체·간단한 습관만으로 시작할 수 있습니다.',
+  'profile.tierHintAdvanced': '체지방·분할·영양 전략 등 전문 항목을 설정할 수 있습니다.',
+  'profile.sectionBeginner': '운동·외식 습관',
+  'profile.beginnerSessions': '주간 운동 횟수',
+  'profile.beginnerSessions23': '주 2–3회',
+  'profile.beginnerSessions45': '주 4–5회',
+  'profile.beginnerSessions6': '주 6회 이상',
+  'profile.beginnerStyle': '현재 운동 방식',
+  'profile.beginnerStyleLight': '가벼운 활동/홈',
+  'profile.beginnerStyleGym': '헬스 기초',
+  'profile.beginnerStyleActive': '이미 훈련 중',
+  'profile.beginnerEatingOut': '외식 빈도',
+  'profile.beginnerEatRare': '거의 없음',
+  'profile.beginnerEatWeekly': '주 몇 회',
+  'profile.beginnerEatOften': '자주',
+  'profile.trainingYears': '체계적 훈련 연수',
+  'profile.blockPhase': '현재 블록',
+  'profile.blockCut': '감량',
+  'profile.blockBulk': '벌크',
+  'profile.blockMaintain': '유지',
+  'profile.blockRecomp': '리컴프',
+  'profile.cardioStyle': '유산소',
+  'profile.cardioNone': '거의 안 함',
+  'profile.cardioLiss': 'LISS',
+  'profile.cardioHiit': 'HIIT',
+  'profile.cardioMixed': '혼합',
+  'profile.rpePreference': '강도 (RPE)',
+  'profile.rpeConservative': '보수적',
+  'profile.rpeModerate': '보통',
+  'profile.rpeAggressive': '고강도',
+  'profile.refeedDays': '리피드 일/주',
+  'profile.weeklySteps': '일일 걸음 목표',
+  'profile.periodizationNotes': '주기화 메모',
+  'profile.mealTiming': '식사 리듬',
+  'profile.timingStandard': '일반',
+  'profile.timingIntermittent': '간헐적 단식',
+  'profile.timingPreWorkout': '운동 전 중심',
+  'profile.kcalOverride': '맞춤 일일 칼로리',
+  'profile.kcalOverridePlaceholder': '비우면 자동 계산',
+  'profile.limit.knee': '무릎',
+  'profile.limit.lower_back': '허리',
+  'profile.limit.neck': '목',
+  'profile.limit.shoulder': '어깨',
+  'profile.limit.wrist': '손목',
+  'profile.limitations': '부상/제한',
+  'profile.muscle.arms': '팔',
+  'profile.muscle.back': '등',
+  'profile.muscle.chest': '가슴',
+  'profile.muscle.core': '코어',
+  'profile.muscle.glutes': '둔근',
+  'profile.muscle.legs': '다리',
+  'profile.muscle.shoulders': '어깨',
+  'profile.muscleFocus': '우선 근육',
   'profile.nickname': '닉네임',
+  'profile.preferredTime': '선호 시간대',
+  'profile.proteinPerKg': '단백질 (g/kg)',
   'profile.save': '저장 및 계획 업데이트',
-  'profile.savedToast': '프로필 저장 — 칼로리·운동 계획 생성',
+  'profile.savedToast': '프로필 저장 — 매크로·주기 업데이트',
+  'profile.sectionBody': '체성분',
+  'profile.sectionDiet': '식단 선호',
+  'profile.sectionGoal': '단계 목표',
+  'profile.sectionNutrition': '영양 전략',
+  'profile.sectionNutritionHint': '단백 계수와 탄수 전략이 매크로에 반영됩니다.',
+  'profile.sectionRecovery': '회복',
+  'profile.sectionTraining': '훈련 설정',
+  'profile.sectionTrainingHint': '분할과 초점에 따라 추천이 달라집니다.',
+  'profile.sessionMinutes': '세션 (분)',
   'profile.sex': '성별',
   'profile.sexFemale': '여',
   'profile.sexMale': '남',
   'profile.sexSelect': '선택',
-  'profile.title': '감량 프로필 · 운동 계획',
+  'profile.sleepHours': '수면 (시간)',
+  'profile.split': '분할',
+  'profile.splitBro': '부위별',
+  'profile.splitCustom': '커스텀',
+  'profile.splitFullBody': '전신',
+  'profile.splitPpl': 'PPL',
+  'profile.splitUpperLower': '상하체',
+  'profile.stress': '스트레스',
+  'profile.stressHigh': '높음',
+  'profile.stressLow': '낮음',
+  'profile.stressMedium': '보통',
+  'profile.stressSelect': '선택',
+  'profile.targetWeight': '목표 체중 (kg)',
+  'profile.timeAfternoon': '오후',
+  'profile.timeAuto': '자동',
+  'profile.timeEvening': '저녁',
+  'profile.timeMorning': '아침',
+  'profile.title': '피트니스 프로필 · 훈련·영양',
   'profile.validationMissing': '키, 몸무게, 목표를 입력하세요',
   'profile.weight': '몸무게 (kg)',
   'quick.customPlan': '오늘 맞춤 계획',

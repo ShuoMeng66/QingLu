@@ -1,7 +1,7 @@
 import { formatLocationLabel } from './citySkyline'
 import { getTodayConsumedKcal } from './mealLog'
 import { getCachedUserLocation } from './userLocation'
-import { getRemainingKcal, loadUserProfile } from './userProfile'
+import { getProfileTier, getRemainingKcal, loadUserProfile } from './userProfile'
 
 /** App 已知的用户位置与热量实况，注入 system prompt，避免 AI 重复索要 */
 export function buildUserContextPrompt(): string {
@@ -32,6 +32,9 @@ export function buildUserContextPrompt(): string {
     lines.push(`今日已记录摄入约 ${consumed} kcal（${mealCount}）；每日目标未设置`)
   }
 
+  const tier = getProfileTier(profile)
+  lines.push(`档案模式：${tier === 'advanced' ? '老手（专业项）' : '新手（精简项）'}`)
+
   if (profile.goal) {
     const goalLabel =
       profile.goal === 'fat_loss'
@@ -40,6 +43,74 @@ export function buildUserContextPrompt(): string {
           ? '增肌'
           : '维持'
     lines.push(`健身目标：${goalLabel}`)
+  }
+
+  if (tier === 'beginner') {
+    const bs = profile.beginner_summary
+    const parts: string[] = []
+    if (bs?.weekly_sessions) {
+      const freq =
+        bs.weekly_sessions === '2_3'
+          ? '每周约 2–3 次'
+          : bs.weekly_sessions === '4_5'
+            ? '每周约 4–5 次'
+            : '每周 6 次以上'
+      parts.push(freq)
+    }
+    if (bs?.workout_style) parts.push(`运动方式 ${bs.workout_style}`)
+    if (bs?.eating_out) parts.push(`外食 ${bs.eating_out}`)
+    if (parts.length) lines.push(`新手习惯：${parts.join('；')}`)
+  }
+
+  if (profile.body_fat_pct != null) {
+    lines.push(`体脂约 ${profile.body_fat_pct}%`)
+  }
+  if (profile.target_weight_kg != null) {
+    lines.push(`目标体重 ${profile.target_weight_kg} kg`)
+  }
+
+  const tp = profile.training_profile
+  if (tier === 'advanced' && (tp?.experience || tp?.split || tp?.focus)) {
+    const parts: string[] = []
+    if (tp.experience) parts.push(`训练经验 ${tp.experience}`)
+    if (tp.split) parts.push(`分化 ${tp.split}`)
+    if (tp.focus) parts.push(`侧重 ${tp.focus}`)
+    if (tp.frequency_per_week) parts.push(`每周 ${tp.frequency_per_week} 次`)
+    if (tp.session_minutes) parts.push(`单次约 ${tp.session_minutes} 分钟`)
+    if (tp.equipment) parts.push(`场地 ${tp.equipment}`)
+    if (tp.training_years != null) parts.push(`系统训练 ${tp.training_years} 年`)
+    if (tp.block_phase) parts.push(`周期 ${tp.block_phase}`)
+    if (tp.cardio_style && tp.cardio_style !== 'none') parts.push(`有氧 ${tp.cardio_style}`)
+    if (tp.rpe_preference) parts.push(`RPE ${tp.rpe_preference}`)
+    if (tp.refeed_days_per_week != null && tp.refeed_days_per_week > 0) {
+      parts.push(`每周补给日 ${tp.refeed_days_per_week}`)
+    }
+    if (tp.weekly_steps_target) parts.push(`步数目标 ${tp.weekly_steps_target}`)
+    if (tp.periodization_notes?.trim()) parts.push(`周期备注 ${tp.periodization_notes.trim()}`)
+    if (tp.focus_muscle_groups?.length) parts.push(`重点肌群 ${tp.focus_muscle_groups.join('、')}`)
+    if (tp.limitations?.length) parts.push(`限制部位 ${tp.limitations.join('、')}`)
+    lines.push(`训练配置：${parts.join('；')}`)
+  }
+
+  const na = profile.nutrition_advanced
+  if (
+    tier === 'advanced' &&
+    (na?.protein_g_per_kg || na?.carb_strategy || na?.kcal_override || na?.meal_timing)
+  ) {
+    const parts: string[] = []
+    if (na.protein_g_per_kg) parts.push(`蛋白 ${na.protein_g_per_kg} g/kg`)
+    if (na.carb_strategy) parts.push(`碳水策略 ${na.carb_strategy}`)
+    if (na.meal_timing) parts.push(`进食节奏 ${na.meal_timing}`)
+    if (na.kcal_override) parts.push(`自定义热量 ${na.kcal_override} kcal`)
+    lines.push(`营养策略：${parts.join('；')}`)
+  }
+
+  const rec = profile.recovery
+  if (tier === 'advanced' && (rec?.sleep_hours || rec?.stress_level)) {
+    const parts: string[] = []
+    if (rec.sleep_hours) parts.push(`睡眠约 ${rec.sleep_hours} h`)
+    if (rec.stress_level) parts.push(`压力 ${rec.stress_level}`)
+    lines.push(`恢复：${parts.join('；')}`)
   }
 
   const avoid = profile.preferences?.avoid?.filter(Boolean) ?? []
