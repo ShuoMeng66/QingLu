@@ -68,7 +68,7 @@ export function WorkspaceSidebar({
 
           <span className="flex h-9 w-9 shrink-0 overflow-hidden rounded-full border border-[var(--hairline)] bg-white">
 
-            <img src={QINGLU.avatar} alt="" className="h-full w-full object-cover object-top" />
+            <img src={QINGLU.avatar} alt="" className="brand-logo-img h-full w-full" />
 
           </span>
 

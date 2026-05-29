@@ -29,7 +29,7 @@ export function AboutPage() {
             <QingluImage
               src={QINGLU.avatar}
               alt="BurnPal 轻鹭"
-              className="h-full w-full object-cover"
+              className="brand-logo-img h-full w-full"
               placeholderClassName="h-28 w-28 rounded-full"
             />
           </div>

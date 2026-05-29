@@ -214,3 +214,10 @@
   background: currentColor;
   animation: cursor-blink 1s step-end infinite;
 }
+
+/** Official bird mark in circular / square UI slots */
+.brand-logo-img {
+  object-fit: contain;
+  padding: 10%;
+  background: #fff;
+}
