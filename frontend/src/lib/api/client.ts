@@ -1,7 +1,10 @@
 const AUTH_TOKEN_KEY = 'burnpal.auth.token'
 const AUTH_USER_KEY = 'burnpal.auth.user'
 
+import { agentLog } from '../debugLog'
+
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? '/api'
+const REQUEST_TIMEOUT_MS = 22_000
 
 export class ApiError extends Error {
   status: number
@@ -23,9 +26,14 @@ async function requestWithRetry<T>(
 
   for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
     try {
-      return await request<T>(path, init)
+      agentLog('client.ts:requestWithRetry', 'attempt start', { path, attempt, maxAttempts }, 'C')
+      const result = await request<T>(path, init)
+      agentLog('client.ts:requestWithRetry', 'attempt ok', { path, attempt }, 'C')
+      return result
     } catch (error) {
       lastError = error
+      const status = error instanceof ApiError ? error.status : -1
+      agentLog('client.ts:requestWithRetry', 'attempt error', { path, attempt, status }, 'C')
       const retryable =
         error instanceof ApiError &&
         retryStatuses.includes(error.status) &&
@@ -39,13 +47,40 @@ async function requestWithRetry<T>(
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await fetch(`${API_BASE}${path}`, {
-    ...init,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(init?.headers ?? {}),
-    },
-  })
+  const url = `${API_BASE}${path}`
+  const started = Date.now()
+  agentLog('client.ts:request', 'fetch start', { path, method: init?.method ?? 'GET' }, 'A')
+
+  let response: Response
+  try {
+    response = await fetch(url, {
+      ...init,
+      signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
+      headers: {
+        'Content-Type': 'application/json',
+        ...(init?.headers ?? {}),
+      },
+    })
+  } catch (error) {
+    agentLog('client.ts:request', 'fetch threw', {
+      path,
+      ms: Date.now() - started,
+      err: error instanceof Error ? error.name : 'unknown',
+    }, 'D')
+    if (error instanceof Error && error.name === 'TimeoutError') {
+      throw new ApiError(
+        '连接认证服务超时（后端可能正在唤醒）。请稍后再试，或切换到「注册」用验证码登录。',
+        504,
+      )
+    }
+    throw error
+  }
+
+  agentLog('client.ts:request', 'fetch done', {
+    path,
+    status: response.status,
+    ms: Date.now() - started,
+  }, 'A')
 
   const raw = await response.text()
   let payload: { error?: string } = {}
@@ -171,7 +206,7 @@ export async function loginAccount(input: { email: string; password: string }) {
         password: input.password,
       }),
     },
-    { maxAttempts: 3 },
+    { maxAttempts: 2 },
   )
 }
 

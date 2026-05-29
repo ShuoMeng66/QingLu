@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
 import { useI18n } from '../../hooks/useI18n'
 import { pingAuthHealth, sendVerificationCode, ApiError } from '../../lib/api/client'
+import { agentLog } from '../../lib/debugLog'
 
 interface AccountAuthPanelProps {
   defaultMode?: 'login' | 'register'
@@ -175,6 +176,7 @@ export function AccountAuthPanel({
     }
 
     setSubmitting(true)
+    agentLog('AccountAuthPanel.tsx:handleSubmit', 'submitting true', { mode }, 'E')
     try {
       if (mode === 'register') {
         const { created } = await register(
@@ -188,14 +190,20 @@ export function AccountAuthPanel({
         onSuccess?.('register')
       } else {
         await login(email, password)
+        agentLog('AccountAuthPanel.tsx:handleSubmit', 'login returned', {}, 'E')
         toast(t('auth.loginSuccess'), 'success')
         onSuccess?.('login')
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : t('auth.failed')
+      agentLog('AccountAuthPanel.tsx:handleSubmit', 'error', {
+        mode,
+        err: error instanceof Error ? error.message : 'unknown',
+      }, 'E')
       toast(message, 'error')
     } finally {
       setSubmitting(false)
+      agentLog('AccountAuthPanel.tsx:handleSubmit', 'submitting false', { mode }, 'E')
     }
   }
 

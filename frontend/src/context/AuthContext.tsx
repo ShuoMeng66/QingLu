@@ -29,6 +29,7 @@ import {
   scheduleUserDataPush,
 } from '../lib/userDataSync'
 import { migrateLegacyConversationsForCurrentUser } from '../types/conversation'
+import { agentLog } from '../lib/debugLog'
 
 import type { AuthUser } from '../types/userData'
 
@@ -54,15 +55,20 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | null>(null)
 
 async function syncCloudData(token: string, isNewAccount: boolean) {
+  const syncStarted = Date.now()
+  agentLog('AuthContext.tsx:syncCloudData', 'start', { isNewAccount }, 'B')
   try {
     migrateLegacyConversationsForCurrentUser()
     const local = collectUserDataSnapshot()
 
     if (isNewAccount) {
+      agentLog('AuthContext.tsx:syncCloudData', 'push only (new account)', {}, 'B')
       await pushRemoteUserData(token, local)
+      agentLog('AuthContext.tsx:syncCloudData', 'done', { ms: Date.now() - syncStarted }, 'B')
       return
     }
 
+    agentLog('AuthContext.tsx:syncCloudData', 'fetch remote', {}, 'B')
     const remote = await fetchRemoteUserData(token)
     if (remote.data && isUserDataSnapshot(remote.data)) {
       const merged = reconcileUserDataSnapshots(local, remote.data)
@@ -73,8 +79,13 @@ async function syncCloudData(token: string, isNewAccount: boolean) {
       await pushRemoteUserData(token, local)
     }
   } catch (error) {
+    agentLog('AuthContext.tsx:syncCloudData', 'error', {
+      ms: Date.now() - syncStarted,
+      err: error instanceof Error ? error.message : 'unknown',
+    }, 'B')
     console.warn('[BurnPal] Cloud sync skipped:', error)
   }
+  agentLog('AuthContext.tsx:syncCloudData', 'finished', { ms: Date.now() - syncStarted }, 'B')
 }
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -124,17 +135,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(nextUser)
     setLoading(false)
     setSyncing(true)
-    try {
-      await syncCloudData(nextToken, isNewAccount)
-    } finally {
-      setSyncing(false)
-    }
+    // Do not block login/register UI on cloud sync (can hang if /user/data is slow)
+    void (async () => {
+      try {
+        await syncCloudData(nextToken, isNewAccount)
+      } finally {
+        setSyncing(false)
+      }
+    })()
   }, [])
 
   const login = useCallback(
     async (email: string, password: string) => {
+      agentLog('AuthContext.tsx:login', 'start', {}, 'A')
+      const loginStarted = Date.now()
       const result = await loginAccount({ email, password })
+      agentLog('AuthContext.tsx:login', 'loginAccount done', { ms: Date.now() - loginStarted }, 'A')
       await afterAuth(result.token, result.user, false)
+      agentLog('AuthContext.tsx:login', 'complete', { ms: Date.now() - loginStarted }, 'A')
     },
     [afterAuth],
   )
