@@ -34,6 +34,10 @@ export const JA: Record<MessageKey, string> = {
   'auth.codeHint': 'メールアドレス入力後、このアドレスに6桁コードを自動送信します',
   'auth.codeSent': '認証コードを送信しました。メールをご確認ください',
   'auth.codeSentTo': '認証コードを {email} に送信しました。メールをご確認ください',
+  'auth.codeSentExisting':
+    '認証コードを {email} に送信しました。登録済みのメールです。コードとパスワードでログインできます（パスワードは更新されます）。',
+  'auth.loginForgotHint':
+    'パスワードが合わない場合は「登録」タブで認証コードを受け取り、新しいパスワードでログインしてください。',
   'auth.displayName': 'ニックネーム',
   'auth.displayNamePlaceholder': '任意',
   'auth.email': 'メール',

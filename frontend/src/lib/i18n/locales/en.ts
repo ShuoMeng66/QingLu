@@ -34,6 +34,10 @@ export const EN: Record<MessageKey, string> = {
   'auth.codeHint': 'A 6-digit code will be sent to this email automatically',
   'auth.codeSent': 'Verification code sent — check your email',
   'auth.codeSentTo': 'Verification code sent to {email} — check your inbox',
+  'auth.codeSentExisting':
+    'Code sent to {email}. This email is already registered — enter the code and password to sign in (password will be updated).',
+  'auth.loginForgotHint':
+    'Wrong password? Switch to Register, get a verification code, and sign in with a new password.',
   'auth.displayName': 'Display name',
   'auth.displayNamePlaceholder': 'Optional',
   'auth.email': 'Email',
@@ -52,7 +56,8 @@ export const EN: Record<MessageKey, string> = {
   'auth.logout': 'Log out',
   'auth.logoutSuccess': 'Logged out',
   'auth.password': 'Password',
-  'auth.registerIntro': 'Enter your email and we will automatically send a verification code to that address. Complete verification to create your account and enable cloud sync.',
+  'auth.registerIntro':
+    'New users can sign up here. Existing users can also request a code to sign in and sync cloud data (you may set a new password).',
   'auth.registerSubmit': 'Sign up',
   'auth.registerSuccess': 'Account created — local data uploaded',
   'auth.registerTab': 'Sign up',

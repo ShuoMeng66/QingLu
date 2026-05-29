@@ -79,11 +79,16 @@ export function AccountAuthPanel({
 
       setSendingCode(true)
       try {
-        await sendVerificationCode(trimmed)
+        const result = await sendVerificationCode(trimmed)
         const normalized = normalizeEmail(trimmed)
         setCodeSentEmail(normalized)
         setCountdown(60)
-        toast(t('auth.codeSentTo', { email: trimmed }), 'success')
+        toast(
+          result.existing
+            ? t('auth.codeSentExisting', { email: trimmed })
+            : t('auth.codeSentTo', { email: trimmed }),
+          'success',
+        )
         return true
       } catch (error) {
         const message =
@@ -93,13 +98,11 @@ export function AccountAuthPanel({
               ? t('auth.smtpUnavailable')
               : error instanceof ApiError && error.status === 504
                 ? t('auth.backendWaking')
-                : error instanceof ApiError && error.status === 409
-                  ? t('auth.emailAlreadyRegistered')
-                  : error instanceof ApiError && error.status === 429
+                : error instanceof ApiError && error.status === 429
+                  ? error.message
+                  : error instanceof Error
                     ? error.message
-                    : error instanceof Error
-                      ? error.message
-                      : t('auth.failed')
+                    : t('auth.failed')
         toast(message, 'error')
         return false
       } finally {
@@ -174,9 +177,14 @@ export function AccountAuthPanel({
     setSubmitting(true)
     try {
       if (mode === 'register') {
-        await register(email, password, verificationCode.trim(), displayName.trim() || undefined)
-        setJustRegistered(true)
-        toast(t('auth.registerSuccess'), 'success')
+        const { created } = await register(
+          email,
+          password,
+          verificationCode.trim(),
+          displayName.trim() || undefined,
+        )
+        setJustRegistered(created)
+        toast(created ? t('auth.registerSuccess') : t('auth.loginSuccess'), 'success')
         onSuccess?.('register')
       } else {
         await login(email, password)
@@ -350,6 +358,10 @@ export function AccountAuthPanel({
             onChange={(event) => setPassword(event.target.value)}
           />
         </label>
+
+        {mode === 'login' && (
+          <p className="text-xs leading-relaxed text-slate-500">{t('auth.loginForgotHint')}</p>
+        )}
 
         <button
           type="submit"

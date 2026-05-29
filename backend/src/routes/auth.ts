@@ -96,11 +96,9 @@ authRouter.post('/send-verification-code', async (req, res) => {
     return
   }
 
-  const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email)
-  if (existing) {
-    res.status(409).json({ error: 'Email already registered' })
-    return
-  }
+  const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email) as
+    | Pick<UserRow, 'id'>
+    | undefined
 
   try {
     await requestVerificationCode(email)
@@ -108,6 +106,7 @@ authRouter.post('/send-verification-code', async (req, res) => {
       ok: true,
       message: 'Verification code sent',
       emailProvider: getEmailProvider(),
+      existing: Boolean(existing),
     })
   } catch (err) {
     if (err instanceof VerificationError) {
@@ -140,12 +139,6 @@ authRouter.post('/register', (req, res) => {
     return
   }
 
-  const existing = db.prepare('SELECT id FROM users WHERE email = ?').get(email)
-  if (existing) {
-    res.status(409).json({ error: 'Email already registered' })
-    return
-  }
-
   try {
     verifyRegistrationCode(email, code)
   } catch (err) {
@@ -158,8 +151,48 @@ authRouter.post('/register', (req, res) => {
   }
 
   const now = Date.now()
-  const id = randomUUID()
   const passwordHash = bcrypt.hashSync(password, 10)
+  const existing = db.prepare('SELECT * FROM users WHERE email = ?').get(email) as UserRow | undefined
+
+  if (existing) {
+    if (displayName) {
+      db.prepare('UPDATE users SET password_hash = ?, display_name = ?, updated_at = ? WHERE id = ?').run(
+        passwordHash,
+        displayName,
+        now,
+        existing.id,
+      )
+    } else {
+      db.prepare('UPDATE users SET password_hash = ?, updated_at = ? WHERE id = ?').run(
+        passwordHash,
+        now,
+        existing.id,
+      )
+    }
+
+    const user = db.prepare('SELECT id, email, display_name FROM users WHERE id = ?').get(existing.id) as
+      | Pick<UserRow, 'id' | 'email' | 'display_name'>
+      | undefined
+
+    if (!user) {
+      res.status(500).json({ error: 'User record missing after update' })
+      return
+    }
+
+    const token = signToken({ sub: user.id, email: user.email })
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        displayName: user.display_name,
+      },
+      created: false,
+    })
+    return
+  }
+
+  const id = randomUUID()
 
   db.prepare(
     `INSERT INTO users (id, email, password_hash, display_name, created_at, updated_at)
@@ -170,6 +203,7 @@ authRouter.post('/register', (req, res) => {
   res.status(201).json({
     token,
     user: { id, email, displayName },
+    created: true,
   })
 })
 
@@ -183,8 +217,19 @@ authRouter.post('/login', (req, res) => {
   }
 
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email) as UserRow | undefined
-  if (!user || !bcrypt.compareSync(password, user.password_hash)) {
-    res.status(401).json({ error: 'Invalid email or password' })
+  if (!user) {
+    res.status(401).json({
+      error: 'Invalid email or password',
+      hint: '若尚未注册，请切换到「注册」并使用邮箱验证码；已注册也可在注册页用验证码登录并重设密码。',
+    })
+    return
+  }
+
+  if (!bcrypt.compareSync(password, user.password_hash)) {
+    res.status(401).json({
+      error: 'Invalid email or password',
+      hint: '密码不正确。可在「注册」页用同一邮箱收取验证码，验证后使用新密码登录。',
+    })
     return
   }
 

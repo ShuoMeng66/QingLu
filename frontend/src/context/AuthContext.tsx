@@ -38,7 +38,12 @@ interface AuthContextValue {
   loading: boolean
   syncing: boolean
   login: (email: string, password: string) => Promise<void>
-  register: (email: string, password: string, verificationCode: string, displayName?: string) => Promise<void>
+  register: (
+    email: string,
+    password: string,
+    verificationCode: string,
+    displayName?: string,
+  ) => Promise<{ created: boolean }>
   logout: () => void
   updateDisplayName: (displayName: string) => Promise<void>
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>
@@ -128,10 +133,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(
     async (email: string, password: string) => {
-      const result = await loginAccount({
-        email: email.trim().toLowerCase(),
-        password,
-      })
+      const result = await loginAccount({ email, password })
       await afterAuth(result.token, result.user, false)
     },
     [afterAuth],
@@ -140,12 +142,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = useCallback(
     async (email: string, password: string, verificationCode: string, displayName?: string) => {
       const result = await registerAccount({
-        email: email.trim().toLowerCase(),
+        email,
         password,
         verificationCode,
         displayName,
       })
-      await afterAuth(result.token, result.user, true)
+      const created = result.created !== false
+      await afterAuth(result.token, result.user, created)
+      return { created }
     },
     [afterAuth],
   )

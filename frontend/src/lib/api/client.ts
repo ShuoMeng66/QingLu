@@ -12,6 +12,32 @@ export class ApiError extends Error {
   }
 }
 
+async function requestWithRetry<T>(
+  path: string,
+  init?: RequestInit,
+  options?: { maxAttempts?: number; retryStatuses?: number[] },
+): Promise<T> {
+  const maxAttempts = options?.maxAttempts ?? 1
+  const retryStatuses = options?.retryStatuses ?? [502, 503, 504]
+  let lastError: unknown
+
+  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+    try {
+      return await request<T>(path, init)
+    } catch (error) {
+      lastError = error
+      const retryable =
+        error instanceof ApiError &&
+        retryStatuses.includes(error.status) &&
+        attempt < maxAttempts - 1
+      if (!retryable) break
+      await sleep(1500 * (attempt + 1))
+    }
+  }
+
+  throw lastError
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_BASE}${path}`, {
     ...init,
@@ -45,7 +71,9 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   }
 
   if (!response.ok) {
-    throw new ApiError(payload.error ?? `Request failed (${response.status})`, response.status)
+    const hint = typeof (payload as { hint?: string }).hint === 'string' ? (payload as { hint?: string }).hint : undefined
+    const message = [payload.error, hint].filter(Boolean).join(' ') || `Request failed (${response.status})`
+    throw new ApiError(message, response.status)
   }
 
   return payload as T
@@ -94,25 +122,14 @@ export async function pingAuthHealth() {
 }
 
 export async function sendVerificationCode(email: string) {
-  const maxAttempts = 3
-  let lastError: unknown
-
-  for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-    try {
-      return await request<{ ok: boolean; emailProvider?: string }>('/auth/send-verification-code', {
-        method: 'POST',
-        body: JSON.stringify({ email }),
-      })
-    } catch (error) {
-      lastError = error
-      const retryable =
-        error instanceof ApiError && [502, 503, 504].includes(error.status) && attempt < maxAttempts - 1
-      if (!retryable) break
-      await sleep(1500 * (attempt + 1))
-    }
-  }
-
-  throw lastError
+  return requestWithRetry<{ ok: boolean; emailProvider?: string; existing?: boolean }>(
+    '/auth/send-verification-code',
+    {
+      method: 'POST',
+      body: JSON.stringify({ email: email.trim().toLowerCase() }),
+    },
+    { maxAttempts: 3 },
+  )
 }
 
 export async function registerAccount(input: {
@@ -121,24 +138,40 @@ export async function registerAccount(input: {
   verificationCode: string
   displayName?: string
 }) {
-  return request<{ token: string; user: { id: string; email: string; displayName: string | null } }>(
+  return requestWithRetry<{
+    token: string
+    user: { id: string; email: string; displayName: string | null }
+    created?: boolean
+  }>(
     '/auth/register',
     {
       method: 'POST',
       body: JSON.stringify({
-        email: input.email,
+        email: input.email.trim().toLowerCase(),
         password: input.password,
-        code: input.verificationCode,
+        code: input.verificationCode.trim(),
         displayName: input.displayName,
       }),
     },
+    { maxAttempts: 3 },
   )
 }
 
 export async function loginAccount(input: { email: string; password: string }) {
-  return request<{ token: string; user: { id: string; email: string; displayName: string | null } }>(
+  return requestWithRetry<{
+    token: string
+    user: { id: string; email: string; displayName: string | null }
+    hint?: string
+  }>(
     '/auth/login',
-    { method: 'POST', body: JSON.stringify(input) },
+    {
+      method: 'POST',
+      body: JSON.stringify({
+        email: input.email.trim().toLowerCase(),
+        password: input.password,
+      }),
+    },
+    { maxAttempts: 3 },
   )
 }
 

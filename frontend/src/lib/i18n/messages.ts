@@ -33,6 +33,8 @@ export type MessageKey =
   | 'auth.codeHint'
   | 'auth.codeSent'
   | 'auth.codeSentTo'
+  | 'auth.codeSentExisting'
+  | 'auth.loginForgotHint'
   | 'auth.displayName'
   | 'auth.displayNamePlaceholder'
   | 'auth.email'

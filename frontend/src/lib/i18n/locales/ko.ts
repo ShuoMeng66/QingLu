@@ -34,6 +34,10 @@ export const KO: Record<MessageKey, string> = {
   'auth.codeHint': '이메일 입력 후 해당 주소로 6자리 코드가 자동 전송됩니다',
   'auth.codeSent': '인증 코드를 보냈습니다. 이메일을 확인하세요',
   'auth.codeSentTo': '인증 코드를 {email}(으)로 보냈습니다. 이메일을 확인하세요',
+  'auth.codeSentExisting':
+    '인증 코드가 {email}(으)로 전송되었습니다. 이미 가입된 이메일입니다. 코드와 비밀번호로 로그인할 수 있습니다(비밀번호가 업데이트됩니다).',
+  'auth.loginForgotHint':
+    '비밀번호가 맞지 않으면 「가입」 탭에서 인증 코드를 받아 새 비밀번호로 로그인하세요.',
   'auth.displayName': '닉네임',
   'auth.displayNamePlaceholder': '선택',
   'auth.email': '이메일',
