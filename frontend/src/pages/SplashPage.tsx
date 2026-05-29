@@ -9,6 +9,7 @@ import { AppShell } from '../components/burnpal/AppShell'
 import { BurnPalLogo } from '../components/burnpal/BurnPalLogo'
 import { PageTransition } from '../components/layout/PageTransition'
 import { SplashHeroVisual } from '../components/burnpal/SplashHeroVisual'
+import { SPLASH_BACKGROUND_SRC } from '../data/splashAssets'
 
 export function SplashPage() {
   const navigate = useNavigate()
@@ -23,8 +24,8 @@ export function SplashPage() {
 
   if (user && !loading) {
     return (
-      <AppShell scrollable>
-        <PageTransition className="flex min-h-dvh flex-1 items-center justify-center">
+    <AppShell scrollable showMesh={false}>
+      <PageTransition className="flex min-h-dvh flex-1 items-center justify-center">
           <p className="text-sm text-slate-500">{t('auth.restoringSession')}</p>
         </PageTransition>
       </AppShell>
@@ -32,18 +33,19 @@ export function SplashPage() {
   }
 
   return (
-    <AppShell scrollable>
+    <AppShell scrollable showMesh={false}>
       <PageTransition className="relative flex min-h-dvh flex-1 flex-col overflow-x-hidden">
-        {/* Splash-only richer background accents */}
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-          <div className="absolute -left-16 top-[5%] h-[480px] w-[480px] rounded-full bg-lime-200/50 blur-[110px]" />
-          <div className="absolute right-0 top-[18%] h-[520px] w-[520px] rounded-full bg-emerald-200/40 blur-[120px]" />
-          <div className="absolute bottom-[5%] right-[20%] h-[380px] w-[380px] rounded-full bg-green-100/50 blur-[95px]" />
-          <div className="absolute bottom-0 left-[30%] h-[300px] w-[300px] rounded-full bg-lime-100/50 blur-[85px]" />
-          <div className="absolute inset-0 bg-gradient-to-br from-[#ecfccb]/70 via-[#f0fdf4]/50 to-lime-100/45" />
-          <div className="absolute inset-y-0 left-0 w-[58%] bg-gradient-to-r from-lime-50/75 via-[#f0fdf4]/50 to-transparent" />
-          <div className="absolute inset-y-0 right-0 w-[45%] bg-gradient-to-l from-emerald-100/35 via-lime-50/20 to-transparent" />
-          <div className="absolute right-[12%] top-[22%] h-[200px] w-[200px] rounded-full bg-yellow-100/25 blur-[70px]" />
+          <img
+            src={SPLASH_BACKGROUND_SRC}
+            alt=""
+            className="h-full w-full object-cover object-[center_42%]"
+            decoding="async"
+            fetchPriority="high"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/92 via-white/72 to-white/35" />
+          <div className="absolute inset-0 bg-gradient-to-t from-white/55 via-white/10 to-white/25" />
+          <div className="absolute inset-0 bg-lime-50/15 mix-blend-soft-light" />
         </div>
 
         <header className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-5 pt-5 sm:px-8 sm:pt-6">

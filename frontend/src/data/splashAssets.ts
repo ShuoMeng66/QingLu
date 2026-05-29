@@ -10,6 +10,9 @@ import {
 } from 'lucide-react'
 import type { MessageKey } from '../lib/i18n/messages'
 
+/** Full-bleed splash / entry page background */
+export const SPLASH_BACKGROUND_SRC = '/images/splash/splash-city-background.png'
+
 /** Splash / landing page carousel */
 export type SplashSlideId = 'outdoor' | 'meal' | 'gym' | 'recovery'
 
