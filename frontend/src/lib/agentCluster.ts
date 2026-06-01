@@ -6,6 +6,7 @@ import { loadAppPreferences } from './appPreferences'
 import { getPromptPreferences, buildEvolvedPreferenceHints } from './promptPreferences'
 import { routeDietScene, scoreResponseWithEvalAgent } from './evalAgent'
 import { buildUserContextPrompt } from './userContextPrompt'
+import { getBurnpalSkillSystemContext } from '../generated/burnpalSkillContext'
 
 const SCENE_STEPS: Record<Exclude<DietSceneId, 'general_health'>, string[]> = {
   A1_gathering_poi: [
@@ -113,18 +114,22 @@ export function buildClusterSystemPrompt(plan: TaskPlan): string {
 
   const userContext = buildUserContextPrompt()
 
+  const skillPack = getBurnpalSkillSystemContext()
+
   return [
-    '你是「轻鹭」，用户的本地生活减脂 AI 管家。产品调性：轻松友好、不说教；数据先行、推荐有理有据。',
+    '你是「轻鹭」(BurnPal)，用户的本地生活减脂 AI 管家。产品调性：轻松友好、不说教；数据先行、推荐有理有据。',
+    'IM 输出：勿用 Markdown 标题/表格/代码块；先一句结论（含 kcal/克数），再 2–4 条短建议；禁止编造店名，仅使用下方 Skill 包 JSON 中的门店/活动。',
     userContext,
     `本轮重点：${plan.focus}`,
     '本轮步骤：',
     steps,
-    'Skill 1 全局规则：先给结论与 kcal/克数；用「可以/建议」而非「必须」；推荐带理由；少铺垫；用户懊恼时先安抚。',
     '若【用户实况】已含位置或今日热量，直接据此推荐，勿用「先告诉我地址/吃了多少」开场。',
     `要求：${constraints}`,
     aiPrefs,
     hint,
     evolved,
+    '--- 以下为完整 BurnPal Skill 包（路由 + 四模块 SKILL + references + assets JSON），按 burnpal-router 分发并严格执行 ---',
+    skillPack,
   ]
     .filter(Boolean)
     .join('\n')

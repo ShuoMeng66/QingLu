@@ -1,7 +1,7 @@
 {
   "patch_id": "p_error_sample_traj_error_001",
   "source_trajectory": "sample-traj-error-001",
-  "target": "hackathod_skill/skills/scene-orchestrator/references/evolved-lessons.md",
+  "target": "burnpal_skill/references/evolved-lessons.md",
   "type": "append_section",
   "rationale": "评分偏低：回答可能过短或缺少可执行细节",
   "generalizability": "high",

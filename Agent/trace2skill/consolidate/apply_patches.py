@@ -21,7 +21,7 @@ def apply_consolidated() -> None:
 
     data = json.loads(consolidated_path.read_text(encoding="utf-8"))
     content = data.get("content") or ""
-    rel = "skills/scene-orchestrator/references/evolved-lessons.md"
+    rel = "references/evolved-lessons.md"
     target = SKILL_ROOT / rel
     target.parent.mkdir(parents=True, exist_ok=True)
 

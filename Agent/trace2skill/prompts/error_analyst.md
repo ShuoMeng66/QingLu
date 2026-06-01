@@ -15,7 +15,7 @@
 ```yaml
 patch_id: p_error_<id>
 source_trajectory: <traj_id>
-target: hackathod_skill/skills/scene-orchestrator/SKILL.md
+target: burnpal_skill/SKILL.md
 type: append_section
 rationale: <一句话>
 generalizability: high | medium | low

@@ -69,3 +69,13 @@ frontend/
 - Agent 代码与 Skill：`D:\Hackathod\Agent\`
 - 前端代码：`D:\Hackathod\frontend\`
 - OpenClaw 全局配置：`D:\OpenClaw\.openclaw\openclaw.json`
+
+## 生产环境 Skill（system prompt 全量注入）
+
+Vercel 的 `/api/openclaw` 只代理百炼/DeepSeek，**不会**运行 OpenClaw Gateway。线上对话通过构建脚本注入完整 Skill 包：
+
+```bash
+npm run bundle:skill   # 生成 src/generated/burnpalSkillContext.ts
+```
+
+`npm run build` / `npm run dev` 会自动执行。内容来自 `../Agent/burnpal_skill/`（路由 + 四模块 SKILL + references + assets JSON）。

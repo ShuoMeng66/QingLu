@@ -9,12 +9,19 @@ import { AppShell } from '../components/burnpal/AppShell'
 import { BurnPalLogo } from '../components/burnpal/BurnPalLogo'
 import { PageTransition } from '../components/layout/PageTransition'
 import { SplashHeroVisual } from '../components/burnpal/SplashHeroVisual'
+import { pingAuthHealth } from '../lib/api/client'
 import { SPLASH_BACKGROUND_SRC } from '../data/splashAssets'
 
 export function SplashPage() {
   const navigate = useNavigate()
   const { t } = useI18n()
   const { user, loading } = useAuth()
+
+  useEffect(() => {
+    void pingAuthHealth().catch(() => {
+      /* warm backend / Render cold start; ignore failures */
+    })
+  }, [])
 
   useEffect(() => {
     if (!loading && user) {

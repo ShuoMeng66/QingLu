@@ -55,7 +55,9 @@ export async function handleBackendProxy(request: Request): Promise<Response> {
     })
   } catch (error) {
     console.error('[backend proxy]', error)
-    const timedOut = error instanceof Error && error.name === 'TimeoutError'
+    const timedOut =
+      error instanceof Error &&
+      (error.name === 'TimeoutError' || error.name === 'AbortError')
     return Response.json(
       {
         error: timedOut

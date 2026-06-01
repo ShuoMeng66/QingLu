@@ -17,7 +17,7 @@
 ```yaml
 consolidated_id: p_star
 targets:
-  - hackathod_skill/skills/scene-orchestrator/references/evolved-lessons.md
+  - burnpal_skill/references/evolved-lessons.md
 prevalence_notes: <哪些模式在多条轨迹重复>
 content: |
   <合并后的 markdown，追加到 evolved-lessons.md>

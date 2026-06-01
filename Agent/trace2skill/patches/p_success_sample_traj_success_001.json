@@ -1,7 +1,7 @@
 {
   "patch_id": "p_success_sample_traj_success_001",
   "source_trajectory": "sample-traj-success-001",
-  "target": "hackathod_skill/skills/scene-orchestrator/references/evolved-lessons.md",
+  "target": "burnpal_skill/references/evolved-lessons.md",
   "type": "append_section",
   "rationale": "成功模式：回答含具体数字（kcal/克/次），用户更易采纳",
   "generalizability": "high",

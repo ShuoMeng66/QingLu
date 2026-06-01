@@ -39,4 +39,4 @@
 mock: act_frisbee_001
 ```
 
-脚本输出需经 `hackathod_skill/scripts/format_user_message.py` 转成上述口语后再发给用户；推送类只发 `notification_text` 一句。
+若调用了 `_legacy/hackathod_skill` 下脚本，将 JSON 输出转成上述口语后再发给用户（勿贴原始 JSON）；推送类只发 `notification_text` 一句。

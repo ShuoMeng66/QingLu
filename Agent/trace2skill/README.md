@@ -5,7 +5,7 @@
 1. **Trajectory** — `logs/trajectories.jsonl`（前端导出或 sample）
 2. **Parallel Analyst** — success / error patch 提案 → `patches/`
 3. **Consolidation** — 分层合并 → `output/consolidated_patch.json` + `prompt_patch.json`
-4. **Apply** — 追加 `evolved-lessons.md`，同步 `frontend/public/evolved/prompt_patch.json`
+4. **Apply** — 追加 [`../burnpal_skill/references/evolved-lessons.md`](../burnpal_skill/references/evolved-lessons.md)，同步 `frontend/public/evolved/prompt_patch.json`
 
 ## 运行
 

@@ -10,7 +10,7 @@ ROOT = Path(__file__).resolve().parent
 LOGS = ROOT / "logs"
 PATCHES = ROOT / "patches"
 OUTPUT = ROOT / "output"
-SKILL_ROOT = ROOT.parent / "hackathod_skill"
+SKILL_ROOT = ROOT.parent / "burnpal_skill"
 
 
 def load_trajectories(path: Path | None = None) -> list[dict[str, Any]]:

@@ -67,7 +67,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
       ms: Date.now() - started,
       err: error instanceof Error ? error.name : 'unknown',
     }, 'D')
-    if (error instanceof Error && error.name === 'TimeoutError') {
+    if (
+      error instanceof Error &&
+      (error.name === 'TimeoutError' || error.name === 'AbortError')
+    ) {
       throw new ApiError(
         '连接认证服务超时（后端可能正在唤醒）。请稍后再试，或切换到「注册」用验证码登录。',
         504,
@@ -206,7 +209,7 @@ export async function loginAccount(input: { email: string; password: string }) {
         password: input.password,
       }),
     },
-    { maxAttempts: 2 },
+    { maxAttempts: 1 },
   )
 }
 

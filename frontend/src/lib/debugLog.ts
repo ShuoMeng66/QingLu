@@ -5,6 +5,15 @@ export function agentLog(
   data: Record<string, unknown>,
   hypothesisId: string,
 ) {
+  const payload = {
+    sessionId: '9a6481',
+    location,
+    message,
+    data,
+    hypothesisId,
+    timestamp: Date.now(),
+  }
+
   // #region agent log
   fetch('http://127.0.0.1:7530/ingest/077fc56f-9998-421e-953f-c0c89307702f', {
     method: 'POST',
@@ -12,14 +21,15 @@ export function agentLog(
       'Content-Type': 'application/json',
       'X-Debug-Session-Id': '9a6481',
     },
-    body: JSON.stringify({
-      sessionId: '9a6481',
-      location,
-      message,
-      data,
-      hypothesisId,
-      timestamp: Date.now(),
-    }),
+    body: JSON.stringify(payload),
   }).catch(() => {})
+
+  if (import.meta.env.DEV) {
+    fetch('/__debug_log', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    }).catch(() => {})
+  }
   // #endregion
 }

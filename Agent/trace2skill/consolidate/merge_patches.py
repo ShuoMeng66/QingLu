@@ -42,7 +42,7 @@ def merge_patches(batch_size: int = 32) -> dict:
     consolidated = {
         "consolidated_id": "p_star",
         "targets": [
-            "hackathod_skill/skills/scene-orchestrator/references/evolved-lessons.md"
+            "burnpal_skill/references/evolved-lessons.md"
         ],
         "prevalence_notes": f"merged {len(active)} patches, withheld {len(withheld)}",
         "content": "\n\n".join(sections) if sections else "- （暂无轨迹 patch，使用默认指南）",

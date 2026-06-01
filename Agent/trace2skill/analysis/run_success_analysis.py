@@ -28,7 +28,7 @@ def propose_success_patch(traj: dict) -> dict | None:
     return {
         "patch_id": f"p_success_{slugify(traj.get('id', 'x'))}",
         "source_trajectory": traj.get("id"),
-        "target": "hackathod_skill/skills/scene-orchestrator/references/evolved-lessons.md",
+        "target": "burnpal_skill/references/evolved-lessons.md",
         "type": "append_section",
         "rationale": hints[0],
         "generalizability": "high" if re_has_numbers(reply) else "medium",

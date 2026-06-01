@@ -92,6 +92,8 @@ git push -u origin main
 - OpenClaw：`/api/openclaw`、`/openclaw-api`（`OPENCLAW_TOKEN` 仅服务端）
 - 账户 API：`/api/auth`、`/api/user`（转发到 `BACKEND_URL`，勿再依赖易崩溃的 Serverless 子路径）
 
+**Vercel 上的 Skill（无需额外 Gateway 网址）**：构建时 `frontend` 会把 `Agent/burnpal_skill/` 全量打包进聊天 **system prompt**（约 150KB 文本，适合 DeepSeek V4 Pro 等大上下文模型）。只需 push GitHub 并 Redeploy；`VITE_OPENCLAW_AGENT` 建议 `deepseek-v4-pro` 或 `deepseek-v4-flash`。
+
 API Key 不要写进前端 bundle。
 
 ### 部署后自检（OpenClaw）
@@ -117,6 +119,8 @@ API Key 不要写进前端 bundle。
 | `https://你的域名/api/auth/health` | JSON：`emailReachable: true`（Render 免费版请用 `RESEND_API_KEY`，QQ SMTP 会 `smtpReachable: false`） |
 | `POST /api/auth/send-verification-code` | JSON：`{"ok":true,"smtp":true}`（未注册邮箱） |
 
+**登录一直「处理中…」**：多半是 `BACKEND_URL` 未设置、Render 冷启动或代理超时。打开 `https://你的域名/api/auth/health` 应返回 JSON（不是 HTML 404）。未配置时 Middleware 返回 503 `Backend not configured`。登录请求约 22s 后会提示超时；Splash 页会自动 ping health 以预热后端。
+
 聊天页若仍演示模式，横幅会显示具体失败原因；也可清除站点 localStorage 后硬刷新。
 
 ### 4. 账户后端（云同步 / 注册）
@@ -137,12 +141,23 @@ Render 示例：
 
 ```
 BurnPal/
-├── frontend/     # Vite + React 前端
-├── backend/      # Express + SQLite 账户与云同步
-├── api/          # Vercel Serverless 代理（OpenClaw + 后端转发）
-├── scripts/      # 一键启动脚本
+├── frontend/          # Vite + React 前端
+├── backend/           # Express + SQLite 账户与云同步
+├── Agent/
+│   ├── burnpal_skill/ # OpenClaw 主 Skill 包（vendor 自 burnpal.skill）
+│   ├── _legacy/       # 早期 hackathod_skill（Heartbeat 脚本等）
+│   └── trace2skill/   # 对话轨迹 → Skill 进化
+├── api/               # Vercel Serverless 代理（OpenClaw + 后端转发）
+├── scripts/           # 一键启动脚本
 └── vercel.json
 ```
+
+## 团队与贡献
+
+- **CiCiLYX（[@CCLYX](https://github.com/CCLYX)）**：OpenClaw Skill 体系与全套模拟数据（[burnpal.skill](https://github.com/CCLYX/burnpal.skill)）— 四模块 Skill（吃什么 / 去哪练 / 恢复放松 / 一起动）、路由层、北京与上海场景数据及参考文档。
+- **ShuoMeng66**：前端应用、账户后端、Vercel/Render 部署与产品集成。
+
+主仓库内 Skill 为 vendor 拷贝，路径为 [`Agent/burnpal_skill/`](Agent/burnpal_skill/)；上游协作仓库见 [CCLYX/burnpal.skill](https://github.com/CCLYX/burnpal.skill)。本地 OpenClaw 加载说明见 [`Agent/README.md`](Agent/README.md)。
 
 ## License
 

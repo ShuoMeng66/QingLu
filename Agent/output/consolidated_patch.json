@@ -1,7 +1,7 @@
 {
   "consolidated_id": "p_star",
   "targets": [
-    "hackathod_skill/skills/scene-orchestrator/references/evolved-lessons.md"
+    "burnpal_skill/references/evolved-lessons.md"
   ],
   "prevalence_notes": "merged 0 patches, withheld 0",
   "content": "- （暂无轨迹 patch，使用默认指南）",

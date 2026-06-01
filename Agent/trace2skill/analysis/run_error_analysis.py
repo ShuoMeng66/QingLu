@@ -34,7 +34,7 @@ def propose_error_patch(traj: dict) -> dict | None:
     return {
         "patch_id": f"p_error_{slugify(traj.get('id', 'x'))}",
         "source_trajectory": traj.get("id"),
-        "target": "hackathod_skill/skills/scene-orchestrator/references/evolved-lessons.md",
+        "target": "burnpal_skill/references/evolved-lessons.md",
         "type": "append_section",
         "rationale": issues[0],
         "generalizability": "high",
