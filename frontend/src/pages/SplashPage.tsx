@@ -62,19 +62,19 @@ export function SplashPage() {
 
         <div className="relative z-10 grid w-full flex-1 lg:min-h-dvh lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
           <div className="flex items-start justify-start px-[clamp(1.75rem,8vw,7rem)] pb-16 pt-24 lg:pb-20 lg:pl-[clamp(2.5rem,10vw,8rem)]">
-            <div className="max-w-xl">
-              <h1 className="font-display-serif font-semibold leading-[1.15] tracking-wide text-body-primary">
-                <span className="block text-[clamp(2.5rem,5.5vw,4.25rem)]">{t('splash.headline1')}</span>
-                <span className="block pl-[0.2em] text-[clamp(2.5rem,5.5vw,4.25rem)] sm:pl-14 md:pl-16">
+            <div className="splash-hero-copy max-w-xl">
+              <h1 className="font-display-serif font-bold leading-[1.12] tracking-wide">
+                <span className="splash-hero-headline block">{t('splash.headline1')}</span>
+                <span className="splash-hero-headline block pl-[0.2em] sm:pl-14 md:pl-16">
                   {t('splash.headline2')}
                 </span>
               </h1>
-              <p className="mt-6 max-w-lg text-xl leading-relaxed text-body-secondary">
+              <p className="splash-hero-tagline mt-6 max-w-lg font-medium">
                 {t('splash.tagline')}
               </p>
               <motion.button
                 type="button"
-                className="btn-vitality mt-10 w-full max-w-sm rounded-full px-14 py-5 text-lg font-semibold sm:mt-12 sm:w-auto"
+                className="btn-vitality mt-10 w-full max-w-sm rounded-full px-14 py-5 text-xl font-semibold sm:mt-12 sm:w-auto"
                 animate={{ scale: [1, 1.02, 1] }}
                 transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
                 whileTap={{ scale: 0.97 }}
@@ -82,7 +82,7 @@ export function SplashPage() {
               >
                 {t('splash.wakeBtn')}
               </motion.button>
-              <p className="mt-5 text-base text-body-secondary">{t('splash.subtitle')}</p>
+              <p className="splash-hero-subtitle mt-5">{t('splash.subtitle')}</p>
 
               <div className="mt-8 max-w-md">
                 <AccountAuthPanel

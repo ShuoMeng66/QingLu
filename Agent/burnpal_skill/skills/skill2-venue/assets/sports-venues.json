@@ -1,0 +1,261 @@
+[
+  {
+    "id": "venue_001",
+    "name": "东单体育中心",
+    "type": "综合体育中心",
+    "address": "北京市东城区崇文门内大街108号",
+    "district": "东城区",
+    "business_hours": "08:00-22:00",
+    "available_sports": {
+      "football": {
+        "count": 1,
+        "type": "标准人造草皮场地",
+        "price": "20元/人次散客，包场另议"
+      },
+      "basketball": {
+        "count": 10,
+        "type": "室外街头篮球场+标准篮球场",
+        "price": "20元/人次散客"
+      },
+      "swimming": {
+        "count": 1,
+        "type": "室内标准泳池",
+        "price": "50元/人次"
+      }
+    },
+    "features": ["北京市最具代表性的全民健身场所", "交通便利", "运动氛围浓厚", "可承办大型赛事"],
+    "rating": 4.7,
+    "distance": null,
+    "coordinates": {
+      "longitude": 116.4123,
+      "latitude": 39.9087
+    }
+  },
+  {
+    "id": "venue_002",
+    "name": "五棵松HI-PARK篮球公园",
+    "type": "专业篮球公园",
+    "address": "北京市海淀区复兴路69号",
+    "district": "海淀区",
+    "business_hours": "09:00-22:00",
+    "available_sports": {
+      "basketball": {
+        "count": 11.5,
+        "type": "室内VIP球场+室内球场+室外空中球场+下沉球场+三对三斗牛场",
+        "price": "30-80元/人次，包场另议"
+      }
+    },
+    "features": ["京西篮球爱好者打卡圣地", "专业场地", "经常举办赛事", "大屏幕转播职业比赛"],
+    "rating": 4.8,
+    "distance": null,
+    "coordinates": {
+      "longitude": 116.2897,
+      "latitude": 39.9065
+    }
+  },
+  {
+    "id": "venue_003",
+    "name": "地坛体育中心",
+    "type": "综合体育中心",
+    "address": "北京市东城区安定门外大街168号",
+    "district": "东城区",
+    "business_hours": "08:30-21:30",
+    "available_sports": {
+      "football": {
+        "count": 1,
+        "type": "标准天然草皮场地",
+        "price": "25元/人次散客"
+      },
+      "basketball": {
+        "count": 6,
+        "type": "室外篮球场",
+        "price": "20元/人次"
+      },
+      "swimming": {
+        "count": 1,
+        "type": "室内恒温泳池",
+        "price": "45元/人次"
+      },
+      "badminton": {
+        "count": 8,
+        "type": "室内羽毛球场",
+        "price": "60元/小时"
+      }
+    },
+    "features": ["老牌体育中心", "设施齐全", "价格亲民", "交通便利"],
+    "rating": 4.4,
+    "distance": null,
+    "coordinates": {
+      "longitude": 116.4078,
+      "latitude": 39.9567
+    }
+  },
+  {
+    "id": "venue_004",
+    "name": "通州体育场",
+    "type": "大型综合体育场",
+    "address": "北京市通州区新华街道新华东街77号",
+    "district": "通州区",
+    "business_hours": "08:00-22:00",
+    "available_sports": {
+      "football": {
+        "count": 1,
+        "type": "室外标准足球场",
+        "price": "30元/人次散客"
+      },
+      "basketball": {
+        "count": 4,
+        "type": "室内+室外篮球场",
+        "price": "25元/人次"
+      },
+      "swimming": {
+        "count": 1,
+        "type": "室内标准游泳馆",
+        "price": "55元/人次"
+      },
+      "badminton": {
+        "count": 12,
+        "type": "室内羽毛球场",
+        "price": "70元/小时"
+      },
+      "ice_skating": {
+        "count": 1,
+        "type": "室内冰上运动馆",
+        "price": "80元/人次"
+      }
+    },
+    "features": ["北京城市副中心重点工程", "三馆一场一中心", "地下停车场车位充足", "毗邻爱琴海购物公园"],
+    "rating": 4.6,
+    "distance": null,
+    "coordinates": {
+      "longitude": 116.6543,
+      "latitude": 39.9012
+    }
+  },
+  {
+    "id": "venue_005",
+    "name": "北投奥园1314",
+    "type": "体育文化时尚地标",
+    "address": "北京市朝阳区奥园西路1号院",
+    "district": "朝阳区",
+    "business_hours": "10:00-22:00",
+    "available_sports": {
+      "badminton": {
+        "count": 10,
+        "type": "室内羽毛球场",
+        "price": "80元/小时"
+      },
+      "basketball": {
+        "count": 4,
+        "type": "室内篮球场",
+        "price": "40元/人次"
+      },
+      "squash": {
+        "count": 3,
+        "type": "室内壁球场",
+        "price": "100元/小时"
+      },
+      "climbing": {
+        "count": 1,
+        "type": "室内攀岩墙",
+        "price": "120元/人次"
+      },
+      "skateboarding": {
+        "count": 1,
+        "type": "陆冲滑板场地",
+        "price": "50元/人次"
+      }
+    },
+    "features": ["北京冬奥会遗产传承地", "时尚潮玩与体育运动融合", "高颜值场地", "多种新兴运动项目"],
+    "rating": 4.7,
+    "distance": null,
+    "coordinates": {
+      "longitude": 116.3987,
+      "latitude": 40.0023
+    }
+  },
+  {
+    "id": "venue_006",
+    "name": "源深体育中心",
+    "type": "综合体育中心",
+    "address": "上海市浦东新区洋泾街道源深路655号",
+    "district": "浦东新区",
+    "business_hours": "08:00-22:00",
+    "available_sports": {
+      "football": {
+        "count": 1,
+        "type": "标准天然草皮体育场",
+        "price": "30元/人次散客，包场另议"
+      },
+      "basketball": {
+        "count": 4,
+        "type": "室内篮球场",
+        "price": "30元/人次"
+      },
+      "swimming": {
+        "count": 1,
+        "type": "室内标准游泳馆",
+        "price": "50元/人次"
+      },
+      "badminton": {
+        "count": 20,
+        "type": "室内羽毛球场",
+        "price": "70元/小时"
+      },
+      "tennis": {
+        "count": 10,
+        "type": "室内网球场",
+        "price": "100元/小时"
+      }
+    },
+    "features": ["浦东新区规模最大的综合性体育场馆", "设施齐全", "交通便利", "地铁6号线直达"],
+    "rating": 4.7,
+    "distance": null,
+    "coordinates": {
+      "longitude": 121.5234,
+      "latitude": 31.2345
+    }
+  },
+  {
+    "id": "venue_007",
+    "name": "静安体育中心",
+    "type": "综合体育中心",
+    "address": "上海市静安区汶水路116号",
+    "district": "静安区",
+    "business_hours": "09:00-22:00",
+    "available_sports": {
+      "football": {
+        "count": 1,
+        "type": "屋顶标准足球场",
+        "price": "40元/人次散客，包场另议"
+      },
+      "basketball": {
+        "count": 2,
+        "type": "室内篮球场",
+        "price": "35元/人次"
+      },
+      "swimming": {
+        "count": 1,
+        "type": "室内标准游泳馆",
+        "price": "55元/人次"
+      },
+      "badminton": {
+        "count": 20,
+        "type": "室内羽毛球场",
+        "price": "75元/小时"
+      },
+      "table_tennis": {
+        "count": 16,
+        "type": "室内乒乓球场",
+        "price": "30元/小时"
+      }
+    },
+    "features": ["上海首个屋顶标准足球场", "现代化设施", "环境优美", "交通便利"],
+    "rating": 4.8,
+    "distance": null,
+    "coordinates": {
+      "longitude": 121.4456,
+      "latitude": 31.2678
+    }
+  }
+]

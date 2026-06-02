@@ -27,6 +27,7 @@ import { useNearbyRecommendations } from '../hooks/useNearbyRecommendations'
 import { formatLocationLabel } from '../lib/citySkyline'
 import { openSmartNavigation } from '../lib/openMaps'
 import { getConversationRecommendationCards } from '../lib/recommendationIntent'
+import { enrichCardsWithGeocode } from '../lib/skillVenueMatch'
 import { formatDistance, formatWalkMinutes } from '../lib/userLocation'
 import { AgentPhaseRail } from './agents/AgentPhaseRail'
 import { AppShell } from './burnpal/AppShell'
@@ -178,6 +179,9 @@ export function ChatView({
   const [profileSheetOpen, setProfileSheetOpen] = useState(false)
   const [demoMessages, setDemoMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
+  const [geoCardsByMessageId, setGeoCardsByMessageId] = useState<
+    Record<string, DetailSheetData[]>
+  >({})
 
   const { location, loading: locationLoading } = useUserLocation({
     enabled: preferences.locationShare,
@@ -224,6 +228,60 @@ export function ChatView({
     ],
     [food, gym, recovery, locationLoading, nearbyLoading, t],
   )
+
+  useEffect(() => {
+    if (!preferences.ai.citeNearby) {
+      setGeoCardsByMessageId({})
+      return
+    }
+
+    let cancelled = false
+
+    void (async () => {
+      const next: Record<string, DetailSheetData[]> = {}
+
+      for (let index = 0; index < displayMessages.length; index += 1) {
+        const message = displayMessages[index]
+        const prevMessage = index > 0 ? displayMessages[index - 1] : null
+        if (
+          message.role !== 'assistant' ||
+          message.streaming ||
+          message.status === 'error' ||
+          prevMessage?.role !== 'user'
+        ) {
+          continue
+        }
+
+        const base = getConversationRecommendationCards(
+          prevMessage.content,
+          location,
+          foodPlaces,
+          gym,
+          recovery,
+          {
+            citeNearby: preferences.ai.citeNearby,
+            assistantText: message.content,
+          },
+        )
+        if (base.length === 0) continue
+
+        next[message.id] = await enrichCardsWithGeocode(base)
+      }
+
+      if (!cancelled) setGeoCardsByMessageId(next)
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [
+    displayMessages,
+    location,
+    foodPlaces,
+    gym,
+    recovery,
+    preferences.ai.citeNearby,
+  ])
 
   const openSheet = useCallback((data: DetailSheetData) => {
     setSheetDetail(data)
@@ -618,7 +676,7 @@ export function ChatView({
                   <AnimatePresence initial={false}>
                     {displayMessages.map((message, index) => {
                       const prevMessage = index > 0 ? displayMessages[index - 1] : null
-                      const inlineCards =
+                      const inlineCardsBase =
                         message.role === 'assistant' &&
                         !message.streaming &&
                         message.status !== 'error' &&
@@ -635,6 +693,8 @@ export function ChatView({
                               },
                             )
                           : []
+                      const inlineCards =
+                        geoCardsByMessageId[message.id] ?? inlineCardsBase
 
                       return (
                         <div key={message.id}>

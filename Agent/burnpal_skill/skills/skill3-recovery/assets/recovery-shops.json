@@ -1,0 +1,310 @@
+[
+  {
+    "id": "recovery_001",
+    "name": "整整运动按摩(东大桥店)",
+    "type": "运动按摩中心",
+    "address": "北京市朝阳区SOHO尚都北塔负一层B163",
+    "district": "朝阳区",
+    "business_hours": "10:00-22:00",
+    "price_range": "¥150-400/次",
+    "review_highlights": ["手法专业，力度到位", "技师会讲解肌肉状况", "环境干净整洁"],
+    "booking_method": "美团预约 / 电话预约",
+    "services": [
+      {
+        "name": "全身运动按摩",
+        "duration": 60,
+        "price": 198,
+        "description": "针对运动后肌肉紧张和酸痛的全身放松按摩"
+      },
+      {
+        "name": "筋膜刀治疗",
+        "duration": 45,
+        "price": 298,
+        "description": "使用专业筋膜刀工具，深度松解筋膜粘连"
+      },
+      {
+        "name": "冲击波治疗",
+        "duration": 30,
+        "price": 398,
+        "description": "利用冲击波技术，治疗慢性疼痛和运动损伤"
+      },
+      {
+        "name": "专业拉伸",
+        "duration": 45,
+        "price": 168,
+        "description": "一对一专业拉伸，提升关节活动度和柔韧性"
+      }
+    ],
+    "features": ["专业运动康复方向", "先进仪器设备", "手法专业", "讲解细致"],
+    "rating": 4.6,
+    "distance": null,
+    "coordinates": {
+      "longitude": 116.4529,
+      "latitude": 39.9188
+    }
+  },
+  {
+    "id": "recovery_002",
+    "name": "乙子运动康复中心(世贸天街店)",
+    "type": "专业运动康复中心",
+    "address": "北京市朝阳区东大桥路8号SOHO·尚都南塔29楼2903室",
+    "district": "朝阳区",
+    "business_hours": "09:00-20:00",
+    "price_range": "¥179-800/次",
+    "review_highlights": ["一对一专业服务", "评估非常细致", "康复效果明显"],
+    "booking_method": "电话预约 / 微信预约",
+    "services": [
+      {
+        "name": "专业评估体验",
+        "duration": 30,
+        "price": 179,
+        "description": "全面的身体评估和问题诊断，制定个性化康复方案"
+      },
+      {
+        "name": "疼痛调理",
+        "duration": 60,
+        "price": 398,
+        "description": "针对颈肩腰腿痛等慢性疼痛的手法调理"
+      },
+      {
+        "name": "术后康复",
+        "duration": 60,
+        "price": 598,
+        "description": "骨科术后专业康复训练，帮助恢复运动功能"
+      },
+      {
+        "name": "普拉提核心训练",
+        "duration": 50,
+        "price": 358,
+        "description": "一对一普拉提训练，强化核心力量"
+      }
+    ],
+    "features": ["一对一专业服务", "先进康复评估设备", "环境舒适", "提供咖啡和水"],
+    "rating": 4.4,
+    "distance": null,
+    "coordinates": {
+      "longitude": 116.4532,
+      "latitude": 39.9185
+    }
+  },
+  {
+    "id": "recovery_003",
+    "name": "轻松猫·疼痛康复·运动复健(望京店)",
+    "type": "疼痛康复中心",
+    "address": "北京市朝阳区启阳路望京东园四区5号楼昆泰嘉瑞公寓1505室",
+    "district": "朝阳区",
+    "business_hours": "10:00-21:00",
+    "price_range": "¥120-350/次",
+    "review_highlights": ["价格透明", "团购优惠多", "康复师会指导家庭训练技巧"],
+    "booking_method": "美团预约",
+    "services": [
+      {
+        "name": "疼痛及体态评估调整",
+        "duration": 45,
+        "price": 128,
+        "description": "全面评估身体疼痛问题和体态异常"
+      },
+      {
+        "name": "运动后放松按摩",
+        "duration": 60,
+        "price": 198,
+        "description": "针对运动后肌肉疲劳和酸痛的放松按摩"
+      },
+      {
+        "name": "体态矫正",
+        "duration": 60,
+        "price": 298,
+        "description": "通过手法和训练改善圆肩驼背、骨盆前倾等问题"
+      },
+      {
+        "name": "运动损伤康复",
+        "duration": 60,
+        "price": 348,
+        "description": "针对运动损伤的专业康复治疗"
+      }
+    ],
+    "features": ["价格透明", "团购优惠多", "康复师会指导家庭训练技巧"],
+    "rating": 4.3,
+    "distance": null,
+    "coordinates": {
+      "longitude": 116.4876,
+      "latitude": 40.0012
+    }
+  },
+  {
+    "id": "recovery_004",
+    "name": "松松堂·按摩·艾灸·拉伸·康复(国贸店)",
+    "type": "综合康复按摩店",
+    "address": "北京市朝阳区景恒街建外soho东区9号楼商铺区3层9317号",
+    "district": "朝阳区",
+    "business_hours": "10:00-22:00",
+    "price_range": "¥100-300/次",
+    "review_highlights": ["位置便利", "服务项目多样", "环境干净整洁"],
+    "booking_method": "美团预约 / 到店预约",
+    "services": [
+      {
+        "name": "全身按摩",
+        "duration": 60,
+        "price": 168,
+        "description": "传统中式全身按摩，放松身心"
+      },
+      {
+        "name": "专业拉伸",
+        "duration": 45,
+        "price": 128,
+        "description": "一对一专业拉伸，缓解肌肉紧张"
+      },
+      {
+        "name": "艾灸调理",
+        "duration": 45,
+        "price": 158,
+        "description": "传统艾灸，温经散寒，调理身体"
+      },
+      {
+        "name": "局部康复按摩",
+        "duration": 30,
+        "price": 98,
+        "description": "针对肩颈、腰背等局部问题的按摩"
+      }
+    ],
+    "features": ["服务项目多样", "位置便利", "环境干净整洁"],
+    "rating": 4.2,
+    "distance": null,
+    "coordinates": {
+      "longitude": 116.4654,
+      "latitude": 39.9078
+    }
+  },
+  {
+    "id": "recovery_005",
+    "name": "运动康复中心(中关村店)",
+    "type": "专业运动康复中心",
+    "address": "北京市海淀区中关村街道中关村大厦16层1621室",
+    "district": "海淀区",
+    "business_hours": "09:00-21:00",
+    "price_range": "¥150-600/次",
+    "review_highlights": ["服务高校师生和周边上班族", "专业康复团队", "性价比高"],
+    "booking_method": "电话预约 / 微信预约",
+    "services": [
+      {
+        "name": "运动损伤评估",
+        "duration": 30,
+        "price": 150,
+        "description": "专业评估运动损伤情况，制定康复计划"
+      },
+      {
+        "name": "肌肉放松按摩",
+        "duration": 60,
+        "price": 220,
+        "description": "针对运动后肌肉紧张的深度放松"
+      },
+      {
+        "name": "关节活动度训练",
+        "duration": 45,
+        "price": 280,
+        "description": "提升关节活动度，预防运动损伤"
+      },
+      {
+        "name": "术后康复训练",
+        "duration": 60,
+        "price": 580,
+        "description": "骨科术后系统康复训练"
+      }
+    ],
+    "features": ["服务高校师生和周边上班族", "专业康复团队", "性价比高"],
+    "rating": 4.5,
+    "distance": null,
+    "coordinates": {
+      "longitude": 116.3165,
+      "latitude": 39.9821
+    }
+  },
+  {
+    "id": "recovery_006",
+    "name": "常乐推拿(陆家嘴中心L+店)",
+    "type": "运动推拿/拉伸中心",
+    "address": "上海市浦东新区浦东南路899号陆家嘴中心L+MALL 8F",
+    "district": "浦东新区",
+    "business_hours": "10:00-22:00",
+    "price_range": "¥120-300/次",
+    "review_highlights": ["全国连锁品牌", "手法专业", "环境雅致"],
+    "booking_method": "小程序预约 / 到店预约",
+    "services": [
+      {
+        "name": "对症推拿",
+        "duration": 40,
+        "price": 168,
+        "description": "针对肩颈劳损、久坐疲惫的精准推拿"
+      },
+      {
+        "name": "全身经络调理",
+        "duration": 60,
+        "price": 268,
+        "description": "全身经络疏通，缓解疲劳"
+      },
+      {
+        "name": "专业拉伸",
+        "duration": 45,
+        "price": 198,
+        "description": "一对一专业拉伸，提升身体柔韧性"
+      },
+      {
+        "name": "足部按摩",
+        "duration": 60,
+        "price": 188,
+        "description": "足部穴位按摩，放松身心"
+      }
+    ],
+    "features": ["全国连锁", "古法推拿技艺", "环境雅致", "提供养生茶水"],
+    "rating": 4.5,
+    "distance": null,
+    "coordinates": {
+      "longitude": 121.5123,
+      "latitude": 31.2345
+    }
+  },
+  {
+    "id": "recovery_007",
+    "name": "优复门诊(静安店)",
+    "type": "专业运动康复中心",
+    "address": "上海市静安区大沽路432号",
+    "district": "静安区",
+    "business_hours": "08:00-19:00",
+    "price_range": "¥200-800/次",
+    "review_highlights": ["中外合资医疗机构", "国际化医师团队", "循证医学理念"],
+    "booking_method": "官网预约 / 电话预约",
+    "services": [
+      {
+        "name": "运动损伤评估",
+        "duration": 30,
+        "price": 200,
+        "description": "专业骨科和运动医学评估"
+      },
+      {
+        "name": "肌骨康复治疗",
+        "duration": 60,
+        "price": 500,
+        "description": "针对肌肉骨骼问题的综合康复治疗"
+      },
+      {
+        "name": "术后康复",
+        "duration": 60,
+        "price": 680,
+        "description": "骨科术后专业康复训练"
+      },
+      {
+        "name": "体态矫正",
+        "duration": 50,
+        "price": 450,
+        "description": "改善圆肩驼背、骨盆前倾等体态问题"
+      }
+    ],
+    "features": ["中外合资连锁", "国际化医师团队", "先进康复设备", "拒绝过度治疗"],
+    "rating": 4.7,
+    "distance": null,
+    "coordinates": {
+      "longitude": 121.4567,
+      "latitude": 31.2234
+    }
+  }
+]

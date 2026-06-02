@@ -29,7 +29,7 @@ Thumbs.db
 
 # Cursor / local assets
 .cursor/
-assets/
+/assets/
 .codebuddy/
 .playwright-mcp/
 

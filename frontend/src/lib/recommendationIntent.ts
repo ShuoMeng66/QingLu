@@ -1,8 +1,9 @@
 import type { NearbyPlace } from './nearbyRecommendations'
 import { placeToRichCardData } from './nearbyRecommendations'
-import { routeDietScene } from './evalAgent'
 import type { UserLocation } from './userLocation'
 import type { DetailSheetData } from '../components/burnpal/DetailBottomSheet'
+import { routeDietScene } from './evalAgent'
+import { resolveSkillVenueCards } from './skillVenueMatch'
 
 const FOOD_PATTERN =
   /吃什么|去哪吃|饮食|餐厅|轻食|外卖|聚餐|附近.*吃|推荐.*吃|午餐|晚餐|早餐|夜宵|卡路里.*吃|吃啥|觅食|点餐|店铺|店家|导航|地址|晚饭|午饭|下班.*吃|饿了|餐/i
@@ -50,6 +51,7 @@ function mentionsNearbyVenue(text: string): boolean {
   return VENUE_HINT_PATTERN.test(text.trim())
 }
 
+/** Prefer Skill/mock venues mentioned in the assistant reply; avoid unrelated OSM POIs. */
 export function getConversationRecommendationCards(
   userText: string,
   location: UserLocation | null,
@@ -58,9 +60,15 @@ export function getConversationRecommendationCards(
   recovery: NearbyPlace | null,
   options?: { citeNearby?: boolean; assistantText?: string },
 ): DetailSheetData[] {
-  if (!location || options?.citeNearby === false) return []
+  if (options?.citeNearby === false) return []
 
-  const combined = `${userText}\n${options?.assistantText ?? ''}`.trim()
+  const assistantText = options?.assistantText ?? ''
+  const skillCards = resolveSkillVenueCards(userText, assistantText, true)
+  if (skillCards.length > 0) return skillCards
+
+  if (!location) return []
+
+  const combined = `${userText}\n${assistantText}`.trim()
   const venueHint = mentionsNearbyVenue(combined)
   const showFood = (shouldShowNearbyFood(combined) || venueHint) && foodPlaces.length > 0
   const showGym =

@@ -14,19 +14,22 @@ export function BurnPalLogo({
 }: BurnPalLogoProps) {
   const { t } = useI18n()
 
+  const iconBox = enlargeText ? 'h-10 w-10 sm:h-11 sm:w-11' : 'h-9 w-9'
+  const iconPx = enlargeText ? 44 : 36
+
   return (
     <div className="flex items-center gap-2.5">
       <span
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/80 p-1 shadow-glass backdrop-blur-md"
+        className={`flex ${iconBox} shrink-0 overflow-hidden rounded-full bg-white shadow-glass`}
         aria-hidden={iconOnly ? undefined : true}
       >
-        <BrandMark size={32} className="h-full w-full" />
+        <BrandMark size={iconPx} fit="cover" className="h-full w-full" />
       </span>
       {!iconOnly && (
         <div className="min-w-0">
           <p
             className={`font-semibold leading-tight text-body-primary ${
-              enlargeText ? 'text-base' : 'text-sm'
+              enlargeText ? 'text-lg sm:text-xl' : 'text-sm'
             }`}
           >
             BurnPal 轻鹭

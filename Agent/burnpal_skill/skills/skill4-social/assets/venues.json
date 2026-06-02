@@ -1,0 +1,178 @@
+[
+  {
+    "id": "v001",
+    "name": "国贸中心户外跑道",
+    "city": "北京",
+    "district": "朝阳区·国贸",
+    "address": "朝阳区建国门外大街国贸中心外环形跑道",
+    "suitable_sports": ["跑步", "夜跑"],
+    "type": "公园/户外跑道",
+    "features": ["有照明", "免费", "路况好"],
+    "rating": 4.7
+  },
+  {
+    "id": "v002",
+    "name": "中关村文体活动中心",
+    "city": "北京",
+    "district": "海淀区·中关村",
+    "address": "海淀区知春路1号文体活动中心3楼",
+    "suitable_sports": ["羽毛球", "篮球"],
+    "type": "体育馆",
+    "features": ["有空调", "需预约", "收费"],
+    "rating": 4.6
+  },
+  {
+    "id": "v003",
+    "name": "国贸附近城市公园",
+    "city": "北京",
+    "district": "朝阳区·国贸",
+    "address": "朝阳区建国路城市公园",
+    "suitable_sports": ["飞盘", "跑步", "徒步"],
+    "type": "公园",
+    "features": ["有草坪", "免费", "需预约部分区域"],
+    "rating": 4.5
+  },
+  {
+    "id": "v004",
+    "name": "学院路绿道",
+    "city": "北京",
+    "district": "海淀区·中关村",
+    "address": "海淀区学院路与北四环交叉口绿道入口",
+    "suitable_sports": ["骑行", "徒步"],
+    "type": "骑行道/绿道",
+    "features": ["无红绿灯", "风景好", "免费"],
+    "rating": 4.8
+  },
+  {
+    "id": "v005",
+    "name": "香山公园",
+    "city": "北京",
+    "district": "海淀区·中关村",
+    "address": "海淀区香山买卖街40号",
+    "suitable_sports": ["徒步", "爬山"],
+    "type": "公园/景区",
+    "features": ["风景好", "需门票", "有步道"],
+    "rating": 4.7
+  },
+  {
+    "id": "v006",
+    "name": "中关村软件园户外跑道",
+    "city": "北京",
+    "district": "海淀区·中关村",
+    "address": "海淀区东北旺西路",
+    "suitable_sports": ["跑步", "配速跑"],
+    "type": "园区跑道",
+    "features": ["免费", "人少", "路况好"],
+    "rating": 4.8
+  },
+  {
+    "id": "v007",
+    "name": "国贸附近社区文体中心",
+    "city": "北京",
+    "district": "朝阳区·国贸",
+    "address": "朝阳区光华路社区文体中心2楼",
+    "suitable_sports": ["羽毛球", "乒乓球"],
+    "type": "社区文体中心",
+    "features": ["收费低", "需预约", "交通便利"],
+    "rating": 4.4
+  },
+  {
+    "id": "v008",
+    "name": "中关村软件园中心草坪",
+    "city": "北京",
+    "district": "海淀区·中关村",
+    "address": "海淀区中关村软件园中心草坪",
+    "suitable_sports": ["飞盘", "露营", "团建"],
+    "type": "园区草坪",
+    "features": ["有草坪", "免费", "需预约"],
+    "rating": 4.5
+  },
+  {
+    "id": "v009",
+    "name": "奥林匹克森林公园",
+    "city": "北京",
+    "district": "朝阳区·国贸",
+    "address": "朝阳区科荟路33号",
+    "suitable_sports": ["骑行", "跑步", "徒步"],
+    "type": "城市公园",
+    "features": ["绿道完善", "免费", "风景好"],
+    "rating": 4.9
+  },
+  {
+    "id": "v010",
+    "name": "百望山森林公园",
+    "city": "北京",
+    "district": "海淀区·中关村",
+    "address": "海淀区黒山扈北口19号",
+    "suitable_sports": ["徒步", "爬山"],
+    "type": "森林公园",
+    "features": ["风景好", "需门票", "步道完善"],
+    "rating": 4.6
+  },
+  {
+    "id": "v011",
+    "name": "温榆河公园",
+    "city": "北京",
+    "district": "朝阳区·国贸",
+    "address": "朝阳区京承高速与滨河路交叉口",
+    "suitable_sports": ["骑行", "徒步"],
+    "type": "绿道",
+    "features": ["风景好", "无红绿灯", "免费"],
+    "rating": 4.8
+  },
+  {
+    "id": "v012",
+    "name": "凤凰岭景区",
+    "city": "北京",
+    "district": "海淀区·中关村",
+    "address": "海淀区苏家坨镇凤凰岭路19号",
+    "suitable_sports": ["徒步", "爬山"],
+    "type": "景区",
+    "features": ["风景好", "需门票", "难度可选"],
+    "rating": 4.7
+  },
+  {
+    "id": "v013",
+    "name": "世纪公园",
+    "city": "上海",
+    "district": "浦东新区·陆家嘴",
+    "address": "上海市浦东新区锦绣路1001号",
+    "suitable_sports": ["飞盘", "跑步", "徒步"],
+    "type": "城市公园",
+    "features": ["有大草坪", "免费", "环境优美"],
+    "rating": 4.7
+  },
+  {
+    "id": "v014",
+    "name": "徐汇滨江跑道",
+    "city": "上海",
+    "district": "徐汇区",
+    "address": "上海市徐汇区龙腾大道",
+    "suitable_sports": ["跑步", "骑行", "夜跑"],
+    "type": "滨江跑道",
+    "features": ["江景", "有照明", "免费", "路况好"],
+    "rating": 4.8
+  },
+  {
+    "id": "v015",
+    "name": "静安体育中心",
+    "city": "上海",
+    "district": "静安区",
+    "address": "上海市静安区汶水路116号",
+    "suitable_sports": ["羽毛球", "篮球", "游泳"],
+    "type": "综合体育中心",
+    "features": ["有空调", "需预约", "收费", "设施先进"],
+    "rating": 4.8
+  },
+  {
+    "id": "v016",
+    "name": "浦东世博骑行道",
+    "city": "上海",
+    "district": "浦东新区",
+    "address": "上海市浦东新区世博大道",
+    "suitable_sports": ["骑行", "跑步"],
+    "type": "滨江骑行道",
+    "features": ["江景", "无红绿灯", "免费", "风景好"],
+    "rating": 4.7
+  }
+]

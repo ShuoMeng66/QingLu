@@ -1,0 +1,586 @@
+[
+  {
+    "id": "r001",
+    "name": "沙野轻食",
+    "cuisine": "轻食",
+    "area": "北京·海淀区",
+    "address": "北京市海淀区学院路辅路与清华东路交叉口南140米",
+    "avg_price_per_person": 28,
+    "rating": 4.2,
+    "diet_friendly_score": 5,
+    "diet_friendly_reason": "主打沙拉、杂粮饭，低脂低卡，食材新鲜少油，非常适合减脂人群",
+    "suitable_for": ["单人就餐", "朋友聚餐", "健身减脂"],
+    "menu": [
+      {
+        "name": "藤椒鸡腿健身餐",
+        "kcal_range": "300-400",
+        "protein_g": 25,
+        "tags": ["推荐", "高蛋白"]
+      },
+      {
+        "name": "烤鸡胸藜麦沙拉",
+        "kcal_range": "200-250",
+        "protein_g": 30,
+        "tags": ["推荐", "高蛋白"]
+      },
+      {
+        "name": "椒盐烤小土豆",
+        "kcal_range": "70-100",
+        "protein_g": 3,
+        "tags": ["推荐"]
+      }
+    ]
+  },
+  {
+    "id": "r002",
+    "name": "眉州东坡（中关村领展点)",
+    "cuisine": "川菜",
+    "area": "北京市·海淀区",
+    "address": "海淀区海淀街道丹棱街甲1号6层601",
+    "avg_price_per_person": 69,
+    "rating": 4.6,
+    "diet_friendly_score": 2,
+    "diet_friendly_reason": "菜品口味偏重油偏辣，可选择清炒素菜，减脂选择性一般",
+    "suitable_for": ["单人就餐", "聚餐", "工作简餐"],
+    "menu": [
+      {
+        "name": "传家东坡肘子",
+        "kcal_range": "200-300",
+        "protein_g": 12,
+        "tags": ["慎点", "高脂肪"]
+      },
+      {
+        "name": "春笋回锅肉",
+        "kcal_range": "300-400",
+        "protein_g": 15,
+        "tags": ["慎点", "高脂肪"]
+      },
+      {
+        "name": "小炒云豆丝",
+        "kcal_range": "80-150",
+        "protein_g": 3,
+        "tags": ["推荐", "清淡"]
+      },
+      {
+        "name": "鲜切水煮吊龙牛肉",
+        "kcal_range": "250-350",
+        "protein_g": 26,
+        "tags": ["慎点", "高蛋白"]
+      }
+    ]
+  },
+  {
+    "id": "r003",
+    "name": "海底捞火锅（万柳店）",
+    "cuisine": "火锅",
+    "area": "北京市·海淀区",
+    "address": "海淀区巴沟路2号华联万柳购物中心五层",
+    "avg_price_per_person": 110,
+    "rating": 4.6,
+    "diet_friendly_score": 2,
+    "diet_friendly_reason": "汤底油脂含量高，蘸料热量高，整体减脂友好度较低",
+    "suitable_for": ["聚餐", "团建"],
+    "menu": [
+      {
+        "name": "黄喉毛肚",
+        "kcal_range": "200-280",
+        "protein_g": 18,
+        "tags": ["慎点", "高嘌呤"]
+      },
+      {
+        "name": "肥牛卷",
+        "kcal_range": "280-360",
+        "protein_g": 22,
+        "tags": ["慎点", "高脂肪"]
+      },
+      {
+        "name": "冻豆腐",
+        "kcal_range": "120-160",
+        "protein_g": 14,
+        "tags": ["推荐", "素食", "热量适中"]
+      },
+      {
+        "name": "虾滑",
+        "kcal_range": "70-160",
+        "protein_g": 20,
+        "tags": ["推荐", "高蛋白"]
+      }
+    ]
+  },
+  {
+    "id": "r004",
+    "name": "九本居酒屋（中关村店）",
+    "cuisine": "日料",
+    "area": "北京市·海淀区",
+    "address": "海淀区中关村南三街6号中科资源大厦1层",
+    "avg_price_per_person": 114,
+    "rating": 4.8,
+    "diet_friendly_score": 4,
+    "diet_friendly_reason": "寿司、刺身多为清淡做法，高蛋白低脂肪，减脂适配度较高",
+    "suitable_for": ["轻食简餐", "约会"],
+    "menu": [
+      {
+        "name": "甜虾刺身",
+        "kcal_range": "150-200",
+        "protein_g": 20,
+        "tags": ["推荐", "高蛋白"]
+      },
+      {
+        "name": "厚切三文鱼",
+        "kcal_range": "140-200",
+        "protein_g": 18,
+        "tags": ["推荐", "高蛋白"]
+      },
+      {
+        "name": "焦糖三文鱼寿司",
+        "kcal_range": "100-200",
+        "protein_g": 20,
+        "tags": ["推荐", "高蛋白", "糖分较高"]
+      },
+      {
+        "name": "极上碳烤鳗鱼",
+        "kcal_range": "250-350",
+        "protein_g": 20,
+        "tags": ["慎点", "高脂肪"]
+      }
+    ]
+  },
+  {
+    "id": "r005",
+    "name": "翅客烧烤（北大南门店）",
+    "cuisine": "烧烤",
+    "area": "北京市·海淀区",
+    "address": "海淀区海淀路19-1中成大厦西小厅",
+    "avg_price_per_person": 60,
+    "rating": 4,
+    "diet_friendly_score": 1,
+    "diet_friendly_reason": "食材大部分经过油炸、炭烤，油脂和盐分超标，极不适合减脂",
+    "suitable_for": ["多人就餐", "团建聚餐", "夜宵"],
+    "menu": [
+      {
+        "name": "香烤鸡翅",
+        "kcal_range": "360-460",
+        "protein_g": 17,
+        "tags": ["慎点", "高脂肪"]
+      },
+      {
+        "name": "烤韭菜",
+        "kcal_range": "180-260",
+        "protein_g": 4,
+        "tags": ["慎点", "重调味"]
+      },
+      {
+        "name": "锡纸金针菇",
+        "kcal_range": "200-250",
+        "protein_g": 17,
+        "tags": ["慎点", "重调味"]
+      },
+      {
+        "name": "烤羊肉串",
+        "kcal_range": "320-420",
+        "protein_g": 18,
+        "tags": ["慎点", "高油高盐", "高脂肪"]
+      },
+      {
+        "name": "烤面包",
+        "kcal_range": "300-320",
+        "protein_g": 9,
+        "tags": ["慎点", "高热量"]
+      }
+    ]
+  },
+  {
+    "id": "r006",
+    "name": "星巴克（北京畅春园店）",
+    "cuisine": "西餐",
+    "area": "北京市·海淀区",
+    "address": "海淀区颐和园路8号",
+    "avg_price_per_person": 38,
+    "rating": 4.2,
+    "diet_friendly_score": 3,
+    "diet_friendly_reason": "饮品可选择黑咖啡，烘培点心热量偏高，减脂需要谨慎选择",
+    "suitable_for": ["下午茶", "单人就餐"],
+    "menu": [
+      {
+        "name": "美式咖啡",
+        "kcal_range": "5-15",
+        "protein_g": 0,
+        "tags": ["推荐", "低卡"]
+      },
+      {
+        "name": "经典三明治",
+        "kcal_range": "200-300",
+        "protein_g": 6,
+        "tags": ["慎点", "高糖"]
+      },
+      {
+        "name": "焦糖玛奇朵",
+        "kcal_range": "260-320",
+        "protein_g": 3,
+        "tags": ["慎点", "高糖"]
+      },
+      {
+        "name": "莓莓风味美式",
+        "kcal_range": "230-280",
+        "protein_g": 5,
+        "tags": ["可选", "0糖"]
+      }
+    ]
+  },
+  {
+    "id": "r007",
+    "name": "福楼毕斯罗",
+    "cuisine": "法餐",
+    "area": "北京·国贸",
+    "address": "朝阳区东三环中路国贸商城3朝北区B座7层",
+    "avg_price_per_person": 310,
+    "rating": 4.3,
+    "diet_friendly_score": 3,
+    "diet_friendly_reason": "法式料理黄油、奶油使用较多，部分主食热量较高",
+    "suitable_for": ["商务宴请", "约会"],
+    "menu": [
+      {
+        "name": "拿破仑惠灵顿牛排",
+        "kcal_range": "500-700",
+        "protein_g": 25,
+        "tags": ["慎选", "高蛋白", "高热量"]
+      },
+      {
+        "name": "鹅肝",
+        "kcal_range": "130-150",
+        "protein_g": 15,
+        "tags": ["推荐"]
+      },
+      {
+        "name": "蔬菜沙拉",
+        "kcal_range": "130-190",
+        "protein_g": 6,
+        "tags": ["推荐", "清淡"]
+      },
+      {
+        "name": "法式面包",
+        "kcal_range": "290-370",
+        "protein_g": 5,
+        "tags": ["慎点", "高油"]
+      }
+    ]
+  },
+  {
+    "id": "r008",
+    "name": "太二酸菜鱼",
+    "cuisine": "川菜",
+    "area": "北京·国贸",
+    "address": "朝阳区财富购物中心2楼",
+    "avg_price_per_person": 87,
+    "rating": 4.3,
+    "diet_friendly_score": 2,
+    "diet_friendly_reason": "菜品油脂、辣椒含量高，整体热量偏高，不适合减脂",
+    "suitable_for": ["逛街简餐", "聚餐"],
+    "menu": [
+      {
+        "name": "经典黑鱼酸菜鱼",
+        "kcal_range": "400-500",
+        "protein_g": 32,
+        "tags": ["慎选", "重油"]
+      },
+      {
+        "name": "小炒牛肉",
+        "kcal_range": "250-400",
+        "protein_g": 15,
+        "tags": ["推荐", "高蛋白"]
+      },
+      {
+        "name": "小酥肉",
+        "kcal_range": "390-470",
+        "protein_g": 14,
+        "tags": ["慎点", "油炸"]
+      },
+      {
+        "name": "鲜肉花菜",
+        "kcal_range": "200-250",
+        "protein_g": 8,
+        "tags": ["推荐", "素菜"]
+      }
+    ]
+  },
+  {
+    "id": "r009",
+    "name": "Wagas沃歌斯（北京招商局店）",
+    "cuisine": "轻食",
+    "area": "北京·国贸",
+    "address": "朝阳区建国路118号招商大厦1层101室",
+    "avg_price_per_person": 80,
+    "rating": 4.4,
+    "diet_friendly_score": 5,
+    "diet_friendly_reason": "主打健康轻食，荤素搭配合理，控卡减脂首选",
+    "suitable_for": ["减脂餐食", "单人就餐"],
+    "menu": [
+      {
+        "name": "芒果鸡肉沙拉",
+        "kcal_range": "140-200",
+        "protein_g": 25,
+        "tags": ["推荐", "低卡"]
+      },
+      {
+        "name": "意式蔬菜意面汤",
+        "kcal_range": "60-110",
+        "protein_g": 3,
+        "tags": ["推荐", "无负担"]
+      },
+      {
+        "name": "低碳水牛肉海藻面",
+        "kcal_range": "200-260",
+        "protein_g": 30,
+        "tags": ["推荐", "高蛋白"]
+      },
+      {
+        "name": "意式大虾配茄汁酱意面",
+        "kcal_range": "200-250",
+        "protein_g": 30,
+        "tags": ["推荐", "高蛋白"]
+      }
+    ]
+  },
+  {
+    "id": "r010",
+    "name": "左庭右院鲜牛肉火锅",
+    "cuisine": "川菜",
+    "area": "北京·国贸",
+    "address": "朝阳区悠唐购物中心5层",
+    "avg_price_per_person": 135,
+    "rating": 4.8,
+    "diet_friendly_score": 3,
+    "diet_friendly_reason": "鲜牛肉低脂高蛋白，清汤锅底友好，但是重口味蘸料会增加热量",
+    "suitable_for": ["团建", "聚餐"],
+    "menu": [
+      {
+        "name": "吊龙牛肉",
+        "kcal_range": "160-220",
+        "protein_g": 30,
+        "tags": ["推荐", "高蛋白"]
+      },
+      {
+        "name": "牛肉丸",
+        "kcal_range": "280-360",
+        "protein_g": 18,
+        "tags": ["慎点", "高油"]
+      },
+      {
+        "name": "雪花牛肉",
+        "kcal_range": "170-230",
+        "protein_g": 29,
+        "tags": ["推荐", "高蛋白"]
+      },
+      {
+        "name": "金针菇",
+        "kcal_range": "80-130",
+        "protein_g": 5,
+        "tags": ["推荐", "素材"]
+      }
+    ]
+  },
+  {
+    "id": "r011",
+    "name": "奈雪的茶（乐成中心PRO店）",
+    "cuisine": "茶饮甜品",
+    "area": "北京·国贸",
+    "address": "朝阳区东三环中路乐城中心A座一层",
+    "avg_price_per_person": 24,
+    "rating": 4.3,
+    "diet_friendly_score": 3,
+    "diet_friendly_reason": "茶饮含糖量、碳水偏高，减脂需选择无糖饮品",
+    "suitable_for": ["下午茶", "休闲小聚"],
+    "menu": [
+      {
+        "name": "奈雪瘦瘦小绿瓶",
+        "kcal_range": "100-150",
+        "protein_g": 5,
+        "tags": ["推荐", "果汁"]
+      },
+      {
+        "name": "蓝莓奶昔",
+        "kcal_range": "300-400",
+        "protein_g": 4,
+        "tags": ["慎点", "高热量"]
+      },
+      {
+        "name": "巴斯克乳酪",
+        "kcal_range": "300-450",
+        "protein_g": 7,
+        "tags": ["慎点", "高热量"]
+      },
+      {
+        "name": "肉松芋泥蛋糕",
+        "kcal_range": "300-400",
+        "protein_g": 10,
+        "tags": ["慎点", "高热量"]
+      }
+    ]
+  },
+  {
+    "id": "r012",
+    "name": "吉野家（财富中心餐厅）",
+    "cuisine": "日料",
+    "area": "北京·国贸",
+    "address": "朝阳区东三环中路7号财富购物中心负一层",
+    "avg_price_per_person": 25,
+    "rating": 5.0,
+    "diet_friendly_score": 3,
+    "diet_friendly_reason": "主食分量足，酱汁偏咸甜，可搭配蔬菜均衡饮食",
+    "suitable_for": ["工作简餐", "聚餐"],
+    "menu": [
+      {
+        "name": "招牌牛肉饭",
+        "kcal_range": "280-360",
+        "protein_g": 20,
+        "tags": ["慎选", "酱汁偏甜"]
+      },
+      {
+        "name": "照烧鸡排饭",
+        "kcal_range": "260-330",
+        "protein_g": 22,
+        "tags": ["慎点", "酱汁偏甜"]
+      },
+      {
+        "name": "鸡蛋羹",
+        "kcal_range": "140-160",
+        "protein_g": 10,
+        "tags": ["推荐", "高蛋白", "营养价值高"]
+      },
+      {
+        "name": "水煮西兰花",
+        "kcal_range": "70-100",
+        "protein_g": 4,
+        "tags": ["推荐", "素菜"]
+      }
+    ]
+  },
+  {
+    "id": "r013",
+    "name": "油梨树avocadotree(陆家嘴中心店)",
+    "cuisine": "轻食",
+    "area": "上海·浦东新区",
+    "address": "上海市浦东新区浦东南路899号陆家嘴中心L+MALL B1层",
+    "avg_price_per_person": 45,
+    "rating": 4.7,
+    "diet_friendly_score": 5,
+    "diet_friendly_reason": "主打热沙拉概念，食材恒温配送，高蛋白低脂肪，非常适合减脂人群",
+    "suitable_for": ["单人就餐", "工作简餐", "健身减脂"],
+    "menu": [
+      {
+        "name": "鸡腿羽衣甘蓝碗",
+        "kcal_range": "350-420",
+        "protein_g": 28,
+        "tags": ["推荐", "高蛋白"]
+      },
+      {
+        "name": "虾仁碗里道",
+        "kcal_range": "320-380",
+        "protein_g": 25,
+        "tags": ["推荐", "高蛋白"]
+      },
+      {
+        "name": "能量牛油果果汁",
+        "kcal_range": "150-200",
+        "protein_g": 2,
+        "tags": ["推荐", "0糖"]
+      }
+    ]
+  },
+  {
+    "id": "r014",
+    "name": "鮨谷·日料铁板烧(陆家嘴中心店)",
+    "cuisine": "日料",
+    "area": "上海·浦东新区",
+    "address": "上海市浦东新区浦东南路899号陆家嘴中心6楼610号",
+    "avg_price_per_person": 120,
+    "rating": 4.6,
+    "diet_friendly_score": 4,
+    "diet_friendly_reason": "刺身、海鲜饭清淡新鲜，高蛋白低脂肪，减脂友好度较高",
+    "suitable_for": ["轻食简餐", "约会", "商务宴请"],
+    "menu": [
+      {
+        "name": "极上海鲜饭",
+        "kcal_range": "300-380",
+        "protein_g": 32,
+        "tags": ["推荐", "高蛋白"]
+      },
+      {
+        "name": "厚烧牛舌",
+        "kcal_range": "200-260",
+        "protein_g": 18,
+        "tags": ["推荐"]
+      },
+      {
+        "name": "鹅肝寿司",
+        "kcal_range": "180-240",
+        "protein_g": 6,
+        "tags": ["慎点", "高脂肪"]
+      }
+    ]
+  },
+  {
+    "id": "r015",
+    "name": "我家餐厅(华山路店)",
+    "cuisine": "本帮菜",
+    "area": "上海·静安区",
+    "address": "上海市静安区华山路229弄7号",
+    "avg_price_per_person": 90,
+    "rating": 4.5,
+    "diet_friendly_score": 3,
+    "diet_friendly_reason": "本帮菜口味偏甜，可选择清蒸、清炒类菜品，减脂选择性一般",
+    "suitable_for": ["朋友聚餐", "家庭聚会"],
+    "menu": [
+      {
+        "name": "葱油拌面加辣肉",
+        "kcal_range": "450-520",
+        "protein_g": 15,
+        "tags": ["慎点", "高碳水"]
+      },
+      {
+        "name": "狮子头菜底",
+        "kcal_range": "250-320",
+        "protein_g": 20,
+        "tags": ["推荐"]
+      },
+      {
+        "name": "熏鱼",
+        "kcal_range": "180-240",
+        "protein_g": 12,
+        "tags": ["慎点", "高糖"]
+      }
+    ]
+  },
+  {
+    "id": "r016",
+    "name": "麦当劳(陆家嘴明珠环店)",
+    "cuisine": "快餐",
+    "area": "上海·浦东新区",
+    "address": "上海市浦东新区世纪大道55号东方浮庭2F-1室",
+    "avg_price_per_person": 30,
+    "rating": 4.7,
+    "diet_friendly_score": 2,
+    "diet_friendly_reason": "油炸食品热量高，可选择吉士汉堡、麦乐鸡等相对低卡选项",
+    "suitable_for": ["工作简餐", "单人就餐"],
+    "menu": [
+      {
+        "name": "巨无霸汉堡",
+        "kcal_range": "500-560",
+        "protein_g": 25,
+        "tags": ["慎点", "高热量"]
+      },
+      {
+        "name": "双层深海鳕鱼堡",
+        "kcal_range": "420-480",
+        "protein_g": 20,
+        "tags": ["推荐"]
+      },
+      {
+        "name": "玉米杯",
+        "kcal_range": "70-90",
+        "protein_g": 2,
+        "tags": ["推荐", "低卡"]
+      }
+    ]
+  }
+]

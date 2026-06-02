@@ -1,0 +1,408 @@
+[
+  {
+    "id": "t001",
+    "name": "超级碗FOODBOWL",
+    "area": "朝阳区",
+    "delivery_range_km": 3,
+    "delivery_time_min": 30,
+    "rating": 4.2,
+    "avg_price_yuan": 38,
+    "combos": [
+      {
+        "name": "鸡胸肉超级碗+米饭",
+        "items": ["鸡胸肉120g", "混合生菜", "圣女果", "米饭100g", "油醋汁"],
+        "kcal_range": "430-480",
+        "protein_g": 35,
+        "price_yuan": 30,
+        "tags": ["推荐", "高蛋白"],
+        "warnings": []
+      },
+      {
+        "name": "牛肉超级碗+藜麦",
+        "items": ["瘦牛肉100g", "混合蔬菜", "藜麦80g", "牛油果30g", "柠檬汁"],
+        "kcal_range": "380-430",
+        "protein_g": 32,
+        "price_yuan": 38,
+        "tags": ["推荐", "高蛋白", "低碳水"],
+        "warnings": []
+      }
+    ]
+  },
+  {
+    "id": "t002",
+    "name": "蜀大侠火锅",
+    "area": "朝阳区",
+    "delivery_range_km": 3,
+    "delivery_time_min": 40,
+    "rating": 5.0,
+    "avg_price_yuan": 57,
+    "combos": [
+      {
+        "name": "约会不怂双人套餐",
+        "items": ["全家福牛肉150g", "羊肉100g", "金针菇", "腐竹", "绣球菌", "牛油锅底"],
+        "kcal_range": "1200-1350",
+        "protein_g": 65,
+        "price_yuan": 168,
+        "tags": ["推荐", "聚餐"],
+        "warnings": ["高油高盐", "热量较高"]
+      },
+      {
+        "name": "单人解馋套餐",
+        "items": ["嫩牛肉80g", "土豆", "娃娃菜", "清汤锅底"],
+        "kcal_range": "450-520",
+        "protein_g": 22,
+        "price_yuan": 68,
+        "tags": ["单人"],
+        "warnings": ["可选择清汤锅底减少热量"]
+      }
+    ]
+  },
+  {
+    "id": "t003",
+    "name": "川味小厨",
+    "area": "朝阳区",
+    "delivery_range_km": 3,
+    "delivery_time_min": 25,
+    "rating": 4.3,
+    "avg_price_yuan": 28,
+    "combos": [
+      {
+        "name": "鱼香肉丝盖饭",
+        "items": ["猪里脊100g", "胡萝卜丝", "木耳丝", "青椒", "白米饭200g"],
+        "kcal_range": "550-600",
+        "protein_g": 22,
+        "price_yuan": 26,
+        "tags": ["工作餐", "家常"],
+        "warnings": ["可做少油少盐版"]
+      },
+      {
+        "name": "清炒时蔬+蒸蛋套餐",
+        "items": ["上海青200g", "鸡蛋2个", "白米饭150g"],
+        "kcal_range": "320-370",
+        "protein_g": 15,
+        "price_yuan": 18,
+        "tags": ["清淡", "低卡"],
+        "warnings": []
+      }
+    ]
+  },
+  {
+    "id": "t004",
+    "name": "西堤牛排",
+    "area": "朝阳区",
+    "delivery_range_km": 3,
+    "delivery_time_min": 30,
+    "rating": 4.6,
+    "avg_price_yuan": 110,
+    "combos": [
+      {
+        "name": "黑椒牛排单人餐",
+        "items": ["菲力牛排120g", "西兰花", "黑椒酱", "玉米粒"],
+        "kcal_range": "580-630",
+        "protein_g": 38,
+        "price_yuan": 90,
+        "tags": ["商务简餐", "增肌"],
+        "warnings": ["可调整熟度与酱料"]
+      },
+      {
+        "name": "香煎三文鱼套餐",
+        "items": ["三文鱼100g", "芦笋", "土豆泥", "柠檬汁"],
+        "kcal_range": "450-510",
+        "protein_g": 25,
+        "price_yuan": 108,
+        "tags": ["高蛋白", "健康"],
+        "warnings": []
+      }
+    ]
+  },
+  {
+    "id": "t005",
+    "name": "老兵烧烤",
+    "area": "海淀区",
+    "delivery_range_km": 2.5,
+    "delivery_time_min": 35,
+    "rating": 4.7,
+    "avg_price_yuan": 86,
+    "combos": [
+      {
+        "name": "双人烧烤套餐",
+        "items": ["烤五花肉4串", "烤金针菇", "烤茄子", "烤鸡翅2串", "孜然粉"],
+        "kcal_range": "900-1050",
+        "protein_g": 45,
+        "price_yuan": 125,
+        "tags": ["夜宵", "聚餐"],
+        "warnings": ["高油高盐", "热量偏高"]
+      },
+      {
+        "name": "单人烤串套餐",
+        "items": ["烤羊肉串3串", "烤韭菜", "烤馒头1个"],
+        "kcal_range": "450-520",
+        "protein_g": 18,
+        "price_yuan": 45,
+        "tags": ["单人"],
+        "warnings": ["高油高盐"]
+      }
+    ]
+  },
+  {
+    "id": "t006",
+    "name": "嘉和一品",
+    "area": "海淀区",
+    "delivery_range_km": 3,
+    "delivery_time_min": 25,
+    "rating": 4.8,
+    "avg_price_yuan": 40,
+    "combos": [
+      {
+        "name": "早餐自选套餐",
+        "items": ["馄饨", "豆沙包2个", "黄瓜", "煎鸡蛋"],
+        "kcal_range": "380-430",
+        "protein_g": 40,
+        "price_yuan": 22,
+        "tags": ["减脂餐", "高蛋白"],
+        "warnings": []
+      },
+      {
+        "name": "午餐营养套餐",
+        "items": ["清蒸鲈鱼100g", "清炒西兰花", "杂粮饭150g"],
+        "kcal_range": "350-400",
+        "protein_g": 28,
+        "price_yuan": 35,
+        "tags": ["推荐", "高蛋白"],
+        "warnings": []
+      }
+    ]
+  },
+  {
+    "id": "t007",
+    "name": "越小官",
+    "area": "海淀区",
+    "delivery_range_km": 3,
+    "delivery_time_min": 30,
+    "rating": 4.3,
+    "avg_price_yuan": 50,
+    "combos": [
+      {
+        "name": "冬阴功汤",
+        "items": ["河粉150g", "鲜虾4只", "蘑菇", "香茅", "南姜", "椰浆", "青柠汁"],
+        "kcal_range": "750-850",
+        "protein_g": 30,
+        "price_yuan": 138,
+        "tags": ["东南亚菜", "酸辣口"],
+        "warnings": ["微辣可选", "椰浆含量较高"]
+      },
+      {
+        "name": "越南春卷套餐",
+        "items": ["鲜虾春卷4个", "生菜", "鱼露蘸料"],
+        "kcal_range": "250-300",
+        "protein_g": 12,
+        "price_yuan": 48,
+        "tags": ["低卡", "清淡"],
+        "warnings": []
+      }
+    ]
+  },
+  {
+    "id": "t008",
+    "name": "魏家凉皮",
+    "area": "海淀区",
+    "delivery_range_km": 2.5,
+    "delivery_time_min": 25,
+    "rating": 4.5,
+    "avg_price_yuan": 33,
+    "combos": [
+      {
+        "name": "麻酱凉皮",
+        "items": ["凉皮", "芝麻酱", "西兰花", "辣椒油", "香醋", "蒜泥"],
+        "kcal_range": "600-650",
+        "protein_g": 24,
+        "price_yuan": 18,
+        "tags": ["工作餐", "简餐"],
+        "warnings": ["麻酱热量较高"]
+      },
+      {
+        "name": "秘制凉皮+肉夹馍",
+        "items": ["凉皮", "肉夹馍1个", "小米粥"],
+        "kcal_range": "750-820",
+        "protein_g": 22,
+        "price_yuan": 28,
+        "tags": ["工作餐"],
+        "warnings": ["热量较高"]
+      }
+    ]
+  },
+  {
+    "id": "t009",
+    "name": "油梨树avocadotree(陆家嘴中心店)",
+    "area": "浦东新区",
+    "delivery_range_km": 3,
+    "delivery_time_min": 30,
+    "rating": 4.7,
+    "avg_price_yuan": 45,
+    "combos": [
+      {
+        "name": "鸡腿羽衣甘蓝碗",
+        "items": ["现烤鸡腿肉120g", "五谷米100g", "羽衣甘蓝", "番茄莎莎", "黄瓜", "油醋汁"],
+        "kcal_range": "350-420",
+        "protein_g": 28,
+        "price_yuan": 38,
+        "tags": ["推荐", "高蛋白", "热沙拉"],
+        "warnings": []
+      },
+      {
+        "name": "和牛扒碗里道",
+        "items": ["和牛扒100g", "藜麦80g", "烤蔬菜", "牛油果30g", "黑椒汁"],
+        "kcal_range": "420-480",
+        "protein_g": 30,
+        "price_yuan": 52,
+        "tags": ["推荐", "高蛋白"],
+        "warnings": []
+      }
+    ]
+  },
+  {
+    "id": "t010",
+    "name": "刺臂健身餐&轻食谷物饭(陆家嘴店)",
+    "area": "浦东新区",
+    "delivery_range_km": 3,
+    "delivery_time_min": 28,
+    "rating": 4.5,
+    "avg_price_yuan": 35,
+    "combos": [
+      {
+        "name": "强劲鸡腿肉套餐",
+        "items": ["去皮鸡腿肉120g", "糙米饭100g", "西兰花", "胡萝卜", "油醋汁"],
+        "kcal_range": "320-380",
+        "protein_g": 26,
+        "price_yuan": 32,
+        "tags": ["推荐", "高蛋白", "减脂"],
+        "warnings": []
+      },
+      {
+        "name": "柠烤龙利鱼套餐",
+        "items": ["龙利鱼120g", "红薯泥100g", "有机时蔬", "柠檬汁"],
+        "kcal_range": "280-340",
+        "protein_g": 24,
+        "price_yuan": 36,
+        "tags": ["推荐", "低卡", "高蛋白"],
+        "warnings": []
+      }
+    ]
+  },
+  {
+    "id": "t011",
+    "name": "麦当劳(陆家嘴明珠环店)",
+    "area": "浦东新区",
+    "delivery_range_km": 3,
+    "delivery_time_min": 25,
+    "rating": 4.7,
+    "avg_price_yuan": 30,
+    "combos": [
+      {
+        "name": "吉士汉堡套餐",
+        "items": ["吉士汉堡1个", "玉米杯1个", "无糖可乐"],
+        "kcal_range": "380-430",
+        "protein_g": 18,
+        "price_yuan": 28,
+        "tags": ["工作餐", "简餐"],
+        "warnings": ["可选择无糖饮料"]
+      },
+      {
+        "name": "麦乐鸡套餐",
+        "items": ["麦乐鸡5块", "小薯条", "无糖雪碧"],
+        "kcal_range": "420-470",
+        "protein_g": 12,
+        "price_yuan": 25,
+        "tags": ["简餐"],
+        "warnings": ["薯条热量较高"]
+      }
+    ]
+  },
+  {
+    "id": "t012",
+    "name": "粤珍小厨(太平金融大厦店)",
+    "area": "浦东新区",
+    "delivery_range_km": 3,
+    "delivery_time_min": 22,
+    "rating": 4.4,
+    "avg_price_yuan": 25,
+    "combos": [
+      {
+        "name": "香菇滑鸡饭",
+        "items": ["鸡腿肉100g", "香菇", "白米饭200g", "青菜"],
+        "kcal_range": "450-510",
+        "protein_g": 20,
+        "price_yuan": 22,
+        "tags": ["工作餐", "家常"],
+        "warnings": []
+      },
+      {
+        "name": "清蒸排骨饭",
+        "items": ["排骨100g", "白米饭200g", "青菜"],
+        "kcal_range": "420-480",
+        "protein_g": 18,
+        "price_yuan": 25,
+        "tags": ["工作餐"],
+        "warnings": []
+      }
+    ]
+  },
+  {
+    "id": "t013",
+    "name": "沙野轻食(中关村店)",
+    "area": "海淀区",
+    "delivery_range_km": 3,
+    "delivery_time_min": 28,
+    "rating": 4.2,
+    "avg_price_yuan": 28,
+    "combos": [
+      {
+        "name": "藤椒鸡腿健身餐",
+        "items": ["藤椒鸡腿肉120g", "糙米饭100g", "混合蔬菜", "油醋汁"],
+        "kcal_range": "300-360",
+        "protein_g": 25,
+        "price_yuan": 26,
+        "tags": ["推荐", "高蛋白", "减脂"],
+        "warnings": []
+      },
+      {
+        "name": "烤鸡胸藜麦沙拉",
+        "items": ["烤鸡胸肉100g", "藜麦50g", "混合生菜", "圣女果", "油醋汁"],
+        "kcal_range": "200-260",
+        "protein_g": 30,
+        "price_yuan": 28,
+        "tags": ["推荐", "高蛋白", "低卡"],
+        "warnings": []
+      }
+    ]
+  },
+  {
+    "id": "t014",
+    "name": "共禾之约(国贸店)",
+    "area": "朝阳区",
+    "delivery_range_km": 3,
+    "delivery_time_min": 30,
+    "rating": 4.4,
+    "avg_price_yuan": 35,
+    "combos": [
+      {
+        "name": "烤牛肉藜麦碗",
+        "items": ["烤牛肉100g", "藜麦80g", "烤蔬菜", "牛油果30g", "酸奶酱"],
+        "kcal_range": "380-440",
+        "protein_g": 28,
+        "price_yuan": 36,
+        "tags": ["推荐", "高蛋白"],
+        "warnings": []
+      },
+      {
+        "name": "鲜虾牛油果沙拉",
+        "items": ["鲜虾8只", "牛油果50g", "混合生菜", "小番茄", "油醋汁"],
+        "kcal_range": "250-310",
+        "protein_g": 22,
+        "price_yuan": 32,
+        "tags": ["推荐", "低卡", "高蛋白"],
+        "warnings": []
+      }
+    ]
+  }
+]
