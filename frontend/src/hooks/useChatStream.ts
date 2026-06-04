@@ -12,6 +12,8 @@ export interface StreamRevealContext {
 
 export interface StreamSendOptions {
   systemPrompt?: string
+  /** Rebuild Scheme B skill prompt from last user turn (regenerate / edit / retry) */
+  resolveSystemPrompt?: (messages: ChatMessage[]) => string | undefined
   onAssistantDone?: (content: string, assistantId: string) => void | Promise<void>
   /** Run after model finishes, before user sees assistant text */
   onBeforeReveal?: (draft: string, ctx: StreamRevealContext) => Promise<string>
@@ -162,7 +164,10 @@ export function useChatStream({
       const mergedOptions = mergeStreamOptions(getStreamSendOptions?.(), options)
       const assistantId = createMessageId()
       const controller = new AbortController()
-      const systemPrompt = mergedOptions?.systemPrompt
+      let systemPrompt = mergedOptions?.systemPrompt
+      if (!systemPrompt?.trim() && mergedOptions?.resolveSystemPrompt) {
+        systemPrompt = mergedOptions.resolveSystemPrompt(apiMessages)
+      }
       const draftRef = { current: '' }
 
       abortRef.current = controller

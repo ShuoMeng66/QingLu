@@ -6,7 +6,7 @@
 
 ## 概览
 
-QingLu 把 OpenClaw Skill 与百炼大模型接到外卖、聚餐、训练、恢复与一起动等生活场景。前端在构建时将 `Agent/burnpal_skill/` 打包进聊天 system prompt；生产环境由 Vercel Edge Middleware 代理百炼 API，门面检索与输出守门与主对话链路分离。
+QingLu 把 OpenClaw Skill 与百炼大模型接到外卖、聚餐、训练、恢复与一起动等生活场景。前端在构建时将 `Agent/burnpal_skill/` 按模块切分；**每次对话**由 `skillRouter` 判定意图后，仅把**路由层 + 一个 Skill 模块**注入 system prompt（方案 B，节省 token）。生产环境由 Vercel Edge Middleware 代理百炼 API，门面检索与输出守门与主链路分离。
 
 ```mermaid
 flowchart LR

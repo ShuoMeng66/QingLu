@@ -11,7 +11,11 @@ import { useChatStream } from '../hooks/useChatStream'
 import { useConversations } from '../hooks/useConversations'
 import { useOpenClawConfig } from '../hooks/useOpenClawConfig'
 import { useYiqidongQuest } from '../hooks/useYiqidongQuest'
-import { buildClusterSystemPrompt, scoreResponse } from '../lib/agentCluster'
+import {
+  buildClusterSystemPrompt,
+  buildSystemPromptForUserMessage,
+  scoreResponse,
+} from '../lib/agentCluster'
 import { runOutputGuard } from '../lib/outputGuard'
 import { getCachedUserLocation } from '../lib/userLocation'
 import { testConnection } from '../lib/openclaw'
@@ -166,8 +170,15 @@ export function AppProvider({ children }: AppProviderProps) {
     refreshYiqidongUnread()
   }, [refreshYiqidongUnread])
 
+  const resolveSystemPrompt = useCallback((apiMessages: import('../types/openclaw').ChatMessage[]) => {
+    const lastUser = [...apiMessages].reverse().find((m) => m.role === 'user')
+    if (!lastUser?.content.trim()) return undefined
+    return buildSystemPromptForUserMessage(lastUser.content.trim())
+  }, [])
+
   const getStreamSendOptions = useCallback(
     () => ({
+      resolveSystemPrompt,
       onReviewPhase: (active: boolean) => {
         if (active) setReviewing(true)
       },
@@ -184,7 +195,7 @@ export function AppProvider({ children }: AppProviderProps) {
         return result.finalContent
       },
     }),
-    [config, connected, setReviewing],
+    [config, connected, resolveSystemPrompt, setReviewing],
   )
 
   const {
@@ -266,7 +277,9 @@ export function AppProvider({ children }: AppProviderProps) {
 
       try {
         const plan = await prepareTurn(content)
-        const systemPrompt = buildClusterSystemPrompt(plan)
+        const systemPrompt = buildClusterSystemPrompt(plan, content, {
+          sceneType: meta?.sceneType,
+        })
         createTrajectoryDraft({
           conversationId: activeId,
           userMessage: content,

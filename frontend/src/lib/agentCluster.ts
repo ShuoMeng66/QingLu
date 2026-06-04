@@ -6,7 +6,9 @@ import { loadAppPreferences } from './appPreferences'
 import { getPromptPreferences, buildEvolvedPreferenceHints } from './promptPreferences'
 import { routeDietScene, scoreResponseWithEvalAgent } from './evalAgent'
 import { buildUserContextPrompt } from './userContextPrompt'
-import { getQingluSkillSystemContext } from '../generated/qingluSkillContext'
+import { getQingluSkillModuleContext } from '../generated/qingluSkillModules'
+import { routeQingluSkillModule } from './skillRouter'
+import type { TaskSceneType } from './taskPrompts'
 
 const SCENE_STEPS: Record<Exclude<DietSceneId, 'general_health'>, string[]> = {
   A1_gathering_poi: [
@@ -104,7 +106,11 @@ export function scoreResponse(question: string, answer: string): TaskScore {
   return scoreResponseWithEvalAgent(question, answer)
 }
 
-export function buildClusterSystemPrompt(plan: TaskPlan): string {
+export function buildClusterSystemPrompt(
+  plan: TaskPlan,
+  userMessage: string,
+  options?: { sceneType?: TaskSceneType },
+): string {
   const steps = plan.steps.map((step, i) => `${i + 1}. ${step}`).join('\n')
   const hint = buildPreferenceHint()
   const evolved = buildEvolvedPreferenceHints()
@@ -114,7 +120,8 @@ export function buildClusterSystemPrompt(plan: TaskPlan): string {
 
   const userContext = buildUserContextPrompt()
 
-  const skillPack = getQingluSkillSystemContext()
+  const route = routeQingluSkillModule(userMessage, options)
+  const skillPack = getQingluSkillModuleContext(route.moduleId)
 
   return [
     '你是「轻鹭」(QingLu)，用户的本地生活减脂 AI 管家。产品调性：轻松友好、不说教；数据先行、推荐有理有据。',
@@ -125,14 +132,24 @@ export function buildClusterSystemPrompt(plan: TaskPlan): string {
     `本轮重点：${plan.focus}`,
     '本轮步骤：',
     steps,
+    `【Skill 路由 · 方案 B】已加载：${route.label}（${route.matchedSignals.join('、')}）。仅使用本模块与共享 JSON；勿引用未加载模块的门店/活动数据。`,
     '若【用户实况】已含位置或今日热量，直接据此推荐，勿用「先告诉我地址/吃了多少」开场。',
     `要求：${constraints}`,
     aiPrefs,
     hint,
     evolved,
-    '--- 以下为完整 QingLu Skill 包（路由 + 四模块 SKILL + references + assets JSON），按 qinglu-router 分发并严格执行 ---',
+    '--- 以下为路由层 + 当前模块 Skill（非四模块全量）---',
     skillPack,
   ]
     .filter(Boolean)
     .join('\n')
+}
+
+/** Sync plan + system prompt for send / regenerate / edit-resend */
+export function buildSystemPromptForUserMessage(
+  userMessage: string,
+  options?: { sceneType?: TaskSceneType },
+): string {
+  const plan = decomposeTask(userMessage)
+  return buildClusterSystemPrompt(plan, userMessage, options)
 }
