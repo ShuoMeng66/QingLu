@@ -111,7 +111,7 @@ cd backend && npm run dev
 cd frontend && npm run dev
 ```
 
-前端构建会先执行 `npm run bundle:skill`（生成 `qingluSkillContext.ts`、`qingluVenues.generated.ts`、`demoProfiles.generated.ts`）。
+前端构建会先执行 `npm run bundle:skill`（生成 `qingluSkillModules.ts`、`qingluVenues.generated.ts`、`demoProfiles.generated.ts`）。
 
 ### 构建与检查
 
