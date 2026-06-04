@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { X } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { TagCloud } from './TagCloud'
-import { useAppContext } from '../../context/AppContext'
+import { useOptionalAppContext } from '../../context/AppContext'
 import { useToast } from '../../context/ToastContext'
 import { useI18n } from '../../hooks/useI18n'
 import {
@@ -50,7 +50,14 @@ interface TrainingProfileSheetProps {
 export function TrainingProfileSheet({ open, onClose, onSaved }: TrainingProfileSheetProps) {
   const { toast } = useToast()
   const { t, locale } = useI18n()
-  const { refreshUserProfile } = useAppContext()
+  const appCtx = useOptionalAppContext()
+  const refreshUserProfile = () => {
+    if (appCtx) {
+      appCtx.refreshUserProfile()
+      return
+    }
+    window.dispatchEvent(new Event('qinglu:user-data-applied'))
+  }
   const [profile, setProfile] = useState(loadUserProfile)
 
   useEffect(() => {

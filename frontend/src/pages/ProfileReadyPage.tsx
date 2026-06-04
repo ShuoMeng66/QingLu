@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppShell } from '../components/qinglu/AppShell'
 import { PageTransition } from '../components/layout/PageTransition'
@@ -25,10 +25,13 @@ export function ProfileReadyPage() {
     [profile],
   )
 
-  if (!profile || !summary) {
-    navigate('/onboard', { replace: true })
-    return null
-  }
+  const needsOnboard = !profile || !summary
+
+  useEffect(() => {
+    if (needsOnboard) navigate('/onboard', { replace: true })
+  }, [needsOnboard, navigate])
+
+  if (needsOnboard) return null
 
   const nickname = profile.nickname?.trim() || t('today.defaultName')
 

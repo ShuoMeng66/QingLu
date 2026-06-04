@@ -39,11 +39,11 @@ function AppRoutesInner() {
     <Routes>
       <Route index element={<SplashPage />} />
       <Route path="splash" element={<SplashPage />} />
-      <Route path="onboard" element={<OnboardProfilePage />} />
-      <Route path="ready" element={<ProfileReadyPage />} />
       <Route path="auth" element={<AuthPage />} />
       <Route path="about" element={<AboutPage />} />
       <Route element={<AppProviderLayout />}>
+        <Route path="onboard" element={<OnboardProfilePage />} />
+        <Route path="ready" element={<ProfileReadyPage />} />
         <Route path="chat" element={<ChatPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>

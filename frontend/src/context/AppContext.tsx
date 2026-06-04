@@ -59,7 +59,7 @@ export interface AppContextValue {
   mealRemindersEnabled: boolean
 }
 
-const AppContext = createContext<AppContextValue | null>(null)
+export const AppContext = createContext<AppContextValue | null>(null)
 
 export function useAppContext(): AppContextValue {
   const ctx = useContext(AppContext)
@@ -67,6 +67,11 @@ export function useAppContext(): AppContextValue {
     throw new Error('useAppContext must be used within AppProvider')
   }
   return ctx
+}
+
+/** Safe when page is outside AppProvider (e.g. legacy routes). */
+export function useOptionalAppContext(): AppContextValue | null {
+  return useContext(AppContext)
 }
 
 export const AppContextProvider = AppContext.Provider
