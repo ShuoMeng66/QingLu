@@ -758,7 +758,9 @@ export function ChatView({
                 )}
                 <TodayTaskSection
                   disabled={isBusy}
-                  onRunTask={(prompt) => void handleQuickAction(prompt)}
+                  onRunTask={(prompt, scene) =>
+                    void onQuickPrompt(prompt, { sceneType: scene, autoSend: true })
+                  }
                 />
               </div>
             ) : (

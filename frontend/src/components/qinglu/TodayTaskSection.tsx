@@ -6,6 +6,9 @@ import { buildTaskPrompt, type TaskSceneType } from '../../lib/taskPrompts'
 import { loadTodaySnapshot } from '../../lib/todaySnapshot'
 import { loadUserProfile } from '../../lib/userProfile'
 
+/** 首屏展示的四宫格任务（并排紧凑卡片） */
+const GRID_TASK_IDS: TaskSceneType[] = ['takeout', 'gathering', 'train', 'recover']
+
 interface TodayTaskSectionProps {
   disabled?: boolean
   onRunTask: (prompt: string, scene: TaskSceneType) => void
@@ -24,17 +27,25 @@ export function TodayTaskSection({ disabled = false, onRunTask }: TodayTaskSecti
     [today.remaining_kcal, today.training_plan, profile.training?.next_session],
   )
 
-  const tasks = getTodayTasks(locale, context)
+  const tasks = useMemo(
+    () =>
+      getTodayTasks(locale, context).filter((task) =>
+        GRID_TASK_IDS.includes(task.id),
+      ),
+    [locale, context],
+  )
 
   return (
-    <div className="qinglu-chat-column flex min-h-0 flex-1 flex-col px-4 pb-4">
-      <header className="mb-4 text-left">
-        <h2 className="font-display-serif text-2xl font-semibold text-body-primary sm:text-3xl">
+    <div className="qinglu-chat-column flex min-h-0 flex-1 flex-col px-4 pb-3">
+      <header className="mb-3 text-left">
+        <h2 className="font-display-serif text-lg font-semibold text-body-primary">
           {t('today.tasksTitle')}
         </h2>
-        <p className="mt-2 text-sm leading-relaxed text-body-secondary">{t('today.tasksSubtitle')}</p>
+        <p className="mt-1 text-xs leading-relaxed text-body-secondary">
+          {t('today.tasksSubtitle')}
+        </p>
       </header>
-      <div className="qinglu-scroll-hidden flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pb-2">
+      <div className="grid grid-cols-4 gap-2">
         {tasks.map((task) => (
           <TodayTaskCard
             key={task.id}
@@ -58,20 +69,22 @@ function TodayTaskCard({
   onRun: () => void
 }) {
   return (
-    <motion.article
-      className="glass-panel rounded-[22px] p-4 shadow-glass"
-      whileTap={{ scale: disabled ? 1 : 0.99 }}
+    <motion.button
+      type="button"
+      disabled={disabled}
+      className="glass-panel flex min-h-[7.5rem] min-w-0 flex-col rounded-2xl p-2.5 text-left shadow-glass transition-colors hover:border-lime-200/80 disabled:opacity-40"
+      whileTap={{ scale: disabled ? 1 : 0.97 }}
+      onClick={onRun}
     >
-      <h3 className="text-base font-semibold text-body-primary">{task.title}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-body-secondary">{task.description}</p>
-      <motion.button
-        type="button"
-        disabled={disabled}
-        className="btn-vitality mt-4 w-full rounded-full py-2.5 text-sm font-semibold disabled:opacity-40"
-        onClick={onRun}
-      >
+      <h3 className="text-[11px] font-semibold leading-tight text-body-primary">
+        {task.title}
+      </h3>
+      <p className="mt-1 flex-1 text-[10px] leading-snug text-body-secondary line-clamp-3">
+        {task.description}
+      </p>
+      <span className="mt-1.5 text-[10px] font-medium leading-tight text-emerald-600">
         {task.cta}
-      </motion.button>
-    </motion.article>
+      </span>
+    </motion.button>
   )
 }
