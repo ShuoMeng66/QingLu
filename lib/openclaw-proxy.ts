@@ -86,7 +86,11 @@ function patchChatCompletionBody(body: ArrayBuffer, targetBase: string): ArrayBu
     }
     if (typeof json.model === 'string' && /^deepseek-v4/i.test(json.model)) {
       if (json.enable_thinking == null) json.enable_thinking = true
-      return new TextEncoder().encode(JSON.stringify(json))
+      const bytes = new TextEncoder().encode(JSON.stringify(json))
+      return bytes.buffer.slice(
+        bytes.byteOffset,
+        bytes.byteOffset + bytes.byteLength,
+      ) as ArrayBuffer
     }
   } catch {
     /* keep original body */
