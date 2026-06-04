@@ -37,15 +37,15 @@ export function TodayTaskSection({ disabled = false, onRunTask }: TodayTaskSecti
 
   return (
     <div className="qinglu-chat-column flex min-h-0 flex-1 flex-col px-4 pb-3">
-      <header className="mb-3 text-left">
-        <h2 className="font-display-serif text-lg font-semibold text-body-primary">
+      <header className="mb-4 text-left">
+        <h2 className="font-display-serif text-xl font-semibold text-body-primary sm:text-2xl">
           {t('today.tasksTitle')}
         </h2>
-        <p className="mt-1 text-xs leading-relaxed text-body-secondary">
+        <p className="mt-1.5 text-sm leading-relaxed text-body-secondary">
           {t('today.tasksSubtitle')}
         </p>
       </header>
-      <div className="grid grid-cols-4 gap-2">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-2.5">
         {tasks.map((task) => (
           <TodayTaskCard
             key={task.id}
@@ -72,17 +72,15 @@ function TodayTaskCard({
     <motion.button
       type="button"
       disabled={disabled}
-      className="glass-panel flex min-h-[7.5rem] min-w-0 flex-col rounded-2xl p-2.5 text-left shadow-glass transition-colors hover:border-lime-200/80 disabled:opacity-40"
+      className="glass-panel flex min-h-[9.5rem] min-w-0 flex-col rounded-[20px] p-3.5 text-left shadow-glass transition-colors hover:border-lime-200/80 disabled:opacity-40 sm:min-h-[8.5rem] sm:p-3"
       whileTap={{ scale: disabled ? 1 : 0.97 }}
       onClick={onRun}
     >
-      <h3 className="text-[11px] font-semibold leading-tight text-body-primary">
-        {task.title}
-      </h3>
-      <p className="mt-1 flex-1 text-[10px] leading-snug text-body-secondary line-clamp-3">
+      <h3 className="text-sm font-semibold leading-snug text-body-primary">{task.title}</h3>
+      <p className="mt-2 flex-1 text-xs leading-relaxed text-body-secondary line-clamp-2 sm:line-clamp-3">
         {task.description}
       </p>
-      <span className="mt-1.5 text-[10px] font-medium leading-tight text-emerald-600">
+      <span className="mt-2.5 inline-flex rounded-full bg-lime-50 px-2 py-1 text-xs font-semibold leading-none text-emerald-700">
         {task.cta}
       </span>
     </motion.button>
