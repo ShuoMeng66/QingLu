@@ -1,17 +1,17 @@
 import { useI18n } from '../../hooks/useI18n'
 import { BrandMark } from './BrandMark'
 
-interface BurnPalLogoProps {
+interface QingluLogoProps {
   compact?: boolean
   iconOnly?: boolean
   enlargeText?: boolean
 }
 
-export function BurnPalLogo({
+export function QingluLogo({
   compact = false,
   iconOnly = false,
   enlargeText = false,
-}: BurnPalLogoProps) {
+}: QingluLogoProps) {
   const { t } = useI18n()
 
   const iconBox = enlargeText ? 'h-10 w-10 sm:h-11 sm:w-11' : 'h-9 w-9'
@@ -32,7 +32,7 @@ export function BurnPalLogo({
               enlargeText ? 'text-lg sm:text-xl' : 'text-sm'
             }`}
           >
-            BurnPal 轻鹭
+            QingLu 轻鹭
           </p>
           {!compact && (
             <p

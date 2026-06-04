@@ -121,7 +121,7 @@ export async function handleOpenClawProxy(request: Request): Promise<Response> {
   const upstreamUrl = buildUpstreamUrl(request, subpath)
   const headers = new Headers({
     Authorization: `Bearer ${token}`,
-    'User-Agent': 'BurnPal-OpenClaw-Proxy/1.0',
+    'User-Agent': 'QingLu-OpenClaw-Proxy/1.0',
   })
 
   const contentType = request.headers.get('content-type')

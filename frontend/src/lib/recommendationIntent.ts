@@ -1,7 +1,7 @@
 import type { NearbyPlace } from './nearbyRecommendations'
 import { placeToRichCardData } from './nearbyRecommendations'
 import type { UserLocation } from './userLocation'
-import type { DetailSheetData } from '../components/burnpal/DetailBottomSheet'
+import type { DetailSheetData } from '../components/qinglu/DetailBottomSheet'
 import { routeDietScene } from './evalAgent'
 import { resolveSkillVenueCards } from './skillVenueMatch'
 
@@ -63,7 +63,7 @@ export function getConversationRecommendationCards(
   if (options?.citeNearby === false) return []
 
   const assistantText = options?.assistantText ?? ''
-  const skillCards = resolveSkillVenueCards(userText, assistantText, true)
+  const skillCards = resolveSkillVenueCards(userText, assistantText, true, location)
   if (skillCards.length > 0) return skillCards
 
   if (!location) return []

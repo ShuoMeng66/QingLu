@@ -5,7 +5,6 @@ import type { MessageFeedback } from '../../types/agentCluster'
 import { MarkdownContent } from '../MarkdownContent'
 import { useI18n } from '../../hooks/useI18n'
 import { QingluAvatar } from './QingluAvatar'
-import { TypingIndicator } from './TypingIndicator'
 
 interface ChatBubbleProps {
   message: ChatMessage
@@ -220,7 +219,7 @@ export function ChatBubble({
           } ${isAborted ? 'opacity-70' : ''}`}
         >
           {isThinking ? (
-            <TypingIndicator />
+            <p className="text-sm text-slate-500">{t('chat.guardReviewing')}</p>
           ) : message.content ? (
             <MarkdownContent content={message.content} />
           ) : (

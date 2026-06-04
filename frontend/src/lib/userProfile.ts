@@ -82,7 +82,7 @@ export interface UserProfile {
   profile_complete?: boolean
 }
 
-const STORAGE_KEY = 'burnpal.user-profile-v1'
+const STORAGE_KEY = 'qinglu.user-profile-v1'
 
 export const GOAL_OPTIONS: { id: FitnessGoal; label: string }[] = [
   { id: 'fat_loss', label: '科学减脂' },

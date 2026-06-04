@@ -1,6 +1,6 @@
-# BurnPal Backend
+# QingLu Backend
 
-Express API for BurnPal authentication and user data sync.
+Express API for QingLu（轻鹭）authentication and user data sync.
 
 ## Setup
 
@@ -41,69 +41,30 @@ Codes expire after 10 minutes. Resend is limited to once per 60 seconds. After 5
 1. 打开 [resend.com](https://resend.com) 注册
 2. **API Keys** → 创建密钥 → 填入 Render：`RESEND_API_KEY`
 3. **Domains** → 添加并验证你的域名 → 设置  
-   `RESEND_FROM=BurnPal <noreply@你的域名.com>`
+   `RESEND_FROM=QingLu <noreply@你的域名.com>`
 4. 环境变量二选一（或两处都配同一 Key）：
    - **仅 Render**：`RESEND_API_KEY` + `RESEND_FROM` → Manual Deploy Render
-   - **仅 Vercel**（推荐若你一直在 Vercel 配 Key）：在 **Vercel** 填 `RESEND_API_KEY`；在 **Vercel 与 Render** 填相同 `BURNPAL_PROXY_SECRET`（随机字符串）；然后 **Redeploy Vercel + Render**
+   - **仅 Vercel**（推荐若你一直在 Vercel 配 Key）：在 **Vercel** 填 `RESEND_API_KEY`；在 **Vercel 与 Render** 填相同 `BURNPAL_PROXY_SECRET`（随机字符串，历史 env 名保留）；然后 **Redeploy Vercel + Render**
 5. **Manual Deploy** 两侧（改 env 后必须部署才生效）
 6. 检查 `GET /api/auth/health`（经 Vercel 转发到 Render）：
 
-```json
-{
-  "ok": true,
-  "emailProvider": "resend",
-  "emailReachable": true,
-  "resend": true,
-  "resendReachable": true
-}
-```
-
-若同时配置了 `RESEND_API_KEY` 与 `SMTP_*`，**优先使用 Resend**（健康检查会跳过 SMTP，避免 Render 误报）。
-
-**常见错误：**
-
-| health 字段 | 含义 |
-|-------------|------|
-| `resendKeyFormatOk: false` | Key 不是 `re_` 开头，或 Render 里多加了引号/空格 |
-| `resendKeySource: "render-env"` 且 invalid | Render 上的 Key 与 Resend 控制台不一致 |
+| 字段 | 含义 |
+|------|------|
+| `resend: true` | 已配置 Resend |
+| `resendReachable: true` | Resend API 可达 |
 | `resendKeySource: "vercel-proxy"` | 使用 Vercel 转发的 Key（需 `BURNPAL_PROXY_SECRET` 配对） |
-| `resendReachable: false` + `resendError` | Key 被 Resend 拒绝，或改 env 后未 Redeploy |
-| `Resend 400: API key is invalid` | Render 里的 Key **不是** Resend 控制台当前有效的完整密钥（见下方） |
-| `resendKeyLooksPlaceholder: true` | 仍在使用 `re_xxxxxxxx` 等示例，非真实 Key |
-| `verifyError` 仍是 SMTP 文案 | 请部署最新后端（已修复诊断逻辑） |
 
-#### `API key is invalid` 逐步排查
+### 仍收不到验证码？
 
-1. 打开 https://resend.com/api-keys → **Create API Key** → 权限选 **Full access** / Sending  
-2. **立即复制整段** `re_……`（只显示一次；漏字符就会 400 invalid）  
-3. Render → 你的 **backend Web Service** → Environment → `RESEND_API_KEY` → **粘贴覆盖**（不要 `Bearer `，不要引号）  
-4. 点 **Save Changes** → **Manual Deploy**（改环境变量后必须重新部署）  
-5. 在 Resend 控制台对比 Key 旁显示的末几位，与 health 里的 `resendKeySuffix` 是否一致  
-6. 本地自测（可选）：`curl -H "Authorization: Bearer re_你的key" https://api.resend.com/domains` 应返回 200 JSON  
+1. 查 **垃圾邮件**、**推广** 标签，搜索「轻鹭 QingLu」
+2. 确认 Render / Vercel 已 **Redeploy**（改 env 后必须重新部署）
+3. 用 `onboarding@resend.dev` 测试时，Resend 可能只允许发往注册邮箱
 
-**注意：** Vercel 的 `RESEND_API_KEY` 对发验证码 **无效**；必须写在 **Render 后端**。
+## API
 
-### QQ 邮箱 SMTP（本地或 Render 付费）
+- `GET /api/auth/health` — 邮件服务状态
+- `POST /api/auth/send-verification-code`
+- `POST /api/auth/register` / `POST /api/auth/login`
+- `GET /api/user/profile` — 需 Bearer token（云同步档案）
 
-| Variable | Required | Description |
-|----------|----------|-------------|
-| `SMTP_HOST` | Yes* | e.g. `smtp.qq.com` |
-| `SMTP_PORT` | No | `465` (SSL) or `587` (STARTTLS) |
-| `SMTP_USER` | Yes* | Full QQ email |
-| `SMTP_PASS` | Yes* | **授权码**（不是 QQ 密码） |
-| `SMTP_FROM` | No | Defaults to `SMTP_USER` |
-
-1. QQ 邮箱 → 设置 → 账户 → 开启 POP3/SMTP → 生成 **16 位授权码**
-2. 填入 `SMTP_PASS`（Render 里不要加多余引号）
-
-### Gmail 仍收不到？
-
-1. 查 **垃圾邮件**、**推广** 标签，搜索「轻鹭 BurnPal」
-2. 看 Render **Logs**：`Verification email sent via Resend` 或 `delivery failed`
-3. `health` 里 `verifyError` 字段会写明失败原因
-
-## Scripts
-
-- `npm run dev` — start with hot reload
-- `npm run build` — compile TypeScript
-- `npm start` — run production server
+Default port: `8787`.

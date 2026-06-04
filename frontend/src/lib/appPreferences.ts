@@ -17,6 +17,8 @@ export interface AiPreferences {
   detail: AiDetail
   useEmoji: boolean
   citeNearby: boolean
+  /** 展示前用 deepseek-v4-flash 做输出守门 */
+  outputGuard: boolean
 }
 
 export interface AppPreferences {
@@ -27,7 +29,7 @@ export interface AppPreferences {
   locationShare: boolean
 }
 
-const STORAGE_KEY = 'burnpal.app-preferences-v1'
+const STORAGE_KEY = 'qinglu.app-preferences-v1'
 
 export const DEFAULT_PREFERENCES: AppPreferences = {
   theme: 'light',
@@ -37,6 +39,7 @@ export const DEFAULT_PREFERENCES: AppPreferences = {
     detail: 'balanced',
     useEmoji: true,
     citeNearby: true,
+    outputGuard: true,
   },
   mealReminders: true,
   locationShare: true,

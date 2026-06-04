@@ -48,8 +48,8 @@ export function useConversations() {
       setConversations(next.conversations)
       setActiveId(next.activeId)
     }
-    window.addEventListener('burnpal:user-data-applied', onApplied)
-    return () => window.removeEventListener('burnpal:user-data-applied', onApplied)
+    window.addEventListener('qinglu:user-data-applied', onApplied)
+    return () => window.removeEventListener('qinglu:user-data-applied', onApplied)
   }, [])
 
   const activeConversation = useMemo(

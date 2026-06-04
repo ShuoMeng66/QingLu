@@ -7,6 +7,9 @@
   "functions": {
     "api/backend/[...path].ts": {
       "maxDuration": 60
+    },
+    "api/venue/enrich.ts": {
+      "maxDuration": 60
     }
   },
   "rewrites": [

@@ -28,24 +28,30 @@ import { formatLocationLabel } from '../lib/citySkyline'
 import { openSmartNavigation } from '../lib/openMaps'
 import { getConversationRecommendationCards } from '../lib/recommendationIntent'
 import { enrichCardsWithGeocode } from '../lib/skillVenueMatch'
+import { enrichCardsWithFacade } from '../lib/venueEnrichment'
+import { debugPerf } from '../lib/debugPerf'
 import { formatDistance, formatWalkMinutes } from '../lib/userLocation'
 import { AgentPhaseRail } from './agents/AgentPhaseRail'
-import { AppShell } from './burnpal/AppShell'
-import { BurnPalLogo } from './burnpal/BurnPalLogo'
+import { AppShell } from './qinglu/AppShell'
+import { QingluLogo } from './qinglu/QingluLogo'
 import { UserAccountAvatar } from './auth/UserAccountAvatar'
-import { ChatBubble } from './burnpal/ChatBubble'
-import { ChatComposer } from './burnpal/ChatComposer'
-import { ChatDashboardBar } from './burnpal/ChatDashboardBar'
-import { ChatHistorySidebar } from './burnpal/ChatHistorySidebar'
-import { DetailBottomSheet, type DetailSheetData } from './burnpal/DetailBottomSheet'
-import { TrainingProfileSheet } from './burnpal/TrainingProfileSheet'
-import { QuickActionBar } from './burnpal/QuickActionBar'
-import { RichCard } from './burnpal/RichCard'
+import { ChatBubble } from './qinglu/ChatBubble'
+import { ChatComposer } from './qinglu/ChatComposer'
+import { TodayStatusBar } from './qinglu/TodayStatusBar'
+import { TodayStatusSheet } from './qinglu/TodayStatusSheet'
+import { QingluDiscoveryCard } from './qinglu/QingluDiscoveryCard'
+import { TodayTaskSection } from './qinglu/TodayTaskSection'
+import { ChatHistorySidebar } from './qinglu/ChatHistorySidebar'
+import { DetailBottomSheet, type DetailSheetData } from './qinglu/DetailBottomSheet'
+import { TrainingProfileSheet } from './qinglu/TrainingProfileSheet'
+import { QuickActionBar } from './qinglu/QuickActionBar'
+import type { TaskSceneType } from '../lib/taskPrompts'
+import { RichCard } from './qinglu/RichCard'
 import { PageTransition } from './layout/PageTransition'
 import { usePersistedBoolean } from '../hooks/usePersistedBoolean'
 
-const STORAGE_HISTORY_COLLAPSED = 'burnpal.chat.historyCollapsed'
-const STORAGE_DASHBOARD_COLLAPSED = 'burnpal.chat.dashboardCollapsed'
+const STORAGE_HISTORY_COLLAPSED = 'qinglu.chat.historyCollapsed'
+const STORAGE_DASHBOARD_COLLAPSED = 'qinglu.chat.dashboardCollapsed'
 
 function ChromeToggleButton({
   active,
@@ -76,6 +82,8 @@ function ChromeToggleButton({
 export interface QuickPromptMeta {
   starterId?: string
   interestId?: string
+  sceneType?: TaskSceneType
+  autoSend?: boolean
 }
 
 interface ChatViewProps {
@@ -177,6 +185,8 @@ export function ChatView({
   const [isSheetOpen, setIsSheetOpen] = useState(false)
   const [sheetDetail, setSheetDetail] = useState<DetailSheetData | null>(null)
   const [profileSheetOpen, setProfileSheetOpen] = useState(false)
+  const [todayStatusOpen, setTodayStatusOpen] = useState(false)
+  const [discoveryHidden, setDiscoveryHidden] = useState(false)
   const [demoMessages, setDemoMessages] = useState<ChatMessage[]>([])
   const [isTyping, setIsTyping] = useState(false)
   const [geoCardsByMessageId, setGeoCardsByMessageId] = useState<
@@ -229,46 +239,123 @@ export function ChatView({
     [food, gym, recovery, locationLoading, nearbyLoading, t],
   )
 
+  const venueCardsCacheRef = useRef<Record<string, DetailSheetData[]>>({})
+  const lastVenueEnrichRef = useRef<{ messageId: string; contentLen: number } | null>(
+    null,
+  )
+
   useEffect(() => {
     if (!preferences.ai.citeNearby) {
       setGeoCardsByMessageId({})
+      venueCardsCacheRef.current = {}
       return
     }
 
     let cancelled = false
+    const effectStart = performance.now()
 
     void (async () => {
-      const next: Record<string, DetailSheetData[]> = {}
+      // #region agent log
+      debugPerf(
+        'ChatView.tsx:venueCardsEffect',
+        'effect_start',
+        { messageCount: displayMessages.length },
+        'A',
+      )
+      // #endregion
 
-      for (let index = 0; index < displayMessages.length; index += 1) {
+      let latestAssistant: ChatMessage | null = null
+      let latestUser: ChatMessage | null = null
+      for (let index = displayMessages.length - 1; index >= 1; index -= 1) {
         const message = displayMessages[index]
-        const prevMessage = index > 0 ? displayMessages[index - 1] : null
+        const prevMessage = displayMessages[index - 1]
         if (
-          message.role !== 'assistant' ||
-          message.streaming ||
-          message.status === 'error' ||
-          prevMessage?.role !== 'user'
+          message.role === 'assistant' &&
+          !message.streaming &&
+          message.status !== 'error' &&
+          prevMessage?.role === 'user'
         ) {
-          continue
+          latestAssistant = message
+          latestUser = prevMessage
+          break
         }
-
-        const base = getConversationRecommendationCards(
-          prevMessage.content,
-          location,
-          foodPlaces,
-          gym,
-          recovery,
-          {
-            citeNearby: preferences.ai.citeNearby,
-            assistantText: message.content,
-          },
-        )
-        if (base.length === 0) continue
-
-        next[message.id] = await enrichCardsWithGeocode(base)
       }
 
-      if (!cancelled) setGeoCardsByMessageId(next)
+      const next: Record<string, DetailSheetData[]> = { ...venueCardsCacheRef.current }
+
+      if (!latestAssistant || !latestUser) {
+        if (!cancelled) setGeoCardsByMessageId(next)
+        return
+      }
+
+      const skipEnrich =
+        lastVenueEnrichRef.current?.messageId === latestAssistant.id &&
+        lastVenueEnrichRef.current?.contentLen === latestAssistant.content.length &&
+        venueCardsCacheRef.current[latestAssistant.id] != null
+
+      if (skipEnrich) {
+        // #region agent log
+        debugPerf(
+          'ChatView.tsx:venueCardsEffect',
+          'skip_cached_latest',
+          { messageId: latestAssistant.id },
+          'A',
+        )
+        // #endregion
+        if (!cancelled) setGeoCardsByMessageId(next)
+        return
+      }
+
+      const base = getConversationRecommendationCards(
+        latestUser.content,
+        location,
+        foodPlaces,
+        gym,
+        recovery,
+        {
+          citeNearby: preferences.ai.citeNearby,
+          assistantText: latestAssistant.content,
+        },
+      )
+
+      if (base.length === 0) {
+        delete next[latestAssistant.id]
+        venueCardsCacheRef.current = next
+        if (!cancelled) setGeoCardsByMessageId(next)
+        return
+      }
+
+      const geoStart = performance.now()
+      const geocoded = await enrichCardsWithGeocode(base, location)
+      if (cancelled) return
+
+      const facadeStart = performance.now()
+      const facaded = await enrichCardsWithFacade(geocoded, location)
+      if (cancelled) return
+
+      next[latestAssistant.id] = facaded
+      venueCardsCacheRef.current = next
+      lastVenueEnrichRef.current = {
+        messageId: latestAssistant.id,
+        contentLen: latestAssistant.content.length,
+      }
+
+      // #region agent log
+      debugPerf(
+        'ChatView.tsx:venueCardsEffect',
+        'effect_done',
+        {
+          messageId: latestAssistant.id,
+          cardCount: facaded.length,
+          geoMs: Math.round(performance.now() - geoStart),
+          facadeMs: Math.round(performance.now() - facadeStart),
+          totalMs: Math.round(performance.now() - effectStart),
+        },
+        'A',
+      )
+      // #endregion
+
+      setGeoCardsByMessageId(next)
     })()
 
     return () => {
@@ -473,7 +560,7 @@ export function ChatView({
       <PageTransition className="flex h-dvh flex-1 overflow-hidden p-3 lg:p-4">
         <div className="relative flex h-full min-h-0 w-full flex-1 gap-3 lg:gap-4">
           {historyCollapsed && (
-            <aside className="burnpal-shell-panel hidden w-12 shrink-0 flex-col items-center gap-2 py-4 lg:flex">
+            <aside className="qinglu-shell-panel hidden w-12 shrink-0 flex-col items-center gap-2 py-4 lg:flex">
               <ChromeToggleButton
                 label={t('chat.expandSidebar')}
                 onClick={() => setHistoryCollapsed(false)}
@@ -535,7 +622,7 @@ export function ChatView({
             </>
           )}
 
-          <div className="burnpal-shell-panel relative flex min-h-0 min-w-0 flex-1 flex-col">
+          <div className="qinglu-shell-panel relative flex min-h-0 min-w-0 flex-1 flex-col">
           <header className="relative z-50 shrink-0 overflow-visible px-4 pt-4 pb-2 lg:px-6">
             <div className="flex items-center gap-2 sm:gap-3">
               <button
@@ -601,7 +688,7 @@ export function ChatView({
                 <LayoutDashboard className="h-4 w-4" />
               </button>
               <div className="lg:hidden">
-                <BurnPalLogo compact />
+                <QingluLogo compact />
               </div>
               <div className="ml-auto flex items-center gap-3">
                 <UserAccountAvatar showLabel={false} />
@@ -632,13 +719,16 @@ export function ChatView({
                 transition={{ duration: 0.22, ease: 'easeOut' }}
                 className="shrink-0 overflow-hidden"
               >
-                <ChatDashboardBar onOpenProfile={() => setProfileSheetOpen(true)} />
+                <TodayStatusBar
+                  onEdit={() => setTodayStatusOpen(true)}
+                  onSetupProfile={() => setProfileSheetOpen(true)}
+                />
               </motion.div>
             )}
           </AnimatePresence>
 
           {useDemo && (
-            <div className="burnpal-chat-column px-4 pb-2">
+            <div className="qinglu-chat-column px-4 pb-2">
               <p className="rounded-2xl border border-amber-200/80 bg-amber-50/90 px-3 py-2 text-xs leading-relaxed text-amber-950">
                 {t('chat.demoBanner')}
                 {statusMessage ? ` ${statusMessage}` : t('chat.demoBannerExtra')}
@@ -651,21 +741,25 @@ export function ChatView({
 
           <div className="relative z-0 flex min-h-0 flex-1 flex-col overflow-hidden">
             {isEmpty ? (
-              <div className="burnpal-chat-empty-hero burnpal-chat-column flex min-h-0 flex-1 flex-col items-center justify-center overflow-hidden px-4 py-6 text-center">
-                <h2 className="font-display-serif text-3xl font-semibold text-body-primary sm:text-[2.5rem]">
-                  {t('chat.emptyTitle')}
-                </h2>
-                <p className="mt-3 max-w-xl text-base leading-relaxed text-body-secondary">
-                  {t('chat.emptyHint')}
-                </p>
+              <div className="qinglu-scroll-hidden flex min-h-0 flex-1 flex-col overflow-y-auto">
+                {!discoveryHidden && (
+                  <QingluDiscoveryCard
+                    onSendPrompt={(text) => void handleQuickAction(text)}
+                    onDismiss={() => setDiscoveryHidden(true)}
+                  />
+                )}
+                <TodayTaskSection
+                  disabled={isBusy}
+                  onRunTask={(prompt) => void handleQuickAction(prompt)}
+                />
               </div>
             ) : (
               <div
-                className="burnpal-scroll-hidden min-h-0 flex-1 overflow-y-auto"
+                className="qinglu-scroll-hidden min-h-0 flex-1 overflow-y-auto"
                 ref={scrollRef}
                 onScroll={handleScroll}
               >
-                <div className="burnpal-chat-column w-full py-4">
+                <div className="qinglu-chat-column w-full py-4">
                   {!useDemo && (
                     <AgentPhaseRail
                       phase={clusterTurn.phase}
@@ -771,13 +865,15 @@ export function ChatView({
             )}
 
             <div className="relative z-20 shrink-0 px-4 pb-4 pt-2 lg:px-6">
-              <div className="burnpal-shell-divider mb-3" aria-hidden="true" />
-              <div className="burnpal-chat-column w-full max-w-none sm:max-w-[56rem]">
-                <QuickActionBar
-                  disabled={isBusy}
-                  previews={quickActionPreviews}
-                  onSelect={(prompt) => void handleQuickAction(prompt)}
-                />
+              <div className="qinglu-shell-divider mb-3" aria-hidden="true" />
+              <div className="qinglu-chat-column w-full max-w-none sm:max-w-[56rem]">
+                {!isEmpty && (
+                  <QuickActionBar
+                    disabled={isBusy}
+                    previews={quickActionPreviews}
+                    onSelect={(prompt) => void handleQuickAction(prompt)}
+                  />
+                )}
                 <ChatComposer
                   input={input}
                   loading={loading}
@@ -802,6 +898,7 @@ export function ChatView({
         open={profileSheetOpen}
         onClose={() => setProfileSheetOpen(false)}
       />
+      <TodayStatusSheet open={todayStatusOpen} onClose={() => setTodayStatusOpen(false)} />
     </AppShell>
   )
 }

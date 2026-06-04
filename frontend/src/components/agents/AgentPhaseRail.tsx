@@ -61,7 +61,7 @@ export function AgentPhaseRail({ phase, plan, score }: AgentPhaseRailProps) {
 
 
 
-      {(phase === 'executing' || phase === 'scoring') && (
+      {(phase === 'executing' || phase === 'reviewing' || phase === 'scoring') && (
 
         <section className="agent-rail__card agent-rail__card--exec">
 
@@ -69,7 +69,11 @@ export function AgentPhaseRail({ phase, plan, score }: AgentPhaseRailProps) {
 
           <span className="agent-rail__hint">
 
-            {phase === 'executing' ? t('rail.hintExecuting') : t('rail.hintScoring')}
+            {phase === 'executing'
+              ? t('rail.hintExecuting')
+              : phase === 'reviewing'
+                ? t('rail.hintReviewing')
+                : t('rail.hintScoring')}
 
           </span>
 

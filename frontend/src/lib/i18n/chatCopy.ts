@@ -3,6 +3,30 @@ import type { MessageKey } from './messages'
 import { translate } from './messages'
 import type { MealSlot } from '../mealLog'
 import type { FitnessGoal } from '../userProfile'
+import type { TaskSceneType } from '../taskPrompts'
+
+export interface TodayTaskDefinition {
+  id: TaskSceneType
+  title: string
+  description: string
+  cta: string
+}
+
+export function getTodayTasks(
+  locale: AppLocale,
+  context: { remainingKcal: number; trainingPlan: string },
+): TodayTaskDefinition[] {
+  const ids: TaskSceneType[] = ['takeout', 'gathering', 'train', 'recover', 'move']
+  return ids.map((id) => ({
+    id,
+    title: translate(locale, `today.task.${id}.title` as MessageKey),
+    description: translate(locale, `today.task.${id}.desc` as MessageKey, {
+      remaining: context.remainingKcal,
+      training: context.trainingPlan,
+    }),
+    cta: translate(locale, `today.task.${id}.cta` as MessageKey),
+  }))
+}
 
 export interface LocalizedQuickAction {
   id: 'eat' | 'train' | 'recover' | 'move'

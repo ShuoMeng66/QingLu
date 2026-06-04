@@ -14,7 +14,7 @@ export interface UserLocation {
   fetchedAt: number
 }
 
-const CACHE_KEY = 'burnpal.user-location-v2'
+const CACHE_KEY = 'qinglu.user-location-v2'
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000
 
 function readCache(): UserLocation | null {
@@ -40,6 +40,26 @@ export function getCachedUserLocation(): UserLocation | null {
 
 export function clearCachedUserLocation() {
   localStorage.removeItem(CACHE_KEY)
+}
+
+const CITY_COORDS: Record<string, { lat: number; lon: number }> = {
+  北京: { lat: 39.9042, lon: 116.4074 },
+  上海: { lat: 31.2304, lon: 121.4737 },
+}
+
+/** Demo onboarding: seed location without GPS */
+export function seedCachedUserLocation(city: string, regionLabel: string) {
+  const coords = CITY_COORDS[city] ?? CITY_COORDS['北京']!
+  const location: UserLocation = {
+    city,
+    region: regionLabel,
+    country: '中国',
+    lat: coords.lat,
+    lon: coords.lon,
+    source: 'ip',
+    fetchedAt: Date.now(),
+  }
+  writeCache(location)
 }
 
 function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): number {

@@ -7,7 +7,7 @@ import type { MealReminder, MealSlot } from '../../lib/mealLog'
 import { submitMealLogAsync } from '../../lib/mealLog'
 import type { UserProfile } from '../../lib/userProfile'
 import type { OpenClawConfig } from '../../types/openclaw'
-import { QingluAvatar } from '../burnpal/QingluAvatar'
+import { QingluAvatar } from '../qinglu/QingluAvatar'
 import './MealEnvelopePopup.css'
 
 interface MealEnvelopePopupProps {

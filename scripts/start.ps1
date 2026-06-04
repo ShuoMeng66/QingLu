@@ -1,11 +1,11 @@
-# BurnPal 一键启动：后端 + 前端（OpenClaw 经 Vite 代理到百炼 / 本地网关）
+# QingLu 轻鹭 一键启动：后端 + 前端（OpenClaw 经 Vite 代理到百炼 / 本地网关）
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
 Set-Location $Root
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "  BurnPal 轻鹭 — 一键启动" -ForegroundColor Cyan
+Write-Host "  QingLu 轻鹭 — 一键启动" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 

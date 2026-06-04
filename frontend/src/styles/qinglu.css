@@ -1,0 +1,248 @@
+/* QingLu 轻鹭 · Morning Mint Vitality design system */
+
+.bg-surface {
+  background-color: #f0fdf4;
+}
+
+/* Frosted glass panel — cards, panels, dock */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    var(--shadow-glass-inner),
+    0 8px 32px rgba(163, 230, 53, 0.08);
+}
+
+.shadow-glass {
+  box-shadow:
+    var(--shadow-glass-inner),
+    0 8px 32px rgba(163, 230, 53, 0.08);
+}
+
+.shadow-glow-emerald {
+  box-shadow: var(--shadow-vitality-btn);
+}
+
+.glass-input {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  box-shadow:
+    var(--shadow-glass-inner),
+    0 8px 32px rgba(163, 230, 53, 0.08);
+}
+
+/* Primary CTA — vibrant mint → teal gradient */
+.btn-vitality {
+  background: var(--gradient-primary);
+  color: var(--on-primary);
+  box-shadow: var(--shadow-vitality-btn);
+}
+
+.gradient-vitality {
+  background: var(--gradient-primary);
+}
+
+.gradient-vitality-br {
+  background: var(--gradient-primary-br);
+}
+
+.bubble-user {
+  background: var(--gradient-primary);
+  color: var(--on-primary);
+  box-shadow: var(--shadow-vitality-btn);
+}
+
+.btn-vitality:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+/* Secondary glass button */
+.btn-glass {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  color: var(--ink);
+  box-shadow:
+    var(--shadow-glass-inner),
+    0 8px 32px rgba(163, 230, 53, 0.08);
+}
+
+.btn-glass:disabled {
+  opacity: 0.45;
+}
+
+/* AI chat bubble — high-transparency white glass */
+.ai-bubble-glass {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    var(--shadow-glass-inner),
+    0 8px 32px rgba(163, 230, 53, 0.08);
+}
+
+/* Card tag chips */
+.tag-vitality {
+  background-color: #ecfccb;
+  color: #65a30d;
+}
+
+.text-body-primary {
+  color: var(--ink);
+}
+
+.text-body-secondary {
+  color: var(--body);
+}
+
+.chat-composer-input {
+  color: var(--composer-text);
+}
+
+.chat-composer-input::placeholder {
+  color: var(--composer-placeholder);
+  opacity: 1;
+}
+
+.font-display-serif {
+  font-family: 'Noto Serif SC', 'Songti SC', 'STSong', Georgia, serif;
+}
+
+.qinglu-page-inner {
+  width: 100%;
+  padding-inline: 1rem;
+}
+
+/* ChatGPT-style centered conversation column */
+.qinglu-chat-column {
+  width: 100%;
+  max-width: 56rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+}
+
+.qinglu-scroll-hidden {
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.qinglu-scroll-hidden::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+/* Empty chat welcome — fixed in layout, not inside scroll area */
+.qinglu-chat-empty-hero {
+  flex: 1 1 auto;
+  min-height: 0;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.qinglu-chat-empty-hero h2,
+.qinglu-chat-empty-hero p {
+  transform: none !important;
+}
+
+.qinglu-float-dock {
+  margin: 0 auto;
+  width: 100%;
+  border-radius: 28px;
+}
+
+/* Floating shell panels — sidebar & main chat */
+.qinglu-shell-panel {
+  background: rgba(240, 253, 244, 0.62);
+  backdrop-filter: blur(40px);
+  -webkit-backdrop-filter: blur(40px);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  border-radius: 28px;
+  box-shadow:
+    var(--shadow-glass-inner),
+    var(--shadow-soft);
+}
+
+/* Chat dashboard strip — mint panels + dark text (readable on light page bg) */
+.qinglu-dashboard-strip {
+  color: #0f172a;
+}
+
+[data-theme='dark'] .qinglu-dashboard-strip,
+[data-theme='dark'] .qinglu-dashboard-strip button {
+  background-color: #b8e0b0;
+  color: #0f172a;
+}
+
+.qinglu-shell-divider {
+  height: 1px;
+  margin-inline: 0.75rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.95) 20%,
+    rgba(255, 255, 255, 0.95) 80%,
+    transparent
+  );
+}
+
+@keyframes cursor-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.cursor-blink {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: currentColor;
+  animation: cursor-blink 1s step-end infinite;
+}
+
+/** Official bird mark in circular UI slots (sidebar, about) */
+.brand-logo-img {
+  object-fit: cover;
+  padding: 0;
+  background: transparent;
+  transform: scale(1.14);
+}
+
+.brand-logo-img--contain {
+  object-fit: contain;
+  padding: 10%;
+  background: #fff;
+  transform: none;
+}
+
+/* Splash landing hero copy */
+.splash-hero-headline {
+  font-size: clamp(3.25rem, 8vw, 5.5rem);
+  color: #0f172a;
+}
+
+.splash-hero-tagline {
+  font-size: clamp(1.375rem, 2.8vw, 1.875rem);
+  line-height: 1.35;
+  color: #334155;
+}
+
+.splash-hero-subtitle {
+  font-size: clamp(1.0625rem, 2vw, 1.25rem);
+  color: #475569;
+}

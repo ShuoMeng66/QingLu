@@ -1,6 +1,6 @@
 import { BRAND_MARK } from './brandAssets'
 
-/** 轻鹭 · BurnPal IP 形象资源 */
+/** 轻鹭 · QingLu IP 形象资源 */
 export const QINGLU = {
   name: '轻鹭',
   tagline: '你的 AI 本地生活减脂管家',

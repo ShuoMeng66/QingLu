@@ -1,14 +1,14 @@
 import { motion } from 'framer-motion'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useI18n } from '../hooks/useI18n'
 import { useAuth } from '../context/AuthContext'
 import { AccountAuthPanel } from '../components/auth/AccountAuthPanel'
 import { UserAccountAvatar } from '../components/auth/UserAccountAvatar'
-import { AppShell } from '../components/burnpal/AppShell'
-import { BurnPalLogo } from '../components/burnpal/BurnPalLogo'
+import { AppShell } from '../components/qinglu/AppShell'
+import { QingluLogo } from '../components/qinglu/QingluLogo'
 import { PageTransition } from '../components/layout/PageTransition'
-import { SplashHeroVisual } from '../components/burnpal/SplashHeroVisual'
+import { SplashHeroVisual } from '../components/qinglu/SplashHeroVisual'
 import { pingAuthHealth } from '../lib/api/client'
 import { SPLASH_BACKGROUND_SRC } from '../data/splashAssets'
 
@@ -22,6 +22,8 @@ export function SplashPage() {
       /* warm backend / Render cold start; ignore failures */
     })
   }, [])
+
+  const [authOpen, setAuthOpen] = useState(false)
 
   useEffect(() => {
     if (!loading && user) {
@@ -56,7 +58,7 @@ export function SplashPage() {
         </div>
 
         <header className="absolute left-0 right-0 top-0 z-20 flex items-center justify-between px-5 pt-5 sm:px-8 sm:pt-6">
-          <BurnPalLogo compact enlargeText />
+          <QingluLogo compact enlargeText />
           <UserAccountAvatar />
         </header>
 
@@ -78,18 +80,29 @@ export function SplashPage() {
                 animate={{ scale: [1, 1.02, 1] }}
                 transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
                 whileTap={{ scale: 0.97 }}
-                onClick={() => navigate('/chat')}
+                onClick={() => navigate('/onboard')}
               >
                 {t('splash.wakeBtn')}
               </motion.button>
               <p className="splash-hero-subtitle mt-5">{t('splash.subtitle')}</p>
 
               <div className="mt-8 max-w-md">
-                <AccountAuthPanel
-                  variant="compact"
-                  defaultMode="login"
-                  onSuccess={() => navigate('/chat', { replace: true })}
-                />
+                <button
+                  type="button"
+                  className="text-sm font-medium text-lime-800 underline decoration-lime-400/60"
+                  onClick={() => setAuthOpen((v) => !v)}
+                >
+                  {t('splash.loginFold')}
+                </button>
+                {authOpen && (
+                  <div className="mt-4">
+                    <AccountAuthPanel
+                      variant="compact"
+                      defaultMode="login"
+                      onSuccess={() => navigate('/chat', { replace: true })}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>

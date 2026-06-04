@@ -115,33 +115,33 @@
   font-family: 'Noto Serif SC', 'Songti SC', 'STSong', Georgia, serif;
 }
 
-.burnpal-page-inner {
+.qinglu-page-inner {
   width: 100%;
   padding-inline: 1rem;
 }
 
 /* ChatGPT-style centered conversation column */
-.burnpal-chat-column {
+.qinglu-chat-column {
   width: 100%;
   max-width: 56rem;
   margin-inline: auto;
   padding-inline: 1.25rem;
 }
 
-.burnpal-scroll-hidden {
+.qinglu-scroll-hidden {
   overflow-y: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
 
-.burnpal-scroll-hidden::-webkit-scrollbar {
+.qinglu-scroll-hidden::-webkit-scrollbar {
   display: none;
   width: 0;
   height: 0;
 }
 
 /* Empty chat welcome — fixed in layout, not inside scroll area */
-.burnpal-chat-empty-hero {
+.qinglu-chat-empty-hero {
   flex: 1 1 auto;
   min-height: 0;
   touch-action: manipulation;
@@ -149,19 +149,19 @@
   -webkit-user-drag: none;
 }
 
-.burnpal-chat-empty-hero h2,
-.burnpal-chat-empty-hero p {
+.qinglu-chat-empty-hero h2,
+.qinglu-chat-empty-hero p {
   transform: none !important;
 }
 
-.burnpal-float-dock {
+.qinglu-float-dock {
   margin: 0 auto;
   width: 100%;
   border-radius: 28px;
 }
 
 /* Floating shell panels — sidebar & main chat */
-.burnpal-shell-panel {
+.qinglu-shell-panel {
   background: rgba(240, 253, 244, 0.62);
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
@@ -173,17 +173,17 @@
 }
 
 /* Chat dashboard strip — mint panels + dark text (readable on light page bg) */
-.burnpal-dashboard-strip {
+.qinglu-dashboard-strip {
   color: #0f172a;
 }
 
-[data-theme='dark'] .burnpal-dashboard-strip,
-[data-theme='dark'] .burnpal-dashboard-strip button {
+[data-theme='dark'] .qinglu-dashboard-strip,
+[data-theme='dark'] .qinglu-dashboard-strip button {
   background-color: #b8e0b0;
   color: #0f172a;
 }
 
-.burnpal-shell-divider {
+.qinglu-shell-divider {
   height: 1px;
   margin-inline: 0.75rem;
   background: linear-gradient(

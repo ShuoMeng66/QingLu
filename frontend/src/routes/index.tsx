@@ -13,6 +13,8 @@ import { ChatPage } from '../pages/ChatPage'
 import { SettingsPage } from '../pages/SettingsPage'
 
 import { SplashPage } from '../pages/SplashPage'
+import { DemoProfilePage } from '../pages/DemoProfilePage'
+import { ProfileReadyPage } from '../pages/ProfileReadyPage'
 
 function AppProviderLayout() {
   const location = useLocation()
@@ -37,6 +39,8 @@ function AppRoutesInner() {
     <Routes>
       <Route index element={<SplashPage />} />
       <Route path="splash" element={<SplashPage />} />
+      <Route path="onboard" element={<DemoProfilePage />} />
+      <Route path="ready" element={<ProfileReadyPage />} />
       <Route path="auth" element={<AuthPage />} />
       <Route path="about" element={<AboutPage />} />
       <Route element={<AppProviderLayout />}>

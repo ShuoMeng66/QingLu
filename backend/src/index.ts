@@ -14,7 +14,7 @@ app.use(cors({ origin: true, credentials: true }))
 app.use(express.json({ limit: '2mb' }))
 
 app.get('/health', (_req, res) => {
-  res.json({ ok: true, service: 'burnpal-backend' })
+  res.json({ ok: true, service: 'qinglu-backend' })
 })
 
 app.use('/api/auth', proxySecretsMiddleware, authRouter)
@@ -22,7 +22,7 @@ app.use('/api/user/data', userDataRouter)
 
 app.listen(PORT, () => {
   const provider = getEmailProvider()
-  console.log(`BurnPal backend listening on http://127.0.0.1:${PORT}`)
+  console.log(`QingLu backend listening on http://127.0.0.1:${PORT}`)
   if (provider === 'resend') {
     console.log('Email: Resend API (HTTPS)')
   } else if (provider === 'smtp') {

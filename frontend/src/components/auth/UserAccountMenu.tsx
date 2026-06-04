@@ -50,11 +50,11 @@ export function UserAccountMenu({
 
   useEffect(() => {
     const onApplied = () => refreshAvatar()
-    window.addEventListener('burnpal:user-data-applied', onApplied)
-    window.addEventListener('burnpal:user-data-changed', onApplied)
+    window.addEventListener('qinglu:user-data-applied', onApplied)
+    window.addEventListener('qinglu:user-data-changed', onApplied)
     return () => {
-      window.removeEventListener('burnpal:user-data-applied', onApplied)
-      window.removeEventListener('burnpal:user-data-changed', onApplied)
+      window.removeEventListener('qinglu:user-data-applied', onApplied)
+      window.removeEventListener('qinglu:user-data-changed', onApplied)
     }
   }, [refreshAvatar])
 

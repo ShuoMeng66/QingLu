@@ -2,7 +2,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
 import { AccountAuthPanel } from '../components/auth/AccountAuthPanel'
 import { UserAccountAvatar } from '../components/auth/UserAccountAvatar'
-import { AppShell } from '../components/burnpal/AppShell'
+import { AppShell } from '../components/qinglu/AppShell'
 import { PageTransition } from '../components/layout/PageTransition'
 import { useI18n } from '../hooks/useI18n'
 

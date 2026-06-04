@@ -42,8 +42,8 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const reload = () => setPreferences(loadAppPreferences())
-    window.addEventListener('burnpal:user-data-applied', reload)
-    return () => window.removeEventListener('burnpal:user-data-applied', reload)
+    window.addEventListener('qinglu:user-data-applied', reload)
+    return () => window.removeEventListener('qinglu:user-data-applied', reload)
   }, [])
 
   useEffect(() => {

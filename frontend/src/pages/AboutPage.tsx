@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft } from 'lucide-react'
-import { AppShell } from '../components/burnpal/AppShell'
+import { AppShell } from '../components/qinglu/AppShell'
 import { PageTransition } from '../components/layout/PageTransition'
 import { QINGLU } from '../data/qingluAssets'
-import { QingluImage } from '../components/burnpal/QingluImage'
+import { QingluImage } from '../components/qinglu/QingluImage'
 import { useI18n } from '../hooks/useI18n'
 
 export function AboutPage() {
@@ -28,7 +28,7 @@ export function AboutPage() {
           <div className="mb-6 h-28 w-28 overflow-hidden rounded-full bg-gradient-to-br from-emerald-100 to-teal-100 shadow-glass">
             <QingluImage
               src={QINGLU.avatar}
-              alt="BurnPal 轻鹭"
+              alt="QingLu 轻鹭"
               className="brand-logo-img h-full w-full"
               placeholderClassName="h-28 w-28 rounded-full"
             />

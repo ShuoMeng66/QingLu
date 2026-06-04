@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { Moon, Sun, UserCircle } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { AppShell } from '../components/burnpal/AppShell'
+import { AppShell } from '../components/qinglu/AppShell'
 import { PageTransition } from '../components/layout/PageTransition'
-import { ToggleSwitch } from '../components/burnpal/ToggleSwitch'
+import { ToggleSwitch } from '../components/qinglu/ToggleSwitch'
 import { SettingsPanel, useAdvancedSettingsUnlock } from '../components/SettingsPanel'
 import { useAppContext } from '../context/AppContext'
 import { useAuth } from '../context/AuthContext'
@@ -198,6 +198,11 @@ export function SettingsPage() {
                 label={t('settings.aiNearby')}
                 checked={preferences.ai.citeNearby}
                 onChange={(citeNearby) => setAiPreferences({ citeNearby })}
+              />
+              <ToggleSwitch
+                label={t('settings.aiOutputGuard')}
+                checked={preferences.ai.outputGuard !== false}
+                onChange={(outputGuard) => setAiPreferences({ outputGuard })}
               />
             </div>
           </section>

@@ -2,6 +2,7 @@ import { formatLocationLabel } from './citySkyline'
 import { getTodayConsumedKcal } from './mealLog'
 import { getCachedUserLocation } from './userLocation'
 import { getProfileTier, getRemainingKcal, loadUserProfile } from './userProfile'
+import { isUserInSkillDemoCities } from './venueRegion'
 
 /** App 已知的用户位置与热量实况，注入 system prompt，避免 AI 重复索要 */
 export function buildUserContextPrompt(): string {
@@ -122,6 +123,15 @@ export function buildUserContextPrompt(): string {
     rules.push(
       '禁止再次询问用户住在哪个区/城市或配送地址；推荐到店选项时写出店名，并提示用户点对话下方卡片的「一键导航」（Google 地图步行）',
     )
+    if (location && !isUserInSkillDemoCities(location)) {
+      rules.push(
+        '内置演示店铺 JSON 仅含北京/上海示例门店，不包含用户当前城市：禁止推荐北京/上海具体分店（如陆家嘴、中关村某店）当作「附近」；可给连锁品牌点单原则或菜系建议，并说明附近具体门店以地图/外卖为准',
+      )
+    } else if (location) {
+      rules.push(
+        '推荐到店时只能引用与用户同城（北京或上海，且与用户区划一致）的 Skill JSON 店名；勿跨城推荐另一座城市的分店',
+      )
+    }
   }
   if (budget != null && budget > 0) {
     rules.push('禁止让用户重复报「今天吃了多少」；按剩余额度给套餐，若记录为空可注明「按剩余额度估算」并给 2–3 套具体组合')

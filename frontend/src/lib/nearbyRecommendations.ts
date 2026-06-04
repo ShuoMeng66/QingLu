@@ -20,7 +20,7 @@ export interface NearbyPlace {
 }
 
 const FOOD_AMENITIES = 'restaurant|cafe|fast_food'
-const RECOMMENDATIONS_CACHE_KEY = 'burnpal.nearby-recommendations-v1'
+const RECOMMENDATIONS_CACHE_KEY = 'qinglu.nearby-recommendations-v1'
 const CACHE_TTL_MS = 30 * 60 * 1000
 
 interface CachedRecommendations {
@@ -163,7 +163,7 @@ function mapElements(
 const NOMINATIM_HEADERS = {
   Accept: 'application/json',
   'Accept-Language': 'zh-CN',
-  'User-Agent': 'BurnPal/1.0 (local fitness assistant)',
+  'User-Agent': 'QingLu/1.0 (local fitness assistant)',
 }
 
 async function searchFoodViaNominatim(location: UserLocation): Promise<NearbyPlace[]> {

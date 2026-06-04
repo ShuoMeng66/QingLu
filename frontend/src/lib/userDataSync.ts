@@ -122,6 +122,6 @@ export function notifyUserDataChanged() {
   if (notifyTimer != null) window.clearTimeout(notifyTimer)
   notifyTimer = window.setTimeout(() => {
     notifyTimer = null
-    window.dispatchEvent(new CustomEvent('burnpal:user-data-changed'))
+    window.dispatchEvent(new CustomEvent('qinglu:user-data-changed'))
   }, 500)
 }

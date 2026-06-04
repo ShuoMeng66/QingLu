@@ -115,10 +115,10 @@ function resolveFromAddress(): string | { name: string; address: string } {
   const user = smtpUser()
   const raw = envTrim('SMTP_FROM')
 
-  if (!user) return raw || 'BurnPal'
+  if (!user) return raw || 'QingLu'
 
   if (!raw || raw === user) {
-    return { name: 'BurnPal', address: user }
+    return { name: 'QingLu', address: user }
   }
 
   const bracketed = raw.match(/^(.+?)\s*<([^>]+)>$/)
@@ -132,12 +132,12 @@ function resolveFromAddress(): string | { name: string; address: string } {
 }
 
 function resendFromAddress(): string {
-  return getProxyResendFrom() || envTrim('RESEND_FROM') || 'BurnPal <onboarding@resend.dev>'
+  return getProxyResendFrom() || envTrim('RESEND_FROM') || 'QingLu <onboarding@resend.dev>'
 }
 
 function verificationContent(code: string): { subject: string; text: string; html: string } {
   return {
-    subject: '轻鹭 BurnPal 注册验证码',
+    subject: '轻鹭 QingLu 注册验证码',
     text: `您的注册验证码是：${code}\n\n10 分钟内有效，请勿泄露给他人。\n\n如非本人操作，请忽略此邮件。`,
     html: `<p>您的注册验证码是：<strong style="font-size:20px;letter-spacing:2px">${code}</strong></p><p>10 分钟内有效，请勿泄露给他人。</p><p style="color:#666;font-size:12px">如非本人操作，请忽略此邮件。</p>`,
   }
@@ -231,7 +231,7 @@ async function sendViaResend(email: string, code: string): Promise<void> {
   }
 
   const payload = (await response.json()) as { id?: string }
-  console.log(`[BurnPal] Verification email sent via Resend (${email}) id=${payload.id ?? 'n/a'}`)
+  console.log(`[QingLu] Verification email sent via Resend (${email}) id=${payload.id ?? 'n/a'}`)
 }
 
 async function sendViaSmtp(email: string, code: string): Promise<void> {
@@ -249,7 +249,7 @@ async function sendViaSmtp(email: string, code: string): Promise<void> {
   })
 
   console.log(
-    `[BurnPal] Verification email accepted by SMTP (${email}) messageId=${info.messageId ?? 'n/a'}`,
+    `[QingLu] Verification email accepted by SMTP (${email}) messageId=${info.messageId ?? 'n/a'}`,
   )
 }
 
@@ -311,7 +311,7 @@ export function formatResendError(error: unknown): string {
     return 'Resend API 权限不足，请重新创建具备 Sending access 的 API Key'
   }
   if (/domain|from|sender/i.test(message)) {
-    return 'Resend 发件地址无效：验证域名后设置 RESEND_FROM，测试可用 BurnPal <onboarding@resend.dev>'
+    return 'Resend 发件地址无效：验证域名后设置 RESEND_FROM，测试可用 QingLu <onboarding@resend.dev>'
   }
   return message.slice(0, 240)
 }

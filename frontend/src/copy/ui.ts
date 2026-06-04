@@ -3,7 +3,7 @@
  */
 
 export const BRAND = {
-  name: 'BurnPal 轻鹭',
+  name: 'QingLu 轻鹭',
   tagline: '轻盈随行 · 智慧本地',
   description:
     '基于 OpenClaw 的本地生活减脂搭子——聚餐、外卖、练后在真实场景里给你可执行的饮食与运动建议。',
@@ -47,7 +47,7 @@ export const CHAT = {
   statusClusterWorking: '轻鹭思考中',
   statusGenerating: '回复中',
   statusOffline: '离线',
-  placeholderReady: '问问 BurnPal…',
+  placeholderReady: '告诉轻鹭你的场景，比如：今晚朋友约火锅怎么办？',
   placeholderGenerating: '正在回复…',
   placeholderOffline: '服务暂不可用，请稍后在设置中重试',
   stopped: '（已停止生成）',

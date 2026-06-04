@@ -11,8 +11,9 @@ import { useChatStream } from '../hooks/useChatStream'
 import { useConversations } from '../hooks/useConversations'
 import { useOpenClawConfig } from '../hooks/useOpenClawConfig'
 import { useYiqidongQuest } from '../hooks/useYiqidongQuest'
-import { buildClusterSystemPrompt } from '../lib/agentCluster'
-import { scoreResponseSmart } from '../lib/llmEval'
+import { buildClusterSystemPrompt, scoreResponse } from '../lib/agentCluster'
+import { runOutputGuard } from '../lib/outputGuard'
+import { getCachedUserLocation } from '../lib/userLocation'
 import { testConnection } from '../lib/openclaw'
 import {
   createTrajectoryDraft,
@@ -98,22 +99,15 @@ export function AppProvider({ children }: AppProviderProps) {
   const connected = status === 'connected'
 
   const scoreAnswer = useCallback(
-    async (question: string, answer: string) => {
-      const { scorer: _scorer, ...score } = await scoreResponseSmart(
-        config,
-        connected,
-        question,
-        answer,
-      )
-      return score
-    },
-    [config, connected],
+    async (question: string, answer: string) => scoreResponse(question, answer),
+    [],
   )
 
   const {
     turn: clusterTurn,
     prepareTurn,
     finishExecution,
+    setReviewing,
     resetTurn,
     submitFeedback,
   } = useAgentCluster({ scoreAnswer })
@@ -139,8 +133,8 @@ export function AppProvider({ children }: AppProviderProps) {
       syncYiqidongLetters(nextYiqidong)
       refreshYiqidongUnread()
     }
-    window.addEventListener('burnpal:user-data-applied', onUserDataApplied)
-    return () => window.removeEventListener('burnpal:user-data-applied', onUserDataApplied)
+    window.addEventListener('qinglu:user-data-applied', onUserDataApplied)
+    return () => window.removeEventListener('qinglu:user-data-applied', onUserDataApplied)
   }, [refreshUserProfile, refreshYiqidongUnread])
 
   useEffect(() => {
@@ -172,6 +166,27 @@ export function AppProvider({ children }: AppProviderProps) {
     refreshYiqidongUnread()
   }, [refreshYiqidongUnread])
 
+  const getStreamSendOptions = useCallback(
+    () => ({
+      onReviewPhase: (active: boolean) => {
+        if (active) setReviewing(true)
+      },
+      onBeforeReveal: async (draft: string, ctx: { userMessage: string }) => {
+        const prefs = loadAppPreferences()
+        const result = await runOutputGuard({
+          config,
+          connected,
+          enabled: prefs.ai.outputGuard !== false,
+          userMessage: ctx.userMessage,
+          draft,
+          userLocation: getCachedUserLocation(),
+        })
+        return result.finalContent
+      },
+    }),
+    [config, connected, setReviewing],
+  )
+
   const {
     loading,
     handleSend: sendMessage,
@@ -187,6 +202,7 @@ export function AppProvider({ children }: AppProviderProps) {
     updateConversationMessages,
     onNeedSettings: () => navigate('/settings'),
     toast,
+    getStreamSendOptions,
   })
 
   const handleCreateNewConversation = useCallback(() => {

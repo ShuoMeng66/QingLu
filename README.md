@@ -1,6 +1,15 @@
-# BurnPal 轻鹭
+# QingLu 轻鹭
 
-AI 减脂管家 — 美团黑客松 · React + Vite 前端 · Express 账户后端 · OpenClaw / 百炼 AI
+AI 本地生活减脂管家 — 美团黑客松 · React + Vite 前端 · Express 账户后端 · OpenClaw / 百炼 AI
+
+> 产品品牌为 **QingLu（轻鹭）**。GitHub 仓库当前可能仍显示为 `BurnPal`，可在 GitHub Settings 中手动改名为 `QingLu` 后更新本地 `git remote` URL。
+
+## 产品旅程（Demo）
+
+1. 首页「唤醒我的轻鹭管家」→ `/onboard` 选择 Demo 档案（小明 / 小红 / 王总）
+2. `/ready` 展示今日减脂生活档案反馈卡
+3. `/chat` 今日管家首页：今日状态条 → 轻鹭发现卡 → 五类生活任务（外卖 / 聚餐 / 去哪练 / 恢复 / 一起动）
+4. 点击任务自动发送场景化 prompt，AI 回复 + 本地生活卡片，「去看看」承接美团/点评（Demo 无真实链接时弹窗说明）
 
 ## 一键启动（本地）
 
@@ -63,12 +72,14 @@ VITE_OPENCLAW_AGENT=qwen-plus
 
 ```bash
 git remote add origin git@github.com:ShuoMeng66/BurnPal.git
+# 若在 GitHub 将仓库改名为 QingLu 后：
+# git remote set-url origin git@github.com:ShuoMeng66/QingLu.git
 git push -u origin main
 ```
 
 ### 2. 在 Vercel 导入仓库
 
-1. 打开 [vercel.com/new](https://vercel.com/new) → Import `ShuoMeng66/BurnPal`
+1. 打开 [vercel.com/new](https://vercel.com/new) → Import 本仓库（当前多为 `ShuoMeng66/BurnPal`，改名后选 `QingLu`）
 2. **Framework Preset**: Other（已配置 `vercel.json`）
 3. 无需改 Build 命令（根目录 `vercel.json` 已指定 `frontend` 构建）
 
@@ -80,9 +91,21 @@ git push -u origin main
 | `OPENCLAW_PROXY_TARGET` | 可选，服务端上游 | `https://dashscope.aliyuncs.com` |
 | `OPENCLAW_PROXY_PATH` | 可选，服务端路径前缀 | `/compatible-mode` |
 | `VITE_OPENCLAW_BASE_URL` | **构建时**写入前端，需 redeploy | `/api/openclaw/v1`（推荐；勿用 `/openclaw-api`） |
-| `VITE_OPENCLAW_AGENT` | **构建时**默认模型，需 redeploy | `deepseek-v4-flash`（百炼免费 DeepSeek V4）或 `qwen-plus` |
+| `VITE_OPENCLAW_AGENT` | **构建时**默认模型，需 redeploy | `deepseek-v4-flash`（百炼免费 DeepSeek V4）或 `deepseek-v4-pro` |
+| `VENUE_ENRICH_MODEL` | 可选，门面检索子调用模型 | `qwen3.5-omni-plus-2026-03-15` |
+| `VENUE_ENRICH_ENABLED` | 可选，设为 `false` 关闭门面检索 | 默认开启 |
 
 勿在生产设置 `VITE_OPENCLAW_TOKEN`（会打进前端 bundle）。`VITE_OPENCLAW_PROXY_*` 仅本地 Vite 开发代理用，Vercel 上请用 `OPENCLAW_PROXY_*`。
+
+**多模型分工**：
+
+| 阶段 | 模型 | 说明 |
+|------|------|------|
+| 主对话 | `deepseek-v4-pro`（或 `VITE_OPENCLAW_AGENT`） | 流式生成，草稿先缓冲不展示 |
+| 输出守门 | `deepseek-v4-flash`（`VITE_GUARD_AGENT`） | 展示前质检：异地门店、Markdown 格式等；可在设置中关闭 |
+| 门面检索 | `qwen3.5-omni-plus-2026-03-15`（`VENUE_ENRICH_MODEL`） | 匹配 Skill 店名后异步拉门头图 |
+
+环境变量可增：`VITE_GUARD_AGENT=deepseek-v4-flash`。设置 → AI 偏好 →「输出前质检」。
 | `BACKEND_URL` | 已部署的后端公网地址（账户/云同步） | `https://your-api.onrender.com` |
 | `RESEND_API_KEY` | 验证码发信（可只配在 Vercel，见下） | `re_…` |
 | `BURNPAL_PROXY_SECRET` | Vercel→Render 转发 Resend 密钥时的共享口令（随机长字符串） | 与 Render 相同 |
@@ -90,6 +113,7 @@ git push -u origin main
 生产环境 **Edge Middleware** 代理：
 
 - OpenClaw：`/api/openclaw`、`/openclaw-api`（`OPENCLAW_TOKEN` 仅服务端）
+- **Venue Scout（门面检索）**：`POST /api/venue/enrich`（百炼原生 Generation + `enable_search`，与主聊天分离）
 - 账户 API：`/api/auth`、`/api/user`（转发到 `BACKEND_URL`，勿再依赖易崩溃的 Serverless 子路径）
 
 **Vercel 上的 Skill（无需额外 Gateway 网址）**：构建时 `frontend` 会把 `Agent/burnpal_skill/` 全量打包进聊天 **system prompt**（约 150KB 文本，适合 DeepSeek V4 Pro 等大上下文模型）。只需 push GitHub 并 Redeploy；`VITE_OPENCLAW_AGENT` 建议 `deepseek-v4-pro` 或 `deepseek-v4-flash`。
@@ -140,11 +164,11 @@ Render 示例：
 ## 项目结构
 
 ```
-BurnPal/
-├── frontend/          # Vite + React 前端
+QingLu/
+├── frontend/          # Vite + React 前端（qinglu 组件、今日管家、输出守门）
 ├── backend/           # Express + SQLite 账户与云同步
 ├── Agent/
-│   ├── burnpal_skill/ # OpenClaw 主 Skill 包（vendor 自 burnpal.skill）
+│   ├── burnpal_skill/ # OpenClaw Skill 包（vendor 路径名保留；产品名 QingLu）
 │   ├── _legacy/       # 早期 hackathod_skill（Heartbeat 脚本等）
 │   └── trace2skill/   # 对话轨迹 → Skill 进化
 ├── api/               # Vercel Serverless 代理（OpenClaw + 后端转发）
@@ -157,7 +181,7 @@ BurnPal/
 - **CiCiLYX（[@CCLYX](https://github.com/CCLYX)）**：OpenClaw Skill 体系与全套模拟数据（[burnpal.skill](https://github.com/CCLYX/burnpal.skill)）— 四模块 Skill（吃什么 / 去哪练 / 恢复放松 / 一起动）、路由层、北京与上海场景数据及参考文档。
 - **ShuoMeng66**：前端应用、账户后端、Vercel/Render 部署与产品集成。
 
-主仓库内 Skill 为 vendor 拷贝，路径为 [`Agent/burnpal_skill/`](Agent/burnpal_skill/)；上游协作仓库见 [CCLYX/burnpal.skill](https://github.com/CCLYX/burnpal.skill)。本地 OpenClaw 加载说明见 [`Agent/README.md`](Agent/README.md)。
+主仓库内 Skill 为 vendor 拷贝，路径为 [`Agent/burnpal_skill/`](Agent/burnpal_skill/)（目录名与上游一致）；上游见 [CCLYX/burnpal.skill](https://github.com/CCLYX/burnpal.skill)。本地 OpenClaw 说明见 [`Agent/README.md`](Agent/README.md)。前端构建脚本：`npm run bundle:skill`（生成 `qingluSkillContext.ts`、`qingluVenues.generated.ts`、`demoProfiles.generated.ts`）。
 
 ## License
 

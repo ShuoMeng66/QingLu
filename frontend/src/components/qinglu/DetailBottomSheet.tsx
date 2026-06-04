@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
 import { ExternalLink, X } from 'lucide-react'
@@ -5,6 +6,7 @@ import { ExternalLink, X } from 'lucide-react'
 import type { NearbyPlaceKind } from '../../lib/nearbyRecommendations'
 
 import { openSmartNavigation } from '../../lib/openMaps'
+import { openPlatformListing } from '../../lib/platformLinks'
 
 import { useI18n } from '../../hooks/useI18n'
 
@@ -26,6 +28,12 @@ export interface DetailSheetData extends Pick<
 
   | 'imageSrc'
 
+  | 'placeholderImageSrc'
+
+  | 'realFacade'
+
+  | 'facadeSummary'
+
   | 'iconType'
 
   | 'tags'
@@ -39,6 +47,8 @@ export interface DetailSheetData extends Pick<
   | 'tag'
 
   | 'rating'
+  | 'listingUrl'
+  | 'city'
 
 > {
 
@@ -47,6 +57,8 @@ export interface DetailSheetData extends Pick<
   lon?: number
 
   kind?: NearbyPlaceKind
+
+  sourceUrls?: string[]
 
 }
 
@@ -63,6 +75,46 @@ interface DetailBottomSheetProps {
 }
 
 
+
+function DetailFacadeImage({
+  imageSrc,
+  placeholderImageSrc,
+  imageGradient,
+  iconType,
+}: {
+  imageSrc?: string
+  placeholderImageSrc?: string
+  imageGradient?: string
+  iconType?: 'food' | 'gym'
+}) {
+  const [failed, setFailed] = useState(false)
+  const displaySrc =
+    failed && placeholderImageSrc ? placeholderImageSrc : imageSrc
+
+  if (!displaySrc) {
+    return (
+      <div
+        className="flex h-48 w-full items-center justify-center text-5xl opacity-50"
+        style={{ background: imageGradient }}
+      >
+        {iconType === 'gym' ? '🏋️' : iconType === 'food' ? '🥗' : '📍'}
+      </div>
+    )
+  }
+
+  return (
+    <img
+      src={displaySrc}
+      alt=""
+      className="h-48 w-full object-cover"
+      onError={() => {
+        if (placeholderImageSrc && displaySrc !== placeholderImageSrc) {
+          setFailed(true)
+        }
+      }}
+    />
+  )
+}
 
 export function DetailBottomSheet({ open, data, onClose }: DetailBottomSheetProps) {
 
@@ -90,19 +142,23 @@ export function DetailBottomSheet({ open, data, onClose }: DetailBottomSheetProp
 
 
 
-  const handleOpenExternal = () => {
+  const handlePlatformView = () => {
+    if (!data) return
+    openPlatformListing({
+      title: data.title,
+      listingUrl: data.listingUrl,
+      city: data.city,
+    })
+  }
 
+  const handleNavigate = () => {
     if (!data || data.lat == null || data.lon == null) return
-
     const origin =
-
       location != null ? { lat: location.lat, lon: location.lon } : undefined
-
     openSmartNavigation(data.lat, data.lon, data.title, origin, {
       country: location?.country,
       region: location?.region,
     })
-
   }
 
 
@@ -193,25 +249,17 @@ export function DetailBottomSheet({ open, data, onClose }: DetailBottomSheetProp
 
                 <div className="overflow-hidden rounded-[24px]">
 
-                  {data.imageSrc ? (
+                  <DetailFacadeImage
 
-                    <img src={data.imageSrc} alt="" className="h-48 w-full object-cover" />
+                    imageSrc={data.imageSrc}
 
-                  ) : (
+                    placeholderImageSrc={data.placeholderImageSrc}
 
-                    <div
+                    imageGradient={data.imageGradient}
 
-                      className="flex h-48 w-full items-center justify-center text-5xl opacity-50"
+                    iconType={data.iconType}
 
-                      style={{ background: data.imageGradient }}
-
-                    >
-
-                      {data.iconType === 'gym' ? '🏋️' : data.iconType === 'food' ? '🥗' : '📍'}
-
-                    </div>
-
-                  )}
+                  />
 
                 </div>
 
@@ -225,9 +273,61 @@ export function DetailBottomSheet({ open, data, onClose }: DetailBottomSheetProp
 
               </h2>
 
+              {data.realFacade && (
+
+                <p className="mt-2 text-xs font-medium text-emerald-500">{t('richCard.realFacade')}</p>
+
+              )}
+
+              {data.facadeSummary && (
+
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{data.facadeSummary}</p>
+
+              )}
+
               {data.subtitle && (
 
                 <p className="mt-1 text-sm leading-relaxed text-slate-500">{data.subtitle}</p>
+
+              )}
+
+              {data.sourceUrls && data.sourceUrls.length > 0 && (
+
+                <div className="mt-3">
+
+                  <p className="text-xs font-medium text-slate-500">{t('detail.facadeSources')}</p>
+
+                  <ul className="mt-1 space-y-1">
+
+                    {data.sourceUrls.slice(0, 3).map((url) => (
+
+                      <li key={url}>
+
+                        <a
+
+                          href={url}
+
+                          target="_blank"
+
+                          rel="noopener noreferrer"
+
+                          className="inline-flex items-center gap-1 text-xs text-emerald-500 hover:underline"
+
+                        >
+
+                          <ExternalLink className="h-3 w-3" aria-hidden="true" />
+
+                          {new URL(url).hostname}
+
+                        </a>
+
+                      </li>
+
+                    ))}
+
+                  </ul>
+
+                </div>
 
               )}
 
@@ -351,21 +451,37 @@ export function DetailBottomSheet({ open, data, onClose }: DetailBottomSheetProp
 
                 type="button"
 
-                className="btn-vitality flex w-full items-center justify-center gap-2 rounded-full py-3.5 text-base font-semibold disabled:opacity-50"
+                className="btn-vitality flex w-full items-center justify-center gap-2 rounded-full py-3.5 text-base font-semibold"
 
-                whileTap={{ scale: canNavigate ? 0.97 : 1 }}
+                whileTap={{ scale: 0.97 }}
 
-                disabled={!canNavigate}
-
-                onClick={handleOpenExternal}
+                onClick={handlePlatformView}
 
               >
 
                 <ExternalLink className="h-4 w-4" aria-hidden="true" />
 
-                {canNavigate ? t('detail.navigate') : t('detail.noNavigate')}
+                {t('platform.view')}
 
               </motion.button>
+
+              {canNavigate && (
+
+                <button
+
+                  type="button"
+
+                  className="mt-2 w-full text-center text-sm font-medium text-lime-700 underline"
+
+                  onClick={handleNavigate}
+
+                >
+
+                  {t('detail.navigate')}
+
+                </button>
+
+              )}
 
             </div>
 

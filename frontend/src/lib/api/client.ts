@@ -1,5 +1,5 @@
-const AUTH_TOKEN_KEY = 'burnpal.auth.token'
-const AUTH_USER_KEY = 'burnpal.auth.user'
+const AUTH_TOKEN_KEY = 'qinglu.auth.token'
+const AUTH_USER_KEY = 'qinglu.auth.user'
 
 import { agentLog } from '../debugLog'
 

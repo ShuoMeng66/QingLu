@@ -212,21 +212,33 @@ function isBailianDeepSeekV4Model(model: string): boolean {
   return /^deepseek-v4(-pro|-flash)?$/i.test(model.trim())
 }
 
+export interface ChatCompletionOptions {
+  model?: string
+  enableThinking?: boolean
+}
+
 function buildChatCompletionBody(
   config: OpenClawConfig,
   messages: ChatMessage[],
   userId: string,
   systemPrompt: string | undefined,
   stream: boolean,
+  options?: ChatCompletionOptions,
 ): Record<string, unknown> {
+  const model = options?.model?.trim() || config.agent
   const body: Record<string, unknown> = {
-    model: config.agent,
+    model,
     stream,
     user: userId,
     messages: toApiMessages(messages, systemPrompt),
   }
-  if (isBailianDeepSeekV4Model(config.agent)) {
+  const thinking =
+    options?.enableThinking ??
+    (isBailianDeepSeekV4Model(model) ? true : undefined)
+  if (thinking === true) {
     body.enable_thinking = true
+  } else if (thinking === false) {
+    body.enable_thinking = false
   }
   return body
 }
@@ -307,6 +319,7 @@ export async function sendChat(
   userId: string,
   signal?: AbortSignal,
   systemPrompt?: string,
+  options?: ChatCompletionOptions,
 ): Promise<string> {
   const baseUrl = normalizeBaseUrl(config.baseUrl)
 
@@ -314,7 +327,9 @@ export async function sendChat(
     method: 'POST',
     headers: buildHeaders(config.token),
     signal,
-    body: JSON.stringify(buildChatCompletionBody(config, messages, userId, systemPrompt, false)),
+    body: JSON.stringify(
+      buildChatCompletionBody(config, messages, userId, systemPrompt, false, options),
+    ),
   })
 
   if (!response.ok) {

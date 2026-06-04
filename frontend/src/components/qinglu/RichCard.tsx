@@ -1,11 +1,14 @@
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { ChevronRight, Navigation, Star } from 'lucide-react'
+import { ChevronRight, ExternalLink, Navigation, Star } from 'lucide-react'
 import { ActionTags } from './ActionTags'
-
+import { openPlatformListing } from '../../lib/platformLinks'
 import { useI18n } from '../../hooks/useI18n'
 
 export interface RichCardProps {
   imageSrc?: string
+  /** Fallback when facade hotlink fails */
+  placeholderImageSrc?: string
   imageGradient?: string
   iconType?: 'food' | 'gym'
   tag?: string
@@ -17,6 +20,10 @@ export interface RichCardProps {
   location?: string
   lat?: number
   lon?: number
+  realFacade?: boolean
+  facadeSummary?: string
+  listingUrl?: string
+  city?: string
   onDetail?: () => void
   onNavigate?: () => void
 }
@@ -30,6 +37,7 @@ const BUBBLE_SPRING = { type: 'spring' as const, stiffness: 300, damping: 25 }
 
 export function RichCard({
   imageSrc,
+  placeholderImageSrc,
   imageGradient = 'linear-gradient(155deg, #ecfdf5 0%, #ccfbf1 100%)',
   iconType,
   tag,
@@ -41,11 +49,22 @@ export function RichCard({
   location,
   lat,
   lon,
+  realFacade,
+  facadeSummary,
+  listingUrl,
+  city,
   onDetail,
   onNavigate,
 }: RichCardProps) {
   const { t } = useI18n()
   const canNavigate = lat != null && lon != null && Boolean(onNavigate)
+  const [imageFailed, setImageFailed] = useState(false)
+  useEffect(() => {
+    setImageFailed(false)
+  }, [imageSrc])
+  const displaySrc =
+    imageFailed && placeholderImageSrc ? placeholderImageSrc : imageSrc
+  const displayTag = realFacade ? t('richCard.realFacade') : tag
 
   return (
     <motion.article
@@ -57,18 +76,27 @@ export function RichCard({
       <div className="flex gap-0">
         <div
           className="relative flex min-h-[120px] w-[38%] shrink-0 items-center justify-center overflow-hidden"
-          style={{ background: imageSrc ? undefined : imageGradient }}
+          style={{ background: displaySrc ? undefined : imageGradient }}
         >
-          {imageSrc ? (
-            <img src={imageSrc} alt="" className="h-full w-full object-cover" />
+          {displaySrc ? (
+            <img
+              src={displaySrc}
+              alt=""
+              className="h-full w-full object-cover"
+              onError={() => {
+                if (placeholderImageSrc && displaySrc !== placeholderImageSrc) {
+                  setImageFailed(true)
+                }
+              }}
+            />
           ) : (
             <span className="text-3xl opacity-50" aria-hidden="true">
               {iconType ? ICON_BY_TYPE[iconType] : '📍'}
             </span>
           )}
-          {tag && (
+          {displayTag && (
             <span className="absolute left-2 top-2 rounded-full bg-white/92 px-2 py-0.5 text-[10px] font-semibold text-emerald-400 shadow-glass">
-              {tag}
+              {displayTag}
             </span>
           )}
         </div>
@@ -85,6 +113,9 @@ export function RichCard({
             </div>
             <ActionTags tags={tags} className="mt-2" />
           </div>
+          {facadeSummary && (
+            <p className="line-clamp-2 text-[11px] leading-snug text-slate-600">{facadeSummary}</p>
+          )}
           {subtitle && <p className="text-xs leading-relaxed text-slate-500">{subtitle}</p>}
           {stats.length > 0 && (
             <dl className="flex flex-wrap gap-x-4 gap-y-1 text-xs">
@@ -100,10 +131,19 @@ export function RichCard({
             <p className="line-clamp-2 text-[10px] leading-snug text-slate-600">{location}</p>
           )}
           <div className="mt-auto flex flex-wrap items-center gap-2 border-t border-white/60 pt-2">
+            <motion.button
+              type="button"
+              className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 px-3 py-1.5 text-xs font-semibold text-white shadow-glow-emerald"
+              whileTap={{ scale: 0.97 }}
+              onClick={() => openPlatformListing({ title, listingUrl, city })}
+            >
+              <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+              {t('platform.view')}
+            </motion.button>
             {canNavigate && (
               <motion.button
                 type="button"
-                className="inline-flex items-center gap-1 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 px-3 py-1.5 text-xs font-semibold text-white shadow-glow-emerald"
+                className="inline-flex items-center gap-1 rounded-full border border-lime-300 bg-white/80 px-3 py-1.5 text-xs font-semibold text-lime-800"
                 whileTap={{ scale: 0.97 }}
                 onClick={onNavigate}
               >

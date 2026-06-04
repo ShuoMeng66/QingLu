@@ -27,9 +27,9 @@ export interface MealReminder {
   dismissed: boolean
 }
 
-const LOG_KEY = 'burnpal.meal-log-v1'
-const REMINDER_KEY = 'burnpal.meal-reminders-v1'
-const REMINDERS_ENABLED_KEY = 'burnpal.meal-reminders-enabled'
+const LOG_KEY = 'qinglu.meal-log-v1'
+const REMINDER_KEY = 'qinglu.meal-reminders-v1'
+const REMINDERS_ENABLED_KEY = 'qinglu.meal-reminders-enabled'
 
 export function areMealRemindersEnabled(): boolean {
   try {

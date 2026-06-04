@@ -61,10 +61,10 @@ export async function scoreResponseSmart(
           content: `用户问题：${question}\n\n助手回答：${answer}\n\n请评估回答质量。`,
         },
       ],
-      'burnpal-eval-agent',
+      'qinglu-eval-agent',
       undefined,
       [
-        '你是 BurnPal 回复质量评估 Agent（对齐 RLHF 反馈闭环）。',
+        '你是 QingLu 回复质量评估 Agent（对齐 RLHF 反馈闭环）。',
         '从信息提取、方案质量、数据依据、可执行性、场景贴合五个维度各打 0-100 分，并给出 total 总分与一句 note。',
         '仅输出 JSON，格式：',
         '{"total":82,"dimensions":[{"label":"信息提取","value":80},{"label":"方案质量","value":85},{"label":"数据依据","value":78},{"label":"可执行性","value":84},{"label":"场景贴合","value":81}],"note":"简短评语"}',

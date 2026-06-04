@@ -1,8 +1,10 @@
-import type { BurnpalVenueRecord } from '../data/burnpalVenues.generated'
-import { BURNPAL_VENUES } from '../data/burnpalVenues.generated'
-import type { DetailSheetData } from '../components/burnpal/DetailBottomSheet'
+import type { QingluVenueRecord } from '../data/qingluVenues.generated'
+import { QINGLU_VENUES } from '../data/qingluVenues.generated'
+import type { DetailSheetData } from '../components/qinglu/DetailBottomSheet'
 import type { NearbyPlaceKind } from './nearbyRecommendations'
+import type { UserLocation } from './userLocation'
 import { routeDietScene } from './evalAgent'
+import { filterVenuesForUser } from './venueRegion'
 import {
   isRecoveryIntent,
   shouldShowNearbyFood,
@@ -21,7 +23,7 @@ const VENUE_IMAGE_BY_CUISINE: Array<{ pattern: RegExp; src: string }> = [
 
 const DEFAULT_VENUE_IMAGE = '/images/splash/hero-healthy-meal.png'
 
-const GEO_CACHE_KEY = 'burnpal.venue-geocode-v1'
+const GEO_CACHE_KEY = 'qinglu.venue-geocode-v1'
 
 function normalizeName(value: string): string {
   return value
@@ -31,7 +33,7 @@ function normalizeName(value: string): string {
     .toLowerCase()
 }
 
-function venueImageSrc(venue: BurnpalVenueRecord): string {
+function venueImageSrc(venue: QingluVenueRecord): string {
   const key = `${venue.cuisine} ${venue.name} ${venue.type}`
   for (const rule of VENUE_IMAGE_BY_CUISINE) {
     if (rule.pattern.test(key)) return rule.src
@@ -39,39 +41,45 @@ function venueImageSrc(venue: BurnpalVenueRecord): string {
   return DEFAULT_VENUE_IMAGE
 }
 
-function venueKind(venue: BurnpalVenueRecord): NearbyPlaceKind {
+function venueKind(venue: QingluVenueRecord): NearbyPlaceKind {
   if (venue.type === 'gym' || venue.type === 'activity') return 'gym'
   if (venue.type === 'recovery') return 'recovery'
   return 'food'
 }
 
-export function matchVenuesInText(text: string, limit = 3): BurnpalVenueRecord[] {
+function venueMentionedInText(venue: QingluVenueRecord, normalized: string): boolean {
+  const core = normalizeName(venue.name)
+  if (core.length < 2) return false
+  const aliasHit = (venue.aliases ?? []).some(
+    (alias) => alias.length >= 2 && normalized.includes(alias.replace(/\s+/g, '')),
+  )
+  return (
+    aliasHit ||
+    normalized.includes(venue.name.replace(/\s+/g, '')) ||
+    normalized.toLowerCase().includes(core)
+  )
+}
+
+export function matchVenuesInText(
+  text: string,
+  limit = 3,
+  location?: UserLocation | null,
+): QingluVenueRecord[] {
   const normalized = text.replace(/\s+/g, '')
   if (!normalized.trim()) return []
 
-  const hits: BurnpalVenueRecord[] = []
+  const hits: QingluVenueRecord[] = []
   const seen = new Set<string>()
 
-  for (const venue of BURNPAL_VENUES) {
-    const core = normalizeName(venue.name)
-    if (core.length < 2) continue
-    const aliasHit = (venue.aliases ?? []).some(
-      (alias) => alias.length >= 2 && normalized.includes(alias),
-    )
-    if (
-      !aliasHit &&
-      !normalized.includes(venue.name) &&
-      !normalized.toLowerCase().includes(core)
-    ) {
-      continue
-    }
+  for (const venue of QINGLU_VENUES) {
+    if (!venueMentionedInText(venue, normalized)) continue
     if (seen.has(venue.id)) continue
     seen.add(venue.id)
     hits.push(venue)
-    if (hits.length >= limit) break
   }
 
-  return hits
+  const local = filterVenuesForUser(hits, location)
+  return local.slice(0, limit)
 }
 
 export function shouldAttachVenueCards(
@@ -89,7 +97,7 @@ export function shouldAttachVenueCards(
   return route.confidence >= 0.5
 }
 
-export function buildSkillVenueCards(venues: BurnpalVenueRecord[]): DetailSheetData[] {
+export function buildSkillVenueCards(venues: QingluVenueRecord[]): DetailSheetData[] {
   return venues.map((venue) => {
     const kind = venueKind(venue)
     const tag =
@@ -122,11 +130,14 @@ export function buildSkillVenueCards(venues: BurnpalVenueRecord[]): DetailSheetD
       ],
       location: venue.address || venue.area,
       imageSrc: venueImageSrc(venue),
+      _venueId: venue.id,
       imageGradient: 'linear-gradient(135deg, #d1fae5 0%, #99f6e4 100%)',
       iconType: kind === 'gym' ? 'gym' : 'food',
       rating: venue.rating != null ? String(venue.rating) : undefined,
       lat: venue.lat,
       lon: venue.lon,
+      listingUrl: venue.listingUrl,
+      city: venue.area?.split('·')[0],
       _geocodeQuery:
         venue.lat != null && venue.lon != null
           ? undefined
@@ -152,8 +163,14 @@ function writeGeoCache(cache: Record<string, GeocodeHit>) {
   localStorage.setItem(GEO_CACHE_KEY, JSON.stringify(cache))
 }
 
-export async function geocodeVenueQuery(query: string): Promise<GeocodeHit | null> {
-  const key = query.trim()
+export async function geocodeVenueQuery(
+  query: string,
+  near?: UserLocation | null,
+): Promise<GeocodeHit | null> {
+  const scopedQuery = near
+    ? `${query.trim()} ${near.city} ${near.region}`.trim()
+    : query.trim()
+  const key = scopedQuery
   if (!key) return null
 
   const cache = readGeoCache()
@@ -164,13 +181,17 @@ export async function geocodeVenueQuery(query: string): Promise<GeocodeHit | nul
     url.searchParams.set('format', 'json')
     url.searchParams.set('limit', '1')
     url.searchParams.set('countrycodes', 'cn')
-    url.searchParams.set('q', key)
+    url.searchParams.set('q', scopedQuery)
+    if (near) {
+      url.searchParams.set('viewbox', `${near.lon - 0.5},${near.lat + 0.5},${near.lon + 0.5},${near.lat - 0.5}`)
+      url.searchParams.set('bounded', '1')
+    }
 
     const response = await fetch(url.toString(), {
       headers: {
         Accept: 'application/json',
         'Accept-Language': 'zh-CN',
-        'User-Agent': 'BurnPal/1.0 (venue card geocode)',
+        'User-Agent': 'QingLu/1.0 (venue card geocode)',
       },
     })
     if (!response.ok) return null
@@ -192,6 +213,7 @@ export async function geocodeVenueQuery(query: string): Promise<GeocodeHit | nul
 
 export async function enrichCardsWithGeocode(
   cards: DetailSheetData[],
+  near?: UserLocation | null,
 ): Promise<DetailSheetData[]> {
   const out: DetailSheetData[] = []
 
@@ -203,7 +225,7 @@ export async function enrichCardsWithGeocode(
       continue
     }
 
-    const geo = await geocodeVenueQuery(query)
+    const geo = await geocodeVenueQuery(query, near)
     const { _geocodeQuery: _, ...rest } = card as DetailSheetData & { _geocodeQuery?: string }
     out.push(
       geo
@@ -219,13 +241,14 @@ export function resolveSkillVenueCards(
   userText: string,
   assistantText: string,
   citeNearby: boolean,
+  location?: UserLocation | null,
 ): DetailSheetData[] {
   if (!shouldAttachVenueCards(userText, assistantText, citeNearby)) return []
 
   const combined = `${userText}\n${assistantText}`
-  const fromAssistant = matchVenuesInText(assistantText, 3)
+  const fromAssistant = matchVenuesInText(assistantText, 3, location)
   const venues =
-    fromAssistant.length > 0 ? fromAssistant : matchVenuesInText(combined, 3)
+    fromAssistant.length > 0 ? fromAssistant : matchVenuesInText(combined, 3, location)
 
   if (venues.length === 0) return []
 

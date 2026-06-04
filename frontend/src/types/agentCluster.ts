@@ -7,6 +7,7 @@ export type ClusterPhase =
   | 'orchestrating'
   | 'planning'
   | 'executing'
+  | 'reviewing'
   | 'scoring'
 
 export type AgentStatus = 'idle' | 'working' | 'done' | 'rest'
@@ -69,6 +70,6 @@ export const SQUAD_ROSTER: SquadAgentMeta[] = [
   { id: 'lead', title: '准备', role: '理解你的问题与场景' },
   { id: 'planner', title: '规划', role: '整理饮食与训练要点' },
   { id: 'executor', title: '回复', role: '组织回答与方案' },
-  { id: 'scorer', title: '校验', role: '检查建议是否合理' },
+  { id: 'scorer', title: '质检', role: '输出前检查，避免异地门店与不当表述' },
   { id: 'standby', title: '待命', role: '随时继续聊' },
 ]

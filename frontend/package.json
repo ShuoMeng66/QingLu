@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "bundle:skill": "node scripts/bundle-burnpal-skill-context.mjs && node scripts/bundle-burnpal-venues.mjs",
+    "bundle:skill": "node scripts/bundle-qinglu-skill-context.mjs && node scripts/bundle-qinglu-venues.mjs && node scripts/bundle-qinglu-demo-profiles.mjs",
     "build": "npm run bundle:skill && tsc -b && vite build",
     "dev": "npm run bundle:skill && vite",
     "lint": "eslint .",

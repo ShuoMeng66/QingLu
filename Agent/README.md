@@ -48,6 +48,10 @@ Demo 用户见 `burnpal_skill/assets/user-profiles.json`（小明 / 小红 / 王
 
 修改后重启 OpenClaw Gateway，前端 Agent 指向 `openclaw/hackathon-dev`。
 
+## Web 端门面检索（Venue Scout）
+
+Vercel 生产环境不经过 OpenClaw Gateway：匹配到 `burnpal_skill` 店名后，前端调用 `POST /api/venue/enrich`（`qwen3.5-omni-plus-2026-03-15` + 联网搜索），与主聊天模型（`deepseek-v4-pro`）分离。详见根目录 `README.md` 环境变量表。
+
 ## Trace2Skill
 
 离线进化补丁写入 `burnpal_skill/references/evolved-lessons.md`。运行方式见 [`trace2skill/README.md`](trace2skill/README.md)。

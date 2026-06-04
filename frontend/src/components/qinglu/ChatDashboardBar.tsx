@@ -33,7 +33,7 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
 
   if (!complete) {
     return (
-      <div className="burnpal-chat-column px-5 pb-3 pt-1">
+      <div className="qinglu-chat-column px-5 pb-3 pt-1">
         <button
           type="button"
           className="group relative w-full overflow-hidden rounded-[22px] p-[1px] text-left shadow-glow-emerald transition-transform active:scale-[0.99]"
@@ -61,8 +61,8 @@ export function ChatDashboardBar({ onOpenProfile }: ChatDashboardBarProps) {
     'rounded-2xl border border-lime-400/35 bg-[#b8e0b0] p-3 text-left text-slate-900 shadow-sm transition hover:bg-[#a8d6a0] active:scale-[0.99]'
 
   return (
-    <div className="burnpal-chat-column px-5 pb-3 pt-1">
-      <div className="burnpal-dashboard-strip relative overflow-hidden rounded-[22px] border border-lime-400/40 bg-[#d0ebd0] p-4 shadow-sm">
+    <div className="qinglu-chat-column px-5 pb-3 pt-1">
+      <div className="qinglu-dashboard-strip relative overflow-hidden rounded-[22px] border border-lime-400/40 bg-[#d0ebd0] p-4 shadow-sm">
         <div className="relative grid grid-cols-3 gap-3">
           <button type="button" className={dashCard} onClick={onOpenProfile}>
             <div className="mb-2 flex items-center gap-1.5 text-lime-800">

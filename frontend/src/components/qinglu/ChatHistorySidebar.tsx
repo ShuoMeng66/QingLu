@@ -5,7 +5,7 @@ import { formatConversationTime } from '../../types/conversation'
 import { LOCALE_BCP47 } from '../../lib/i18n/localeIds'
 import { useI18n } from '../../hooks/useI18n'
 import { displayConversationTitle } from '../../lib/i18n/chatCopy'
-import { BurnPalLogo } from './BurnPalLogo'
+import { QingluLogo } from './QingluLogo'
 
 interface ChatHistorySidebarProps {
   activeConversation: Conversation | undefined
@@ -91,15 +91,15 @@ export function ChatHistorySidebar({
 
   return (
     <aside
-      className={`flex h-full w-[280px] shrink-0 flex-col overflow-hidden burnpal-shell-panel ${className}`}
+      className={`flex h-full w-[280px] shrink-0 flex-col overflow-hidden qinglu-shell-panel ${className}`}
     >
       <div className="px-4 py-4">
         <Link to="/chat">
-          <BurnPalLogo compact />
+          <QingluLogo compact />
         </Link>
       </div>
 
-      <div className="burnpal-shell-divider" aria-hidden="true" />
+      <div className="qinglu-shell-divider" aria-hidden="true" />
 
       <div className="flex min-h-0 flex-1 flex-col gap-3 p-3">
         <button
@@ -135,7 +135,7 @@ export function ChatHistorySidebar({
           <p className="px-2 text-[11px] font-semibold uppercase tracking-wide text-body-secondary/70">
             {t('sidebar.history')}
           </p>
-          <div className="burnpal-scroll-hidden mt-1 min-h-0 flex-1 overflow-y-auto">
+          <div className="qinglu-scroll-hidden mt-1 min-h-0 flex-1 overflow-y-auto">
             {historyConversations.length === 0 ? (
               <p className="px-3 py-2 text-xs text-body-secondary">{t('sidebar.noHistory')}</p>
             ) : (
@@ -153,7 +153,7 @@ export function ChatHistorySidebar({
         </div>
       </div>
 
-      <div className="burnpal-shell-divider" aria-hidden="true" />
+      <div className="qinglu-shell-divider" aria-hidden="true" />
 
       <div className="mt-auto p-3">
         <nav className="flex flex-col gap-1">

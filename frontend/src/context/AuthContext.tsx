@@ -74,7 +74,7 @@ async function syncCloudData(token: string, isNewAccount: boolean) {
       const merged = reconcileUserDataSnapshots(local, remote.data)
       applyUserDataSnapshot(merged)
       await pushRemoteUserData(token, merged)
-      window.dispatchEvent(new CustomEvent('burnpal:user-data-applied'))
+      window.dispatchEvent(new CustomEvent('qinglu:user-data-applied'))
     } else {
       await pushRemoteUserData(token, local)
     }
@@ -83,7 +83,7 @@ async function syncCloudData(token: string, isNewAccount: boolean) {
       ms: Date.now() - syncStarted,
       err: error instanceof Error ? error.message : 'unknown',
     }, 'B')
-    console.warn('[BurnPal] Cloud sync skipped:', error)
+    console.warn('[QingLu] Cloud sync skipped:', error)
   }
   agentLog('AuthContext.tsx:syncCloudData', 'finished', { ms: Date.now() - syncStarted }, 'B')
 }
@@ -100,7 +100,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await pushRemoteUserData(token, collectUserDataSnapshot())
     } catch (error) {
-      console.warn('[BurnPal] Background sync failed:', error)
+      console.warn('[QingLu] Background sync failed:', error)
     } finally {
       setSyncing(false)
     }
@@ -117,10 +117,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const merged = reconcileUserDataSnapshots(local, remote.data)
         applyUserDataSnapshot(merged)
         await pushRemoteUserData(token, merged)
-        window.dispatchEvent(new CustomEvent('burnpal:user-data-applied'))
+        window.dispatchEvent(new CustomEvent('qinglu:user-data-applied'))
       }
     } catch (error) {
-      console.warn('[BurnPal] Cloud pull skipped:', error)
+      console.warn('[QingLu] Cloud pull skipped:', error)
     } finally {
       setSyncing(false)
     }
@@ -223,7 +223,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         const status = error instanceof ApiError ? error.status : 0
         if (status === 401 || status === 403) {
-          console.warn('[BurnPal] Session invalid, cleared local login')
+          console.warn('[QingLu] Session invalid, cleared local login')
           clearAuthSession()
           setToken(null)
           setUser(null)
@@ -234,7 +234,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setToken(storedToken)
             setUser(cached)
           }
-          console.warn('[BurnPal] Could not verify session with server:', error)
+          console.warn('[QingLu] Could not verify session with server:', error)
         }
       } finally {
         if (!cancelled) setLoading(false)
@@ -253,8 +253,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       scheduleUserDataPush(() => pushNow())
     }
 
-    window.addEventListener('burnpal:user-data-changed', schedule)
-    return () => window.removeEventListener('burnpal:user-data-changed', schedule)
+    window.addEventListener('qinglu:user-data-changed', schedule)
+    return () => window.removeEventListener('qinglu:user-data-changed', schedule)
   }, [token, pushNow])
 
   const value = useMemo<AuthContextValue>(

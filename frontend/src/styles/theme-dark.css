@@ -65,7 +65,7 @@
 }
 
 [data-theme='dark'] .glass-panel,
-[data-theme='dark'] .burnpal-shell-panel {
+[data-theme='dark'] .qinglu-shell-panel {
   background: var(--glass-bg);
   border-color: var(--glass-border);
 }
@@ -118,7 +118,7 @@
   color: var(--foreground);
 }
 
-[data-theme='dark'] .burnpal-shell-divider {
+[data-theme='dark'] .qinglu-shell-divider {
   background: linear-gradient(
     90deg,
     transparent,

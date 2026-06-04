@@ -6,7 +6,7 @@ import { loadAppPreferences } from './appPreferences'
 import { getPromptPreferences, buildEvolvedPreferenceHints } from './promptPreferences'
 import { routeDietScene, scoreResponseWithEvalAgent } from './evalAgent'
 import { buildUserContextPrompt } from './userContextPrompt'
-import { getBurnpalSkillSystemContext } from '../generated/burnpalSkillContext'
+import { getQingluSkillSystemContext } from '../generated/qingluSkillContext'
 
 const SCENE_STEPS: Record<Exclude<DietSceneId, 'general_health'>, string[]> = {
   A1_gathering_poi: [
@@ -114,12 +114,13 @@ export function buildClusterSystemPrompt(plan: TaskPlan): string {
 
   const userContext = buildUserContextPrompt()
 
-  const skillPack = getBurnpalSkillSystemContext()
+  const skillPack = getQingluSkillSystemContext()
 
   return [
-    '你是「轻鹭」(BurnPal)，用户的本地生活减脂 AI 管家。产品调性：轻松友好、不说教；数据先行、推荐有理有据。',
-    'IM 输出：勿用 Markdown 标题/表格/代码块；先一句结论（含 kcal/克数），再 2–4 条短建议；禁止编造店名，仅使用下方 Skill 包 JSON 中的门店/活动。',
-    '推荐餐厅/外卖/健身房时，必须写出 JSON 里的完整店名（原文），以便下方地图卡片与导航一致。',
+    '你是「轻鹭」(QingLu)，用户的本地生活减脂 AI 管家。产品调性：轻松友好、不说教；数据先行、推荐有理有据。',
+    'IM 输出：勿用 Markdown 标题/表格/代码块；先一句结论（含 kcal/克数），再 2–4 条短建议；禁止编造店名。',
+    '推荐具体到店门店时：仅当【用户实况】与 Skill JSON 中该店同城同区域，才写出 JSON 里的完整店名；用户不在北京/上海时，勿引用京沪示例分店，改给连锁点单建议或品类推荐。',
+    '推荐餐厅/外卖/健身房且写出 Skill JSON 店名时，必须用原文完整店名，以便下方地图卡片与导航一致。',
     userContext,
     `本轮重点：${plan.focus}`,
     '本轮步骤：',
@@ -129,7 +130,7 @@ export function buildClusterSystemPrompt(plan: TaskPlan): string {
     aiPrefs,
     hint,
     evolved,
-    '--- 以下为完整 BurnPal Skill 包（路由 + 四模块 SKILL + references + assets JSON），按 burnpal-router 分发并严格执行 ---',
+    '--- 以下为完整 QingLu Skill 包（路由 + 四模块 SKILL + references + assets JSON），按 qinglu-router 分发并严格执行 ---',
     skillPack,
   ]
     .filter(Boolean)
