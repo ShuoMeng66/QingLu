@@ -1,4 +1,3 @@
-import { getDemoProfileById, getActiveDemoProfileId } from './demoProfiles'
 import { loadTodaySnapshot } from './todaySnapshot'
 import { loadUserProfile } from './userProfile'
 
@@ -19,32 +18,32 @@ export interface TaskPromptContext {
 function buildContext(): TaskPromptContext {
   const profile = loadUserProfile()
   const today = loadTodaySnapshot()
-  const demoId = getActiveDemoProfileId()
-  const demo = demoId ? getDemoProfileById(demoId) : undefined
-
   const remainingKcal =
     today.remaining_kcal ??
-    demo?.today.remaining_kcal ??
     (profile.daily_targets?.kcal ? Math.round(profile.daily_targets.kcal * 0.35) : 650)
 
-  const trainingPlan = today.training_plan ?? demo?.today.training_plan ?? profile.training?.next_session ?? '今日训练'
-  const locationLabel =
-    today.location_label ??
-    (demo ? demo.location.current.split('·').pop() : undefined) ??
-    profile.location_city ??
-    '当前区域'
+  const trainingPlan =
+    today.training_plan ?? profile.training?.next_session ?? profile.training?.typical_session ?? '今日训练'
+  const locationLabel = today.location_label ?? profile.location_city ?? '当前区域'
 
-  const restrictions =
-    profile.preferences?.avoid?.join('、') ?? demo?.dietary_restrictions.join('、') ?? '无'
-  const dietPrefs =
-    profile.preferences?.favorite_cuisines?.join('、') ?? demo?.taste_preferences.join('、') ?? '均衡饮食'
+  const restrictions = profile.preferences?.avoid?.join('、') ?? '无'
+  const dietPrefs = profile.preferences?.favorite_cuisines?.join('、') ?? '均衡饮食'
 
-  const budgetMin = demo ? Math.max(20, demo.budget_per_meal_yuan - 10) : 30
-  const budgetMax = demo?.budget_per_meal_yuan ?? 50
+  const budgetMin = 30
+  const budgetMax = 55
+
+  const goalLabel =
+    profile.goal === 'fat_loss'
+      ? '减脂'
+      : profile.goal === 'muscle_gain'
+        ? '增肌'
+        : profile.goal === 'maintain'
+          ? '维持'
+          : '健康管理'
 
   return {
-    nickname: profile.nickname || demo?.name || '我',
-    goalLabel: '中度减脂',
+    nickname: profile.nickname || '我',
+    goalLabel,
     remainingKcal: remainingKcal,
     trainingPlan,
     locationLabel,
@@ -62,7 +61,7 @@ export function buildTaskPrompt(scene: TaskSceneType): string {
     case 'takeout':
       return `我现在想点外卖。我的目标是${c.goalLabel}，今天还剩 ${c.remainingKcal} kcal，今晚计划${c.trainingPlan}，当前位置在${c.locationLabel}。我偏好${c.dietPrefs}、${c.restrictions}，预算 ${c.budgetMin}–${c.budgetMax} 元。请帮我推荐 2–3 个适合直接下单的外卖方案，并说明热量、价格、推荐理由和避雷点。`
     case 'gathering':
-      return `朋友约饭/公司聚餐，我的目标是${c.goalLabel}，今天还剩 ${c.remainingKcal} kcal，当前在${c.locationLabel}。口味偏好：${c.dietPrefs}；忌口：${c.restrictions}；人均预算约 ${demoDiningBudget()} 元。请按「不扫兴 + 可控热量」推荐 2–3 家餐厅，说明推荐理由、适合点什么、尽量避开什么。`
+      return `朋友约饭/公司聚餐，我的目标是${c.goalLabel}，今天还剩 ${c.remainingKcal} kcal，当前在${c.locationLabel}。口味偏好：${c.dietPrefs}；忌口：${c.restrictions}；人均预算约 ${defaultDiningBudget()} 元。请按「不扫兴 + 可控热量」推荐 2–3 家餐厅，说明推荐理由、适合点什么、尽量避开什么。`
     case 'train':
       return `帮我找附近适合今天训练的运动场地。今日计划：${c.trainingPlan}；目标：${c.goalLabel}；位置：${c.locationLabel}。请推荐 2–3 个场地，说明器械/适配度、价格、距离与注意事项。`
     case 'recover':
@@ -74,10 +73,8 @@ export function buildTaskPrompt(scene: TaskSceneType): string {
   }
 }
 
-function demoDiningBudget(): number {
-  const demoId = getActiveDemoProfileId()
-  const demo = demoId ? getDemoProfileById(demoId) : undefined
-  return demo?.budget_dining_per_person_yuan ?? 120
+function defaultDiningBudget(): number {
+  return 120
 }
 
 export function buildIndoorActivityPrompt(): string {

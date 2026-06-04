@@ -67,7 +67,7 @@ function bundlePaths(paths) {
 const sharedContext = [
   '# QingLu OpenClaw — Router + shared assets',
   `Source: CCLYX/burnpal.skill @ ${SOURCE_SHA}`,
-  'Runtime: Scheme B — only the routed module body is appended per request (not the full four-module pack).',
+  'Runtime: per-request module injection (router layer + one skill module).',
   bundlePaths(SHARED_FILES),
 ].join('')
 

@@ -3,33 +3,41 @@ import { useNavigate } from 'react-router-dom'
 import { AppShell } from '../components/qinglu/AppShell'
 import { PageTransition } from '../components/layout/PageTransition'
 import {
-  getActiveDemoProfileId,
-  getDemoProfileById,
-  getDemoProfileSummary,
-  getReadyPagePriorities,
-} from '../lib/demoProfiles'
+  getProfileReadySummary,
+  getReadyPrioritiesFromProfile,
+  loadReadyProfile,
+} from '../lib/profileReady'
 import { loadTodaySnapshot } from '../lib/todaySnapshot'
 import { useI18n } from '../hooks/useI18n'
 
 export function ProfileReadyPage() {
   const navigate = useNavigate()
-  const { t } = useI18n()
-  const demoId = getActiveDemoProfileId()
-  const demo = demoId ? getDemoProfileById(demoId) : undefined
+  const { t, locale } = useI18n()
+  const profile = loadReadyProfile()
   const today = loadTodaySnapshot()
 
-  const summary = useMemo(() => (demo ? getDemoProfileSummary(demo) : null), [demo])
-  const priorities = useMemo(() => (demo ? getReadyPagePriorities(demo) : []), [demo])
+  const summary = useMemo(
+    () => (profile ? getProfileReadySummary(profile, locale) : null),
+    [profile, locale],
+  )
+  const priorities = useMemo(
+    () => (profile ? getReadyPrioritiesFromProfile(profile) : []),
+    [profile],
+  )
 
-  if (!demo || !summary) {
+  if (!profile || !summary) {
     navigate('/onboard', { replace: true })
     return null
   }
 
+  const nickname = profile.nickname?.trim() || t('today.defaultName')
+
   return (
     <AppShell scrollable showMesh>
       <PageTransition className="qinglu-chat-column mx-auto flex min-h-dvh max-w-lg flex-col px-5 py-8">
-        <h1 className="font-display-serif text-2xl font-semibold text-body-primary">{t('ready.title')}</h1>
+        <h1 className="font-display-serif text-2xl font-semibold text-body-primary">
+          {t('ready.title', { name: nickname })}
+        </h1>
         <section className="mt-6 rounded-[22px] border border-lime-200/60 bg-white/80 p-4">
           <h2 className="text-sm font-semibold text-body-primary">{t('ready.summaryTitle')}</h2>
           <ul className="mt-3 space-y-1 text-sm text-body-secondary">
@@ -44,10 +52,14 @@ export function ProfileReadyPage() {
           <ul className="mt-3 space-y-1 text-sm text-body-secondary">
             <li>
               {t('ready.remaining', {
-                value: today.remaining_kcal ?? demo.today.remaining_kcal,
+                value: today.remaining_kcal ?? profile.daily_targets?.kcal ?? '—',
               })}
             </li>
-            <li>{t('ready.training', { value: today.training_plan ?? demo.today.training_plan })}</li>
+            <li>
+              {t('ready.training', {
+                value: today.training_plan ?? profile.training?.typical_session ?? '—',
+              })}
+            </li>
             <li>{t('ready.location', { value: today.location_label ?? summary.region })}</li>
             <li>{t('ready.body', { value: today.body_status ?? t('today.bodyNormal') })}</li>
           </ul>

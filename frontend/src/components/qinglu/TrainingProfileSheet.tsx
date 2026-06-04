@@ -43,9 +43,11 @@ import {
 interface TrainingProfileSheetProps {
   open: boolean
   onClose: () => void
+  /** After successful save (e.g. onboarding → /ready) */
+  onSaved?: () => void
 }
 
-export function TrainingProfileSheet({ open, onClose }: TrainingProfileSheetProps) {
+export function TrainingProfileSheet({ open, onClose, onSaved }: TrainingProfileSheetProps) {
   const { toast } = useToast()
   const { t, locale } = useI18n()
   const { refreshUserProfile } = useAppContext()
@@ -94,6 +96,7 @@ export function TrainingProfileSheet({ open, onClose }: TrainingProfileSheetProp
     refreshUserProfile()
     toast(t('profile.savedToast'), 'success')
     onClose()
+    onSaved?.()
   }
 
   const goalOptions = getGoalOptions(locale)

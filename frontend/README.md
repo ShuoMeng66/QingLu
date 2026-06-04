@@ -21,7 +21,6 @@ npm run dev
 
 - `src/generated/qingluSkillModules.ts`（方案 B：按模块注入，运行时由 `src/lib/skillRouter.ts` 路由）
 - `src/data/qingluVenues.generated.ts`
-- `src/data/demoProfiles.generated.ts`
 
 ## 环境变量
 

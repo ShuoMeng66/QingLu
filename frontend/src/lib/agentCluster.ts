@@ -132,13 +132,13 @@ export function buildClusterSystemPrompt(
     `本轮重点：${plan.focus}`,
     '本轮步骤：',
     steps,
-    `【Skill 路由 · 方案 B】已加载：${route.label}（${route.matchedSignals.join('、')}）。仅使用本模块与共享 JSON；勿引用未加载模块的门店/活动数据。`,
+    `【Skill 路由】已加载：${route.label}（${route.matchedSignals.join('、')}）。仅使用本模块与共享 JSON；勿引用未加载模块的门店/活动数据。`,
     '若【用户实况】已含位置或今日热量，直接据此推荐，勿用「先告诉我地址/吃了多少」开场。',
     `要求：${constraints}`,
     aiPrefs,
     hint,
     evolved,
-    '--- 以下为路由层 + 当前模块 Skill（非四模块全量）---',
+    '--- 以下为路由层 + 当前模块 Skill ---',
     skillPack,
   ]
     .filter(Boolean)
