@@ -370,10 +370,11 @@ export function ChatView({
     }
   }, [
     displayMessages,
-    location,
-    foodPlaces,
-    gym,
-    recovery,
+    location?.lat,
+    location?.lon,
+    foodPlaces.length,
+    gym?.id,
+    recovery?.id,
     preferences.ai.citeNearby,
   ])
 

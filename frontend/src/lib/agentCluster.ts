@@ -106,11 +106,11 @@ export function scoreResponse(question: string, answer: string): TaskScore {
   return scoreResponseWithEvalAgent(question, answer)
 }
 
-export function buildClusterSystemPrompt(
+export async function buildClusterSystemPrompt(
   plan: TaskPlan,
   userMessage: string,
   options?: { sceneType?: TaskSceneType },
-): string {
+): Promise<string> {
   const route = routeQingluSkillModule(userMessage, options)
 
   const profile = loadUserProfile()
@@ -134,11 +134,11 @@ export function buildClusterSystemPrompt(
   })
 }
 
-/** Sync plan + system prompt for send / regenerate / edit-resend */
-export function buildSystemPromptForUserMessage(
+/** Plan + system prompt for send / regenerate / edit-resend */
+export async function buildSystemPromptForUserMessage(
   userMessage: string,
   options?: { sceneType?: TaskSceneType },
-): string {
+): Promise<string> {
   const plan = decomposeTask(userMessage)
   return buildClusterSystemPrompt(plan, userMessage, options)
 }

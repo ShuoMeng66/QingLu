@@ -14,7 +14,9 @@ export interface StreamRevealContext {
 export interface StreamSendOptions {
   systemPrompt?: string
   /** Rebuild skill prompt from last user turn (regenerate / edit / retry) */
-  resolveSystemPrompt?: (messages: ChatMessage[]) => string | undefined
+  resolveSystemPrompt?: (
+    messages: ChatMessage[],
+  ) => string | undefined | Promise<string | undefined>
   onAssistantDone?: (
     content: string,
     assistantId: string,
@@ -67,6 +69,19 @@ function mergeStreamOptions(
   return { ...base, ...extra }
 }
 
+function finalizeStreamingMessages(
+  messages: ChatMessage[],
+  fallbackContent: string,
+): ChatMessage[] {
+  return messages.map((message) => {
+    if (!message.streaming) return message
+    return finalizeAssistant(message, {
+      status: message.content ? 'done' : 'aborted',
+      content: message.content || fallbackContent,
+    })
+  })
+}
+
 export function useChatStream({
   config,
   connected,
@@ -91,16 +106,29 @@ export function useChatStream({
     [updateConversationMessages],
   )
 
+  const finalizeConversationStreaming = useCallback(
+    (conversationId: string) => {
+      patchMessages(conversationId, (current) =>
+        finalizeStreamingMessages(current, t('chat.stopped')),
+      )
+    },
+    [patchMessages],
+  )
+
   const abortStream = useCallback(() => {
     abortRef.current?.abort()
     abortRef.current = null
   }, [])
 
   useEffect(() => {
+    const streamingConv = streamConversationRef.current
     abortStream()
+    if (streamingConv) {
+      finalizeConversationStreaming(streamingConv)
+    }
     setLoading(false)
     streamConversationRef.current = null
-  }, [activeId, abortStream])
+  }, [activeId, abortStream, finalizeConversationStreaming])
 
   useEffect(() => () => abortStream(), [abortStream])
 
@@ -110,20 +138,21 @@ export function useChatStream({
       assistantId: string,
       draft: string,
       apiMessages: ChatMessage[],
-      options?: StreamSendOptions,
-    ) => {
+      options: StreamSendOptions | undefined,
+      signal: AbortSignal,
+    ): Promise<boolean> => {
+      if (signal.aborted) return false
+      if (streamConversationRef.current !== conversationId) return false
+
       const userMessage = lastUserMessage(apiMessages)
-      let finalContent = draft
       const revealStart = performance.now()
 
-      // #region agent log
       debugPerf(
         'useChatStream.ts:revealAssistant',
         'reveal_start',
         { draftLen: draft.length, hasGuard: Boolean(options?.onBeforeReveal) },
         'C',
       )
-      // #endregion
 
       const structured = splitAssistantStructured(draft)
       let displayContent = structured.displayContent
@@ -137,10 +166,13 @@ export function useChatStream({
         options?.onReviewPhase?.(false)
       }
 
-      finalContent = displayContent
+      if (signal.aborted || streamConversationRef.current !== conversationId) {
+        return false
+      }
+
+      const finalContent = displayContent
       const assistantMeta = structured.meta ?? undefined
 
-      // #region agent log
       debugPerf(
         'useChatStream.ts:revealAssistant',
         'reveal_done',
@@ -150,7 +182,6 @@ export function useChatStream({
         },
         'C',
       )
-      // #endregion
 
       patchMessages(conversationId, (current) =>
         current.map((message) =>
@@ -167,6 +198,8 @@ export function useChatStream({
       if (finalContent.trim() && options?.onAssistantDone) {
         await options.onAssistantDone(finalContent, assistantId, assistantMeta, draft)
       }
+
+      return true
     },
     [patchMessages],
   )
@@ -182,7 +215,7 @@ export function useChatStream({
       const controller = new AbortController()
       let systemPrompt = mergedOptions?.systemPrompt
       if (!systemPrompt?.trim() && mergedOptions?.resolveSystemPrompt) {
-        systemPrompt = mergedOptions.resolveSystemPrompt(apiMessages)
+        systemPrompt = await Promise.resolve(mergedOptions.resolveSystemPrompt(apiMessages))
       }
       const draftRef = { current: '' }
 
@@ -200,6 +233,17 @@ export function useChatStream({
         },
       ])
 
+      const finishStream = () => {
+        if (streamConversationRef.current === conversationId) {
+          setLoading(false)
+          abortRef.current = null
+          streamConversationRef.current = null
+        }
+      }
+
+      let streamFailed = false
+      let streamErrorMessage = ''
+
       try {
         await streamChat(
           config,
@@ -207,53 +251,91 @@ export function useChatStream({
           conversationId,
           {
             onDelta: (delta) => {
+              if (controller.signal.aborted) return
               draftRef.current += delta
-            },
-            onDone: () => {
-              void revealAssistant(
-                conversationId,
-                assistantId,
-                draftRef.current,
-                apiMessages,
-                mergedOptions,
+              if (streamConversationRef.current !== conversationId) return
+              patchMessages(conversationId, (current) =>
+                current.map((item) =>
+                  item.id === assistantId
+                    ? { ...item, content: draftRef.current, streaming: true }
+                    : item,
+                ),
               )
             },
-            onError: async (message) => {
-              if (controller.signal.aborted) return
-
-              try {
-                const fallback = await sendChat(
-                  config,
-                  apiMessages,
-                  conversationId,
-                  controller.signal,
-                  systemPrompt,
-                )
-                await revealAssistant(
-                  conversationId,
-                  assistantId,
-                  fallback,
-                  apiMessages,
-                  mergedOptions,
-                )
-              } catch {
-                if (controller.signal.aborted) return
-                patchMessages(conversationId, (current) =>
-                  current.map((item) =>
-                    item.id === assistantId
-                      ? finalizeAssistant(item, { content: message, status: 'error' })
-                      : item,
-                  ),
-                )
-                toast(t('toast.sendFailed'), 'error')
-              }
+            onDone: () => {
+              /* reveal after streamChat resolves */
+            },
+            onError: (message) => {
+              streamFailed = true
+              streamErrorMessage = message
             },
           },
           controller.signal,
           systemPrompt,
         )
+
+        if (controller.signal.aborted) {
+          finalizeConversationStreaming(conversationId)
+          return
+        }
+
+        if (streamFailed) {
+          try {
+            const fallback = await sendChat(
+              config,
+              apiMessages,
+              conversationId,
+              controller.signal,
+              systemPrompt,
+            )
+            if (
+              !controller.signal.aborted &&
+              streamConversationRef.current === conversationId
+            ) {
+              await revealAssistant(
+                conversationId,
+                assistantId,
+                fallback,
+                apiMessages,
+                mergedOptions,
+                controller.signal,
+              )
+            }
+          } catch {
+            if (controller.signal.aborted) {
+              finalizeConversationStreaming(conversationId)
+              return
+            }
+            patchMessages(conversationId, (current) =>
+              current.map((item) =>
+                item.id === assistantId
+                  ? finalizeAssistant(item, {
+                      content: streamErrorMessage,
+                      status: 'error',
+                    })
+                  : item,
+              ),
+            )
+            toast(t('toast.sendFailed'), 'error')
+          }
+          return
+        }
+
+        if (streamConversationRef.current === conversationId) {
+          await revealAssistant(
+            conversationId,
+            assistantId,
+            draftRef.current,
+            apiMessages,
+            mergedOptions,
+            controller.signal,
+          )
+        }
       } catch (error) {
-        if (controller.signal.aborted) return
+        if (controller.signal.aborted) {
+          finalizeConversationStreaming(conversationId)
+          return
+        }
 
         const message = error instanceof Error ? error.message : t('toast.sendFailed')
         patchMessages(conversationId, (current) =>
@@ -265,14 +347,17 @@ export function useChatStream({
         )
         toast(t('toast.sendFailed'), 'error')
       } finally {
-        if (streamConversationRef.current === conversationId) {
-          setLoading(false)
-          abortRef.current = null
-          streamConversationRef.current = null
-        }
+        finishStream()
       }
     },
-    [config, getStreamSendOptions, patchMessages, revealAssistant, toast],
+    [
+      config,
+      finalizeConversationStreaming,
+      getStreamSendOptions,
+      patchMessages,
+      revealAssistant,
+      toast,
+    ],
   )
 
   const handleSend = useCallback(
@@ -305,23 +390,22 @@ export function useChatStream({
     const conversationId = streamConversationRef.current ?? activeId
 
     abortStream()
-    patchMessages(conversationId, (current) =>
-      current.map((message) => {
-        if (!message.streaming) return message
-        return finalizeAssistant(message, {
-          status: message.content ? 'done' : 'aborted',
-          content: message.content || t('chat.stopped'),
-        })
-      }),
-    )
+    finalizeConversationStreaming(conversationId)
 
     setLoading(false)
     streamConversationRef.current = null
     toast(t('toast.stopped'))
-  }, [activeId, abortStream, loading, patchMessages, toast])
+  }, [activeId, abortStream, finalizeConversationStreaming, loading, toast])
+
+  const requireConnected = useCallback(() => {
+    if (connected) return true
+    toast(t('toast.needConnection'), 'error')
+    onNeedSettings()
+    return false
+  }, [connected, onNeedSettings, toast])
 
   const handleRegenerate = useCallback(async () => {
-    if (loading || !connected) return
+    if (loading || !requireConnected()) return
 
     const lastAssistantIndex = messages.findLastIndex((message) => message.role === 'assistant')
     if (lastAssistantIndex < 0) return
@@ -331,12 +415,12 @@ export function useChatStream({
 
     patchMessages(activeId, apiMessages)
     await runStream(activeId, apiMessages)
-  }, [activeId, connected, loading, messages, patchMessages, runStream])
+  }, [activeId, loading, messages, patchMessages, requireConnected, runStream])
 
   const handleEditMessage = useCallback(
     async (messageId: string, newContent: string) => {
       const trimmed = newContent.trim()
-      if (!trimmed || loading) return
+      if (!trimmed || loading || !requireConnected()) return
 
       const index = messages.findIndex((message) => message.id === messageId)
       if (index === -1 || messages[index]?.role !== 'user') return
@@ -347,12 +431,12 @@ export function useChatStream({
       patchMessages(activeId, apiMessages)
       await runStream(activeId, apiMessages)
     },
-    [activeId, loading, messages, patchMessages, runStream],
+    [activeId, loading, messages, patchMessages, requireConnected, runStream],
   )
 
   const handleRetryMessage = useCallback(
     async (messageId: string) => {
-      if (loading) return
+      if (loading || !requireConnected()) return
 
       const index = messages.findIndex((message) => message.id === messageId)
       if (index === -1 || messages[index]?.role !== 'assistant') return
@@ -363,7 +447,7 @@ export function useChatStream({
       patchMessages(activeId, apiMessages)
       await runStream(activeId, apiMessages)
     },
-    [activeId, loading, messages, patchMessages, runStream],
+    [activeId, loading, messages, patchMessages, requireConnected, runStream],
   )
 
   return {

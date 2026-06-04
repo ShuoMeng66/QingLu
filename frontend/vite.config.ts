@@ -18,6 +18,16 @@ export default defineConfig(({ mode }) => {
   const proxyPathPrefix = env.VITE_OPENCLAW_PROXY_PATH?.trim() || ''
 
   return {
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('qingluSkillModules')) return 'qinglu-skills'
+            if (id.includes('qingluVenues.generated')) return 'qinglu-venues'
+          },
+        },
+      },
+    },
     plugins: [
       react(),
       tailwindcss(),

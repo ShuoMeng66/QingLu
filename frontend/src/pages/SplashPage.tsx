@@ -11,6 +11,7 @@ import { PageTransition } from '../components/layout/PageTransition'
 import { SplashHeroVisual } from '../components/qinglu/SplashHeroVisual'
 import { pingAuthHealth } from '../lib/api/client'
 import { SPLASH_BACKGROUND_SRC } from '../data/splashAssets'
+import { resolvePostAuthPath } from '../lib/profileRouting'
 
 export function SplashPage() {
   const navigate = useNavigate()
@@ -27,7 +28,7 @@ export function SplashPage() {
 
   useEffect(() => {
     if (!loading && user) {
-      navigate('/chat', { replace: true })
+      navigate(resolvePostAuthPath(), { replace: true })
     }
   }, [loading, user, navigate])
 
@@ -99,7 +100,7 @@ export function SplashPage() {
                     <AccountAuthPanel
                       variant="compact"
                       defaultMode="login"
-                      onSuccess={() => navigate('/chat', { replace: true })}
+                      onSuccess={() => navigate(resolvePostAuthPath(), { replace: true })}
                     />
                   </div>
                 )}

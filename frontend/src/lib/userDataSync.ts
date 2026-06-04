@@ -7,6 +7,7 @@ import {
 } from './mealLog'
 import { loadYiqidongConfig, saveYiqidongConfig } from './yiqidong'
 import { exportYiqidongLetters, importYiqidongLetters } from './yiqidongEnvelopes'
+import { loadSessionContext, saveSessionContext } from './sessionContext'
 import { loadUserProfile, replaceUserProfile } from './userProfile'
 import {
   exportConversationSyncState,
@@ -29,6 +30,7 @@ export function collectUserDataSnapshot(): UserDataSnapshot {
     preferences: loadAppPreferences(),
     yiqidongLetters: exportYiqidongLetters(),
     conversations: exportConversationSyncState(),
+    sessionContext: loadSessionContext(),
   }
 }
 
@@ -54,6 +56,10 @@ export function reconcileUserDataSnapshots(
     preferences: remote.preferences ?? local.preferences,
     yiqidongLetters: remote.yiqidongLetters ?? local.yiqidongLetters,
     conversations,
+    sessionContext:
+      remote.version === USER_DATA_VERSION && 'sessionContext' in remote
+        ? (remote.sessionContext ?? local.sessionContext)
+        : local.sessionContext,
   }
 }
 
@@ -70,6 +76,12 @@ export function applyUserDataSnapshot(snapshot: UserDataSnapshot | LegacyUserDat
 
     if (snapshot.version === USER_DATA_VERSION && snapshot.conversations) {
       importConversationSyncState(snapshot.conversations)
+    }
+    if (snapshot.version === USER_DATA_VERSION) {
+      const snap = snapshot as UserDataSnapshot
+      if (snap.sessionContext) {
+        saveSessionContext(snap.sessionContext)
+      }
     }
   } finally {
     applyingRemote = false

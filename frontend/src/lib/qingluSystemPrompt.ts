@@ -3,7 +3,7 @@ import { buildPreferenceHint } from './agentFeedback'
 import { buildAiPreferencePrompt } from './aiPreferencePrompt'
 import { loadAppPreferences } from './appPreferences'
 import { getPromptPreferences, buildEvolvedPreferenceHints } from './promptPreferences'
-import { getQingluSkillModuleContext } from '../generated/qingluSkillModules'
+import { getQingluSkillModuleContextAsync } from './skillModuleLoader'
 import type { SkillRouteResult } from './skillRouter'
 import { loadSessionContext, type SessionContext } from './sessionContext'
 import { getTodayConsumedKcal } from './mealLog'
@@ -209,13 +209,13 @@ export interface BuildPePromptInput {
   session?: SessionContext
 }
 
-export function buildQingluPeSystemPrompt(input: BuildPePromptInput): string {
+export async function buildQingluPeSystemPrompt(input: BuildPePromptInput): Promise<string> {
   const profile = loadUserProfile()
   const todayLocation = formatLocation(profile)
   const vars = buildUserProfileBlock(profile, todayLocation)
   const session = input.session ?? loadSessionContext()
   const steps = input.plan.steps.map((step, i) => `${i + 1}. ${step}`).join('\n')
-  const skillPack = getQingluSkillModuleContext(input.route.moduleId)
+  const skillPack = await getQingluSkillModuleContextAsync(input.route.moduleId)
 
   const sceneHint = input.sceneType ? `\n本轮任务入口 scene_type: ${input.sceneType}` : ''
 

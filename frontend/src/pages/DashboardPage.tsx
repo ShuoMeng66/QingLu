@@ -4,7 +4,7 @@ import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { BRAND, CONNECTION_STATUS_LABEL, EMPTY_STATE, FOCUS_PILLARS, SIDEBAR } from '../copy/ui'
 import { getConnectionStatusLabel } from '../lib/connectionLabel'
-import { useAppContext } from '../context/AppContext'
+import { useOptionalAppContext } from '../context/AppContext'
 
 export function DashboardPage() {
   const {
@@ -15,7 +15,21 @@ export function DashboardPage() {
     yiqidongUnread,
     createNewConversation,
     openYiqidongModal,
-  } = useAppContext()
+  } = useOptionalAppContext() ?? {
+    status: 'idle' as const,
+    connected: false,
+    clusterTurn: {
+      phase: 'idle' as const,
+      plan: null,
+      score: null,
+      userMessage: '',
+      agents: [],
+    },
+    activeConversation: undefined,
+    yiqidongUnread: 0,
+    createNewConversation: () => {},
+    openYiqidongModal: () => {},
+  }
 
   return (
     <div className="page page--dashboard">

@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { SettingsPanel, useAdvancedSettingsUnlock } from '../components/SettingsPanel'
 import { SETTINGS, TOAST } from '../copy/ui'
-import { useAppContext } from '../context/AppContext'
+import { useOptionalAppContext } from '../context/AppContext'
 import { useToast } from '../context/ToastContext'
 
 export function SettingsRoutePage() {
@@ -19,7 +19,18 @@ export function SettingsRoutePage() {
     handleSaveSettings,
     handleResetSettings,
     handleTestSettings,
-  } = useAppContext()
+  } = useOptionalAppContext() ?? {
+    draftConfig: { baseUrl: '', token: '', agent: '' },
+    config: { baseUrl: '', token: '', agent: '' },
+    status: 'idle' as const,
+    statusMessage: '',
+    models: [],
+    setDraftConfig: () => {},
+    syncDraftFromActive: () => {},
+    handleSaveSettings: () => {},
+    handleResetSettings: () => {},
+    handleTestSettings: async () => {},
+  }
 
   const { showAdvanced, commandInput, setCommandInput, tryUnlock } = useAdvancedSettingsUnlock()
 

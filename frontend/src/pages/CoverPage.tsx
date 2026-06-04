@@ -10,7 +10,7 @@ import { BRAND, FOCUS_PILLARS } from '../copy/ui'
 
 import { QINGLU } from '../data/qingluAssets'
 
-import { useAppContext } from '../context/AppContext'
+import { useOptionalAppContext } from '../context/AppContext'
 
 import '../styles/cover.css'
 
@@ -30,7 +30,14 @@ const MOTION_CHIPS = [
 
 export function CoverPage() {
 
-  const { clusterTurn } = useAppContext()
+  const ctx = useOptionalAppContext()
+  const clusterTurn = ctx?.clusterTurn ?? {
+    phase: 'idle' as const,
+    plan: null,
+    score: null,
+    userMessage: '',
+    agents: [],
+  }
 
 
 

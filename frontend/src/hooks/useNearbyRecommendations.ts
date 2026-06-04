@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import {
   fetchNearbyRecommendations,
   type NearbyPlace,
@@ -42,10 +42,19 @@ export function useNearbyRecommendations(location: UserLocation | null) {
     }
   }, [location?.lat, location?.lon, location?.fetchedAt])
 
-  const foodPlaces = places.filter((place) => place.kind === 'food')
+  const foodPlaces = useMemo(
+    () => places.filter((place) => place.kind === 'food'),
+    [places],
+  )
   const food = foodPlaces[0] ?? null
-  const gym = places.find((place) => place.kind === 'gym') ?? null
-  const recovery = places.find((place) => place.kind === 'recovery') ?? null
+  const gym = useMemo(
+    () => places.find((place) => place.kind === 'gym') ?? null,
+    [places],
+  )
+  const recovery = useMemo(
+    () => places.find((place) => place.kind === 'recovery') ?? null,
+    [places],
+  )
 
   return { food, foodPlaces, gym, recovery, places, loading, error }
 }

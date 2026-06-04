@@ -1,6 +1,8 @@
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 
+import { ErrorBoundary } from '../components/ErrorBoundary'
 import { AppProvider } from '../context/AppProvider'
+import { ProfileProvider } from '../context/ProfileProvider'
 import { AuthProvider } from '../context/AuthContext'
 import { PreferencesProvider } from '../context/PreferencesContext'
 import { ToastProvider } from '../context/ToastContext'
@@ -26,6 +28,15 @@ function AppProviderLayout() {
   )
 }
 
+function ProfileProviderLayout() {
+  const location = useLocation()
+  return (
+    <ProfileProvider>
+      <Outlet key={location.pathname} />
+    </ProfileProvider>
+  )
+}
+
 function SpaFallback() {
   const { pathname } = useLocation()
   if (pathname.startsWith('/api/') || pathname.startsWith('/openclaw-api')) {
@@ -41,9 +52,11 @@ function AppRoutesInner() {
       <Route path="splash" element={<SplashPage />} />
       <Route path="auth" element={<AuthPage />} />
       <Route path="about" element={<AboutPage />} />
-      <Route element={<AppProviderLayout />}>
+      <Route element={<ProfileProviderLayout />}>
         <Route path="onboard" element={<OnboardProfilePage />} />
         <Route path="ready" element={<ProfileReadyPage />} />
+      </Route>
+      <Route element={<AppProviderLayout />}>
         <Route path="chat" element={<ChatPage />} />
         <Route path="settings" element={<SettingsPage />} />
       </Route>
@@ -55,13 +68,15 @@ function AppRoutesInner() {
 export function AppRoutes() {
   return (
     <BrowserRouter>
-      <ToastProvider>
-        <AuthProvider>
-          <PreferencesProvider>
-            <AppRoutesInner />
-          </PreferencesProvider>
-        </AuthProvider>
-      </ToastProvider>
+      <ErrorBoundary>
+        <ToastProvider>
+          <AuthProvider>
+            <PreferencesProvider>
+              <AppRoutesInner />
+            </PreferencesProvider>
+          </AuthProvider>
+        </ToastProvider>
+      </ErrorBoundary>
     </BrowserRouter>
   )
 }

@@ -3,7 +3,7 @@ import { ConversationRow } from '../components/ConversationRow'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { SIDEBAR } from '../copy/ui'
-import { useAppContext } from '../context/AppContext'
+import { useOptionalAppContext } from '../context/AppContext'
 
 export function HistoryPage() {
   const navigate = useNavigate()
@@ -14,7 +14,14 @@ export function HistoryPage() {
     createNewConversation,
     selectConversation,
     deleteConversation,
-  } = useAppContext()
+  } = useOptionalAppContext() ?? {
+    activeConversation: undefined,
+    historyConversations: [],
+    activeId: '',
+    createNewConversation: () => {},
+    selectConversation: () => {},
+    deleteConversation: () => ({ createdNew: false }),
+  }
 
   const handleSelect = (id: string) => {
     selectConversation(id)

@@ -5,6 +5,7 @@ import { UserAccountAvatar } from '../components/auth/UserAccountAvatar'
 import { AppShell } from '../components/qinglu/AppShell'
 import { PageTransition } from '../components/layout/PageTransition'
 import { useI18n } from '../hooks/useI18n'
+import { resolvePostAuthPath } from '../lib/profileRouting'
 
 export function AuthPage() {
   const navigate = useNavigate()
@@ -33,7 +34,7 @@ export function AuthPage() {
         <AccountAuthPanel
           defaultMode={defaultMode}
           variant="full"
-          onSuccess={() => navigate('/chat', { replace: true })}
+          onSuccess={() => navigate(resolvePostAuthPath(), { replace: true })}
         />
 
         <p className="mt-4 text-center text-xs text-slate-500">

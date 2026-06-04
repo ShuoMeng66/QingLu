@@ -3,10 +3,13 @@ import { YiqidongSettingsForm } from '../components/YiqidongSettingsForm'
 import { Button } from '../components/ui/Button'
 import { Card } from '../components/ui/Card'
 import { YIQIDONG } from '../copy/ui'
-import { useAppContext } from '../context/AppContext'
+import { useOptionalAppContext } from '../context/AppContext'
 
 export function QuestsPage() {
-  const { handleYiqidongApply, openYiqidongModal, yiqidongUnread } = useAppContext()
+  const ctx = useOptionalAppContext()
+  const handleYiqidongApply = ctx?.handleYiqidongApply ?? (() => {})
+  const openYiqidongModal = ctx?.openYiqidongModal ?? (() => {})
+  const yiqidongUnread = ctx?.yiqidongUnread ?? 0
 
   return (
     <div className="page page--quests">

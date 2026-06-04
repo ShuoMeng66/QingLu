@@ -21,10 +21,13 @@ import {
   inferFollowUpSelection,
 } from '../lib/assistantStructured'
 import {
+  canRunProfileAutoFollowup,
   clearPendingUserQuestion,
   consumePendingUserQuestion,
+  markProfileAutoFollowupRan,
   rememberPendingUserQuestion,
 } from '../lib/onboardingPending'
+import { preloadSkillModules } from '../lib/skillModuleLoader'
 import {
   loadSessionContext,
   setSessionSelection,
@@ -34,7 +37,6 @@ import { routeQingluSkillModule } from '../lib/skillRouter'
 import type { FollowUpActionMeta } from '../types/openclaw'
 import { runOutputGuard } from '../lib/outputGuard'
 import { getCachedUserLocation } from '../lib/userLocation'
-import { testConnection } from '../lib/openclaw'
 import {
   createTrajectoryDraft,
   completeTrajectory,
@@ -188,15 +190,84 @@ export function AppProvider({ children }: AppProviderProps) {
     refreshYiqidongUnread()
   }, [refreshYiqidongUnread])
 
-  const resolveSystemPrompt = useCallback((apiMessages: import('../types/openclaw').ChatMessage[]) => {
-    const lastUser = [...apiMessages].reverse().find((m) => m.role === 'user')
-    if (!lastUser?.content.trim()) return undefined
-    return buildSystemPromptForUserMessage(lastUser.content.trim())
-  }, [])
+  useEffect(() => {
+    if (location.pathname === '/chat') {
+      preloadSkillModules()
+    }
+  }, [location.pathname])
+
+  const resolveSystemPrompt = useCallback(
+    async (apiMessages: import('../types/openclaw').ChatMessage[]) => {
+      const lastUser = [...apiMessages].reverse().find((m) => m.role === 'user')
+      if (!lastUser?.content.trim()) return undefined
+      return buildSystemPromptForUserMessage(lastUser.content.trim())
+    },
+    [],
+  )
+
+  const runUserTurnRef = useRef<
+    (content: string, meta?: QuickPromptMeta) => Promise<void>
+  >(async () => {})
+
+  const handleStreamAssistantDone = useCallback(
+    async (
+      userMessage: string,
+      answer: string,
+      assistantId: string,
+      assistantMeta: import('../types/openclaw').AssistantMessageMeta | undefined,
+      rawDraft: string | undefined,
+      sceneType?: QuickPromptMeta['sceneType'],
+    ) => {
+      const route = routeQingluSkillModule(userMessage, { sceneType })
+      updateSessionFromAssistantReply(rawDraft ?? answer, route.moduleId)
+      const score = await finishExecution(userMessage, answer)
+      completeTrajectory({
+        conversationId: activeId,
+        userMessage,
+        assistantReply: answer,
+        score,
+        messageId: assistantId,
+      })
+
+      if (assistantMeta?.isProfileComplete && canRunProfileAutoFollowup()) {
+        refreshUserProfile()
+        const pending = consumePendingUserQuestion()
+        if (pending && pending !== userMessage && !profileAutoSendingRef.current) {
+          markProfileAutoFollowupRan()
+          profileAutoSendingRef.current = true
+          try {
+            await runUserTurnRef.current(pending, {
+              skipPendingRemember: true,
+              isAutoFollowUp: true,
+            })
+          } finally {
+            profileAutoSendingRef.current = false
+          }
+        }
+      }
+    },
+    [activeId, finishExecution, refreshUserProfile],
+  )
 
   const getStreamSendOptions = useCallback(
     () => ({
       resolveSystemPrompt,
+      onAssistantDone: async (
+        answer: string,
+        assistantId: string,
+        assistantMeta?: import('../types/openclaw').AssistantMessageMeta,
+        rawDraft?: string,
+      ) => {
+        const lastUser = [...messages].reverse().find((m) => m.role === 'user')
+        if (!lastUser?.content.trim()) return
+        await handleStreamAssistantDone(
+          lastUser.content.trim(),
+          answer,
+          assistantId,
+          assistantMeta,
+          rawDraft,
+        )
+      },
       onReviewPhase: (active: boolean) => {
         if (active) setReviewing(true)
       },
@@ -213,7 +284,7 @@ export function AppProvider({ children }: AppProviderProps) {
         return result.finalContent
       },
     }),
-    [config, connected, resolveSystemPrompt, setReviewing],
+    [config, connected, handleStreamAssistantDone, messages, resolveSystemPrompt, setReviewing],
   )
 
   const {
@@ -273,15 +344,14 @@ export function AppProvider({ children }: AppProviderProps) {
   }, [handleResetDraft, toast])
 
   const handleTestSettings = useCallback(async () => {
-    const result = await testConnection(draftConfig)
-    await runConnectionTest(draftConfig)
+    const ok = await runConnectionTest(draftConfig)
     toast(
-      result.ok
+      ok
         ? translate(loadAppPreferences().locale, 'toast.connectionOk')
-        : result.message,
-      result.ok ? 'success' : 'error',
+        : statusMessage,
+      ok ? 'success' : 'error',
     )
-  }, [draftConfig, runConnectionTest, toast])
+  }, [draftConfig, runConnectionTest, statusMessage, toast])
 
   const runUserTurn = useCallback(
     async (content: string, meta?: QuickPromptMeta) => {
@@ -294,7 +364,7 @@ export function AppProvider({ children }: AppProviderProps) {
       }
 
       const plan = await prepareTurn(content)
-      const systemPrompt = buildClusterSystemPrompt(plan, content, {
+      const systemPrompt = await buildClusterSystemPrompt(plan, content, {
         sceneType: meta?.sceneType,
       })
       createTrajectoryDraft({
@@ -309,44 +379,27 @@ export function AppProvider({ children }: AppProviderProps) {
       await sendMessage(content, {
         systemPrompt,
         onAssistantDone: async (answer, assistantId, assistantMeta, rawDraft) => {
-          const route = routeQingluSkillModule(content, { sceneType: meta?.sceneType })
-          updateSessionFromAssistantReply(rawDraft ?? answer, route.moduleId)
-          const score = await finishExecution(content, answer)
-          completeTrajectory({
-            conversationId: activeId,
-            userMessage: content,
-            assistantReply: answer,
-            score,
-            messageId: assistantId,
-          })
-
-          if (assistantMeta?.isProfileComplete) {
-            refreshUserProfile()
-            const pending = consumePendingUserQuestion()
-            if (pending && pending !== content && !profileAutoSendingRef.current) {
-              profileAutoSendingRef.current = true
-              try {
-                await runUserTurn(pending, {
-                  skipPendingRemember: true,
-                  isAutoFollowUp: true,
-                })
-              } finally {
-                profileAutoSendingRef.current = false
-              }
-            }
-          }
+          await handleStreamAssistantDone(
+            content,
+            answer,
+            assistantId,
+            assistantMeta,
+            rawDraft,
+            meta?.sceneType,
+          )
         },
       })
     },
     [
       activeId,
-      finishExecution,
+      handleStreamAssistantDone,
       messages.length,
       prepareTurn,
-      refreshUserProfile,
       sendMessage,
     ],
   )
+
+  runUserTurnRef.current = runUserTurn
 
   const handleSend = useCallback(
     async (text?: string, meta?: QuickPromptMeta) => {

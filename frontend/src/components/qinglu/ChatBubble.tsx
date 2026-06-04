@@ -123,7 +123,11 @@ export function ChatBubble({
   const isError = message.status === 'error'
   const isAborted = message.status === 'aborted'
   const isThinking = message.streaming && !message.content.trim()
-  const assistantDisplay = splitAssistantStructured(message.content).displayContent
+  const hasJsonBlock = /---JSON_START---/i.test(message.content)
+  const assistantDisplay =
+    message.streaming && hasJsonBlock
+      ? splitAssistantStructured(message.content).displayContent
+      : message.content
 
   const handleCopy = async () => {
     await copyText(message.content)

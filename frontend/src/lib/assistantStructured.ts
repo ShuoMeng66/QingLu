@@ -283,17 +283,27 @@ export function getMessageRecommendationCards(
   const meta = options?.assistantMeta
   if (meta?.isMedicalSafety) return []
 
-  const split = splitAssistantStructured(assistantContent)
-  const prose = meta ? assistantContent : split.displayContent
-  const payload = split.payload
+  const hasJsonBlock = /---JSON_START---/i.test(assistantContent)
+  const prose =
+    meta || !hasJsonBlock
+      ? assistantContent
+      : splitAssistantStructured(assistantContent).displayContent
 
-  const structuredCards = structuredRecommendationsToCards(payload, location)
-  if (structuredCards.length > 0) return structuredCards
-
-  const names = meta?.recommendationNames ?? split.meta?.recommendationNames ?? []
-  if (names.length > 0) {
-    const matched = matchVenuesInText(names.join(' '), 3, location)
+  if (!hasJsonBlock && meta?.recommendationNames?.length) {
+    const matched = matchVenuesInText(meta.recommendationNames.join(' '), 3, location)
     if (matched.length > 0) return buildSkillVenueCards(matched)
+  }
+
+  if (hasJsonBlock) {
+    const payload = splitAssistantStructured(assistantContent).payload
+    const structuredCards = structuredRecommendationsToCards(payload, location)
+    if (structuredCards.length > 0) return structuredCards
+
+    const names = meta?.recommendationNames ?? extractRecommendationNamesFromPayload(payload)
+    if (names.length > 0) {
+      const matched = matchVenuesInText(names.join(' '), 3, location)
+      if (matched.length > 0) return buildSkillVenueCards(matched)
+    }
   }
 
   return getConversationRecommendationCards(userText, location, foodPlaces, gym, recovery, {
@@ -313,9 +323,9 @@ export function inferFollowUpSelection(
 
   let index = action.selected_index
   if (index == null) {
-    if (/第一|首家|第一家|就这家/.test(text)) index = 0
-    else if (/第二|第二家/.test(text)) index = 1
-    else if (/第三|第三家/.test(text)) index = 2
+    if (/第一|首家|第一家|就这家|选\s*1|第\s*1/.test(text)) index = 0
+    else if (/第二|第二家|选\s*2|第\s*2/.test(text)) index = 1
+    else if (/第三|第三家|选\s*3|第\s*3/.test(text)) index = 2
   }
 
   const item =
