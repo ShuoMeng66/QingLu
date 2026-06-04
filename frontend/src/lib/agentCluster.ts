@@ -1,14 +1,14 @@
 import type { TaskPlan, TaskScore } from '../types/agentCluster'
 import type { DietSceneId } from '../types/evalAgent'
-import { buildPreferenceHint } from './agentFeedback'
-import { buildAiPreferencePrompt } from './aiPreferencePrompt'
-import { loadAppPreferences } from './appPreferences'
-import { getPromptPreferences, buildEvolvedPreferenceHints } from './promptPreferences'
 import { routeDietScene, scoreResponseWithEvalAgent } from './evalAgent'
-import { buildUserContextPrompt } from './userContextPrompt'
-import { getQingluSkillModuleContext } from '../generated/qingluSkillModules'
+import { buildQingluPeSystemPrompt } from './qingluSystemPrompt'
+import { seedSessionContextForTurn } from './sessionContext'
 import { routeQingluSkillModule } from './skillRouter'
 import type { TaskSceneType } from './taskPrompts'
+import { loadTodaySnapshot } from './todaySnapshot'
+import { loadUserProfile } from './userProfile'
+import { getCachedUserLocation } from './userLocation'
+import { formatLocationLabel } from './citySkyline'
 
 const SCENE_STEPS: Record<Exclude<DietSceneId, 'general_health'>, string[]> = {
   A1_gathering_poi: [
@@ -111,38 +111,27 @@ export function buildClusterSystemPrompt(
   userMessage: string,
   options?: { sceneType?: TaskSceneType },
 ): string {
-  const steps = plan.steps.map((step, i) => `${i + 1}. ${step}`).join('\n')
-  const hint = buildPreferenceHint()
-  const evolved = buildEvolvedPreferenceHints()
-  const prefs = getPromptPreferences()
-  const constraints = prefs.clusterConstraints.join('；')
-  const aiPrefs = buildAiPreferencePrompt(loadAppPreferences().ai, loadAppPreferences().locale)
-
-  const userContext = buildUserContextPrompt()
-
   const route = routeQingluSkillModule(userMessage, options)
-  const skillPack = getQingluSkillModuleContext(route.moduleId)
 
-  return [
-    '你是「轻鹭」(QingLu)，用户的本地生活减脂 AI 管家。产品调性：轻松友好、不说教；数据先行、推荐有理有据。',
-    'IM 输出：勿用 Markdown 标题/表格/代码块；先一句结论（含 kcal/克数），再 2–4 条短建议；禁止编造店名。',
-    '推荐具体到店门店时：仅当【用户实况】与 Skill JSON 中该店同城同区域，才写出 JSON 里的完整店名；用户不在北京/上海时，勿引用京沪示例分店，改给连锁点单建议或品类推荐。',
-    '推荐餐厅/外卖/健身房且写出 Skill JSON 店名时，必须用原文完整店名，以便下方地图卡片与导航一致。',
-    userContext,
-    `本轮重点：${plan.focus}`,
-    '本轮步骤：',
-    steps,
-    `【Skill 路由】已加载：${route.label}（${route.matchedSignals.join('、')}）。仅使用本模块与共享 JSON；勿引用未加载模块的门店/活动数据。`,
-    '若【用户实况】已含位置或今日热量，直接据此推荐，勿用「先告诉我地址/吃了多少」开场。',
-    `要求：${constraints}`,
-    aiPrefs,
-    hint,
-    evolved,
-    '--- 以下为路由层 + 当前模块 Skill ---',
-    skillPack,
-  ]
-    .filter(Boolean)
-    .join('\n')
+  const profile = loadUserProfile()
+  const loc = getCachedUserLocation()
+  const area =
+    loadTodaySnapshot().location_label ??
+    (loc ? formatLocationLabel(loc.city, loc.region) : profile.location_city) ??
+    null
+
+  seedSessionContextForTurn({
+    current_skill: route.moduleId,
+    scene_type: options?.sceneType ?? null,
+    current_area: area ?? undefined,
+  })
+
+  return buildQingluPeSystemPrompt({
+    plan,
+    userMessage,
+    route,
+    sceneType: options?.sceneType,
+  })
 }
 
 /** Sync plan + system prompt for send / regenerate / edit-resend */

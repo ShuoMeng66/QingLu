@@ -26,7 +26,8 @@ import { useUserLocation } from '../hooks/useUserLocation'
 import { useNearbyRecommendations } from '../hooks/useNearbyRecommendations'
 import { formatLocationLabel } from '../lib/citySkyline'
 import { openSmartNavigation } from '../lib/openMaps'
-import { getConversationRecommendationCards } from '../lib/recommendationIntent'
+import { getMessageRecommendationCards } from '../lib/assistantStructured'
+import { FollowUpActions } from './qinglu/FollowUpActions'
 import { enrichCardsWithGeocode } from '../lib/skillVenueMatch'
 import { enrichCardsWithFacade } from '../lib/venueEnrichment'
 import { debugPerf } from '../lib/debugPerf'
@@ -84,6 +85,9 @@ export interface QuickPromptMeta {
   interestId?: string
   sceneType?: TaskSceneType
   autoSend?: boolean
+  /** 跟进按钮 / 建档后自动续问，不重复记入 pending */
+  skipPendingRemember?: boolean
+  isAutoFollowUp?: boolean
 }
 
 interface ChatViewProps {
@@ -114,6 +118,7 @@ interface ChatViewProps {
   onDeleteConversation: (id: string) => void
   onOpenYiqidong?: () => void
   yiqidongUnread?: number
+  onFollowUpAction?: (action: import('../types/openclaw').FollowUpActionMeta) => void
 }
 
 
@@ -169,6 +174,7 @@ export function ChatView({
   onDeleteConversation,
   onOpenYiqidong,
   yiqidongUnread = 0,
+  onFollowUpAction,
 }: ChatViewProps) {
   const scrollRef = useRef<HTMLDivElement>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
@@ -306,7 +312,8 @@ export function ChatView({
         return
       }
 
-      const base = getConversationRecommendationCards(
+      const base = getMessageRecommendationCards(
+        latestAssistant.content,
         latestUser.content,
         location,
         foodPlaces,
@@ -314,7 +321,7 @@ export function ChatView({
         recovery,
         {
           citeNearby: preferences.ai.citeNearby,
-          assistantText: latestAssistant.content,
+          assistantMeta: latestAssistant.assistantMeta,
         },
       )
 
@@ -775,7 +782,8 @@ export function ChatView({
                         !message.streaming &&
                         message.status !== 'error' &&
                         prevMessage?.role === 'user'
-                          ? getConversationRecommendationCards(
+                          ? getMessageRecommendationCards(
+                              message.content,
                               prevMessage.content,
                               location,
                               foodPlaces,
@@ -783,9 +791,15 @@ export function ChatView({
                               recovery,
                               {
                                 citeNearby: preferences.ai.citeNearby,
-                                assistantText: message.content,
+                                assistantMeta: message.assistantMeta,
                               },
                             )
+                          : []
+                      const followUps =
+                        message.role === 'assistant' &&
+                        !message.streaming &&
+                        message.assistantMeta?.followUpActions?.length
+                          ? message.assistantMeta.followUpActions
                           : []
                       const inlineCards =
                         geoCardsByMessageId[message.id] ?? inlineCardsBase
@@ -802,6 +816,13 @@ export function ChatView({
                             onRetry={() => handleRetryClick(message.id)}
                             onFeedback={(vote) => handleFeedback(message.id, vote)}
                           />
+                          {followUps.length > 0 && onFollowUpAction && (
+                            <FollowUpActions
+                              actions={followUps}
+                              disabled={isBusy}
+                              onAction={onFollowUpAction}
+                            />
+                          )}
                           {inlineCards.length > 0 && (
                             <div className="mb-3 mt-1 flex flex-col gap-3 pl-14 pr-2">
                               {nearbyLoading ? (

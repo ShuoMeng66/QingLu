@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
+import { splitAssistantStructured } from '../../lib/assistantStructured'
 import type { ChatMessage } from '../../types/openclaw'
 import type { MessageFeedback } from '../../types/agentCluster'
 import { MarkdownContent } from '../MarkdownContent'
@@ -122,6 +123,7 @@ export function ChatBubble({
   const isError = message.status === 'error'
   const isAborted = message.status === 'aborted'
   const isThinking = message.streaming && !message.content.trim()
+  const assistantDisplay = splitAssistantStructured(message.content).displayContent
 
   const handleCopy = async () => {
     await copyText(message.content)
@@ -220,8 +222,8 @@ export function ChatBubble({
         >
           {isThinking ? (
             <p className="text-sm text-slate-500">{t('chat.guardReviewing')}</p>
-          ) : message.content ? (
-            <MarkdownContent content={message.content} />
+          ) : assistantDisplay ? (
+            <MarkdownContent content={assistantDisplay} />
           ) : (
             <span className="text-gray-600">{t('chat.emptyReply')}</span>
           )}

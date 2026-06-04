@@ -41,6 +41,7 @@ export function ChatPage() {
       onRegenerate={ctx.handleRegenerate}
       onEditMessage={ctx.handleEditMessage}
       onRetryMessage={ctx.handleRetryMessage}
+      onFollowUpAction={(action) => void ctx.handleFollowUpAction(action)}
       onMessageFeedback={ctx.submitFeedback}
       onYiqidongApply={ctx.handleYiqidongApply}
       onCreateConversation={ctx.createNewConversation}

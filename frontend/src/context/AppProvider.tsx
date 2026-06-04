@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import type { QuickPromptMeta } from '../components/ChatView'
 import { MealEnvelopePopup } from '../components/meal/MealEnvelopePopup'
@@ -16,6 +16,22 @@ import {
   buildSystemPromptForUserMessage,
   scoreResponse,
 } from '../lib/agentCluster'
+import {
+  buildFollowUpUserMessage,
+  inferFollowUpSelection,
+} from '../lib/assistantStructured'
+import {
+  clearPendingUserQuestion,
+  consumePendingUserQuestion,
+  rememberPendingUserQuestion,
+} from '../lib/onboardingPending'
+import {
+  loadSessionContext,
+  setSessionSelection,
+  updateSessionFromAssistantReply,
+} from '../lib/sessionContext'
+import { routeQingluSkillModule } from '../lib/skillRouter'
+import type { FollowUpActionMeta } from '../types/openclaw'
 import { runOutputGuard } from '../lib/outputGuard'
 import { getCachedUserLocation } from '../lib/userLocation'
 import { testConnection } from '../lib/openclaw'
@@ -71,6 +87,7 @@ export function AppProvider({ children }: AppProviderProps) {
     areMealRemindersEnabled() ? getActiveMealReminder() : null,
   )
   const mealRemindersEnabled = areMealRemindersEnabled()
+  const profileAutoSendingRef = useRef(false)
 
   const refreshUserProfile = useCallback(() => {
     setUserProfile(loadUserProfile())
@@ -131,6 +148,7 @@ export function AppProvider({ children }: AppProviderProps) {
 
   useEffect(() => {
     const onUserDataApplied = () => {
+      clearPendingUserQuestion()
       refreshUserProfile()
       const nextYiqidong = loadYiqidongConfig()
       setYiqidongConfig(nextYiqidong)
@@ -265,48 +283,102 @@ export function AppProvider({ children }: AppProviderProps) {
     )
   }, [draftConfig, runConnectionTest, toast])
 
+  const runUserTurn = useCallback(
+    async (content: string, meta?: QuickPromptMeta) => {
+      if (!meta?.skipPendingRemember) {
+        rememberPendingUserQuestion(content)
+      }
+
+      if (messages.length > 0) {
+        markTrajectoryFollowUp(activeId)
+      }
+
+      const plan = await prepareTurn(content)
+      const systemPrompt = buildClusterSystemPrompt(plan, content, {
+        sceneType: meta?.sceneType,
+      })
+      createTrajectoryDraft({
+        conversationId: activeId,
+        userMessage: content,
+        focus: plan.focus,
+        plan,
+        systemPrompt,
+        starterId: meta?.starterId,
+        interestId: meta?.interestId,
+      })
+      await sendMessage(content, {
+        systemPrompt,
+        onAssistantDone: async (answer, assistantId, assistantMeta, rawDraft) => {
+          const route = routeQingluSkillModule(content, { sceneType: meta?.sceneType })
+          updateSessionFromAssistantReply(rawDraft ?? answer, route.moduleId)
+          const score = await finishExecution(content, answer)
+          completeTrajectory({
+            conversationId: activeId,
+            userMessage: content,
+            assistantReply: answer,
+            score,
+            messageId: assistantId,
+          })
+
+          if (assistantMeta?.isProfileComplete) {
+            refreshUserProfile()
+            const pending = consumePendingUserQuestion()
+            if (pending && pending !== content && !profileAutoSendingRef.current) {
+              profileAutoSendingRef.current = true
+              try {
+                await runUserTurn(pending, {
+                  skipPendingRemember: true,
+                  isAutoFollowUp: true,
+                })
+              } finally {
+                profileAutoSendingRef.current = false
+              }
+            }
+          }
+        },
+      })
+    },
+    [
+      activeId,
+      finishExecution,
+      messages.length,
+      prepareTurn,
+      refreshUserProfile,
+      sendMessage,
+    ],
+  )
+
   const handleSend = useCallback(
     async (text?: string, meta?: QuickPromptMeta) => {
       const content = (text ?? input).trim()
       if (!content) return
       setInput('')
 
-      if (messages.length > 0) {
-        markTrajectoryFollowUp(activeId)
-      }
-
       try {
-        const plan = await prepareTurn(content)
-        const systemPrompt = buildClusterSystemPrompt(plan, content, {
-          sceneType: meta?.sceneType,
-        })
-        createTrajectoryDraft({
-          conversationId: activeId,
-          userMessage: content,
-          focus: plan.focus,
-          plan,
-          systemPrompt,
-          starterId: meta?.starterId,
-          interestId: meta?.interestId,
-        })
-        await sendMessage(content, {
-          systemPrompt,
-          onAssistantDone: async (answer, assistantId) => {
-            const score = await finishExecution(content, answer)
-            completeTrajectory({
-              conversationId: activeId,
-              userMessage: content,
-              assistantReply: answer,
-              score,
-              messageId: assistantId,
-            })
-          },
-        })
+        await runUserTurn(content, meta)
       } catch {
         resetTurn()
       }
     },
-    [input, messages.length, activeId, prepareTurn, sendMessage, finishExecution, resetTurn],
+    [input, resetTurn, runUserTurn],
+  )
+
+  const handleFollowUpAction = useCallback(
+    async (action: FollowUpActionMeta) => {
+      const ctx = loadSessionContext()
+      const { item, partySize } = inferFollowUpSelection(action, ctx.last_recommendations)
+      if (item) setSessionSelection(item, partySize ?? undefined)
+
+      const text = buildFollowUpUserMessage(action)
+      if (!text) return
+
+      try {
+        await runUserTurn(text, { skipPendingRemember: true, isAutoFollowUp: true })
+      } catch {
+        resetTurn()
+      }
+    },
+    [resetTurn, runUserTurn],
   )
 
   const handleStopWithCluster = useCallback(() => {
@@ -371,6 +443,7 @@ export function AppProvider({ children }: AppProviderProps) {
       messages,
       loading,
       handleSend,
+      handleFollowUpAction,
       handleStop: handleStopWithCluster,
       handleRegenerate,
       handleEditMessage,
@@ -411,6 +484,7 @@ export function AppProvider({ children }: AppProviderProps) {
       messages,
       loading,
       handleSend,
+      handleFollowUpAction,
       handleStopWithCluster,
       handleRegenerate,
       handleEditMessage,

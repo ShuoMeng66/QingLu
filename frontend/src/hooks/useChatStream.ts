@@ -4,6 +4,7 @@ import { translate } from '../lib/i18n/messages'
 import { sendChat, streamChat } from '../lib/openclaw'
 import { createMessageId } from '../lib/storage'
 import { debugPerf } from '../lib/debugPerf'
+import { splitAssistantStructured } from '../lib/assistantStructured'
 import type { ChatMessage, OpenClawConfig } from '../types/openclaw'
 
 export interface StreamRevealContext {
@@ -12,9 +13,14 @@ export interface StreamRevealContext {
 
 export interface StreamSendOptions {
   systemPrompt?: string
-  /** Rebuild Scheme B skill prompt from last user turn (regenerate / edit / retry) */
+  /** Rebuild skill prompt from last user turn (regenerate / edit / retry) */
   resolveSystemPrompt?: (messages: ChatMessage[]) => string | undefined
-  onAssistantDone?: (content: string, assistantId: string) => void | Promise<void>
+  onAssistantDone?: (
+    content: string,
+    assistantId: string,
+    meta?: import('../types/openclaw').AssistantMessageMeta,
+    rawDraft?: string,
+  ) => void | Promise<void>
   /** Run after model finishes, before user sees assistant text */
   onBeforeReveal?: (draft: string, ctx: StreamRevealContext) => Promise<string>
   onReviewPhase?: (active: boolean) => void
@@ -119,14 +125,20 @@ export function useChatStream({
       )
       // #endregion
 
+      const structured = splitAssistantStructured(draft)
+      let displayContent = structured.displayContent
+
       try {
         options?.onReviewPhase?.(true)
         if (options?.onBeforeReveal) {
-          finalContent = await options.onBeforeReveal(draft, { userMessage })
+          displayContent = await options.onBeforeReveal(displayContent, { userMessage })
         }
       } finally {
         options?.onReviewPhase?.(false)
       }
+
+      finalContent = displayContent
+      const assistantMeta = structured.meta ?? undefined
 
       // #region agent log
       debugPerf(
@@ -143,13 +155,17 @@ export function useChatStream({
       patchMessages(conversationId, (current) =>
         current.map((message) =>
           message.id === assistantId
-            ? finalizeAssistant(message, { content: finalContent, status: 'done' })
+            ? finalizeAssistant(message, {
+                content: finalContent,
+                status: 'done',
+                assistantMeta,
+              })
             : message,
         ),
       )
 
       if (finalContent.trim() && options?.onAssistantDone) {
-        await options.onAssistantDone(finalContent, assistantId)
+        await options.onAssistantDone(finalContent, assistantId, assistantMeta, draft)
       }
     },
     [patchMessages],

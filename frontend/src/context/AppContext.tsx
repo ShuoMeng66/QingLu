@@ -34,6 +34,7 @@ export interface AppContextValue {
   messages: import('../types/openclaw').ChatMessage[]
   loading: boolean
   handleSend: (text?: string, meta?: QuickPromptMeta) => Promise<void>
+  handleFollowUpAction: (action: import('../types/openclaw').FollowUpActionMeta) => Promise<void>
   handleStop: () => void
   handleRegenerate: () => void
   handleEditMessage: (messageId: string, content: string) => void

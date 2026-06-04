@@ -6,12 +6,31 @@ export interface OpenClawConfig {
   agent: string
 }
 
+export interface FollowUpActionMeta {
+  label: string
+  message?: string
+  action_type?: string
+  scene_type?: string
+  party_size?: number
+  selected_index?: number
+}
+
+export interface AssistantMessageMeta {
+  payloadType?: string
+  recommendationNames: string[]
+  followUpActions: FollowUpActionMeta[]
+  isProfileComplete?: boolean
+  isMedicalSafety?: boolean
+}
+
 export interface ChatMessage {
   id: string
   role: 'user' | 'assistant'
   content: string
   streaming?: boolean
   status?: 'done' | 'error' | 'aborted'
+  /** Parsed from ---JSON_START--- block after stream completes */
+  assistantMeta?: AssistantMessageMeta
 }
 
 export type ApiChatRole = 'user' | 'assistant' | 'system'
