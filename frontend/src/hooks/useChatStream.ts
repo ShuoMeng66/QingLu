@@ -154,8 +154,7 @@ export function useChatStream({
         'C',
       )
 
-      const structured = splitAssistantStructured(draft)
-      let displayContent = structured.displayContent
+      let displayContent = splitAssistantStructured(draft).displayContent
 
       try {
         options?.onReviewPhase?.(true)
@@ -170,6 +169,7 @@ export function useChatStream({
         return false
       }
 
+      const structured = splitAssistantStructured(draft)
       const finalContent = displayContent
       const assistantMeta = structured.meta ?? undefined
 

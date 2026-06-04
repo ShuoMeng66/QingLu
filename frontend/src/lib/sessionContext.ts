@@ -1,5 +1,6 @@
 import type { QingluSkillModuleId } from '../generated/qingluSkillModules'
 import {
+  extractJsonBlock,
   extractRecommendationNamesFromPayload,
   splitAssistantStructured,
 } from './assistantStructured'
@@ -94,7 +95,8 @@ export function setSessionSelection(item: string, partySize?: number): void {
 }
 
 function extractRecommendationNames(text: string): string[] {
-  const block = text.match(/---JSON_START---([\s\S]*?)---JSON_END---/i)?.[1]
+  const extracted = extractJsonBlock(text)
+  const block = extracted.rawJson
   if (!block) return []
   const names: string[] = []
   const patterns = [

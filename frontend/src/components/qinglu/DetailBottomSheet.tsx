@@ -13,6 +13,7 @@ import { useI18n } from '../../hooks/useI18n'
 import { useUserLocation } from '../../hooks/useUserLocation'
 
 import type { RichCardProps } from './RichCard'
+import type { TakeoutBullet } from './TakeoutVenueCard'
 
 import { EmbeddedRouteMap } from './EmbeddedRouteMap'
 
@@ -51,6 +52,12 @@ export interface DetailSheetData extends Pick<
   | 'city'
 
 > {
+
+  cardLayout?: 'default' | 'takeout'
+  galleryImages?: string[]
+  intro?: string
+  bullets?: TakeoutBullet[]
+  titleLink?: boolean
 
   lat?: number
 

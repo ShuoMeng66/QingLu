@@ -231,6 +231,7 @@ function buildChatCompletionBody(
     stream,
     user: userId,
     messages: toApiMessages(messages, systemPrompt),
+    max_tokens: 4096,
   }
   const thinking =
     options?.enableThinking ??

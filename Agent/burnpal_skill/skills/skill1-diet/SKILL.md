@@ -262,6 +262,11 @@ P1 可选包含：搭配建议、与剩余额度对比
 P0 必须包含：店名+距离、具体菜品组合、预估总热量、与剩余额度对比
 P1 可选包含：避雷提醒、蛋白质说明、训练日适配说明、价格
 
+**结构化输出（前端卡片，scene_type: takeout）：**
+- IM 仅 1 句摘要，禁止长列表与 emoji 堆砌
+- 紧接 `---JSON_START---` … `---JSON_END---`（结束标记必填）
+- `recommendations[]` 每项字段：`item_id`（takeout.json 的 id）、`store_name`、`intro`、`reason`、`combo_name`、`signature_dishes`、`avg_price_yuan`、`kcal_range`、`protein_g`、`warnings`、`address` 或 `delivery_note`、`platform_card`
+
 **步骤 4：用户选定后。**
 提供跳转链接。记录本餐热量到当日已摄入。
 

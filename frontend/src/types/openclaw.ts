@@ -19,6 +19,9 @@ export interface AssistantMessageMeta {
   payloadType?: string
   recommendationNames: string[]
   followUpActions: FollowUpActionMeta[]
+  /** Parsed takeout/dining JSON for cards when prose omits the block */
+  structuredPayload?: Record<string, unknown> | null
+  jsonBlockComplete?: boolean
   isProfileComplete?: boolean
   isMedicalSafety?: boolean
 }

@@ -5,8 +5,10 @@ import { placeToRichCardData } from './nearbyRecommendations'
 import type { UserLocation } from './userLocation'
 import { buildSkillVenueCards, matchVenuesInText } from './skillVenueMatch'
 import { getConversationRecommendationCards } from './recommendationIntent'
+import { buildTakeoutDetailCard } from './takeoutVenueData'
 
 const JSON_BLOCK_RE = /---JSON_START---([\s\S]*?)---JSON_END---/i
+const JSON_START_RE = /---JSON_START---/i
 
 export interface FollowUpAction {
   label: string
@@ -24,6 +26,52 @@ export interface StructuredSplit {
   meta: AssistantMessageMeta | null
 }
 
+export function extractJsonBlock(text: string): {
+  rawJson: string | null
+  complete: boolean
+} {
+  const startMatch = text.match(JSON_START_RE)
+  if (!startMatch || startMatch.index == null) {
+    return { rawJson: null, complete: false }
+  }
+
+  const bodyStart = startMatch.index + startMatch[0].length
+  const tail = text.slice(bodyStart)
+  const endMatch = tail.match(/---JSON_END---/i)
+  if (endMatch && endMatch.index != null) {
+    return { rawJson: tail.slice(0, endMatch.index).trim(), complete: true }
+  }
+
+  return { rawJson: tail.trim(), complete: false }
+}
+
+function repairTruncatedJson(trimmed: string): string | null {
+  const candidates = [
+    trimmed,
+    `${trimmed}"}`,
+    `${trimmed}]}`,
+    `${trimmed}}]}`,
+    `${trimmed}"}]}`,
+    `${trimmed}]}`,
+    `${trimmed}}`,
+  ]
+  for (const candidate of candidates) {
+    const start = candidate.indexOf('{')
+    const end = candidate.lastIndexOf('}')
+    if (start < 0 || end <= start) continue
+    const slice = candidate.slice(start, end + 1)
+    try {
+      const parsed = JSON.parse(slice) as unknown
+      if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+        return slice
+      }
+    } catch {
+      /* try next */
+    }
+  }
+  return null
+}
+
 function tryParseJson(block: string): Record<string, unknown> | null {
   const trimmed = block.trim()
   if (!trimmed) return null
@@ -33,7 +81,17 @@ function tryParseJson(block: string): Record<string, unknown> | null {
       return parsed as Record<string, unknown>
     }
   } catch {
-    // model may wrap extra text; try first `{...}` span
+    const repaired = repairTruncatedJson(trimmed)
+    if (repaired) {
+      try {
+        const parsed = JSON.parse(repaired) as unknown
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          return parsed as Record<string, unknown>
+        }
+      } catch {
+        /* fall through */
+      }
+    }
     const start = trimmed.indexOf('{')
     const end = trimmed.lastIndexOf('}')
     if (start >= 0 && end > start) {
@@ -43,11 +101,40 @@ function tryParseJson(block: string): Record<string, unknown> | null {
           return parsed as Record<string, unknown>
         }
       } catch {
-        return null
+        return parsePartialRecommendationPayload(trimmed)
       }
     }
+    return parsePartialRecommendationPayload(trimmed)
   }
   return null
+}
+
+/** Best-effort when stream ends before ---JSON_END--- */
+function parsePartialRecommendationPayload(block: string): Record<string, unknown> | null {
+  const recs: Record<string, unknown>[] = []
+  const objectRe = /\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}/g
+  let match: RegExpExecArray | null
+  while ((match = objectRe.exec(block)) !== null) {
+    try {
+      const row = JSON.parse(match[0]) as Record<string, unknown>
+      if (
+        row.store_name ||
+        row.restaurant_name ||
+        row.item_id ||
+        row.name ||
+        row.venue_name
+      ) {
+        recs.push(row)
+      }
+    } catch {
+      /* skip fragment */
+    }
+  }
+  if (recs.length === 0) return null
+  return {
+    scene_type: 'takeout',
+    recommendations: recs,
+  }
 }
 
 function asRecordArray(value: unknown): Record<string, unknown>[] {
@@ -177,6 +264,12 @@ function tagForPayload(kind: string): string {
   return '推荐'
 }
 
+function isTakeoutPayload(kind: string, payload: Record<string, unknown>): boolean {
+  if (/takeout/i.test(kind)) return true
+  const scene = typeof payload.scene_type === 'string' ? payload.scene_type : ''
+  return /takeout/i.test(scene)
+}
+
 export function structuredRecommendationsToCards(
   payload: Record<string, unknown> | null,
   location?: UserLocation | null,
@@ -184,6 +277,7 @@ export function structuredRecommendationsToCards(
   if (!payload) return []
 
   const kind = payloadKind(payload)
+  const takeoutScene = isTakeoutPayload(kind, payload)
   const lists = [
     ...asRecordArray(payload.recommendations),
     ...asRecordArray(payload.service_recommendations),
@@ -194,6 +288,14 @@ export function structuredRecommendationsToCards(
     const title = recommendationTitle(rec)
     if (!title) continue
 
+    if (takeoutScene) {
+      const takeoutCard = buildTakeoutDetailCard(rec)
+      if (takeoutCard) {
+        cards.push(takeoutCard)
+        continue
+      }
+    }
+
     const platform = rec.platform_card as Record<string, unknown> | undefined
     const searchKeyword =
       typeof platform?.search_keyword === 'string' ? platform.search_keyword : undefined
@@ -201,9 +303,17 @@ export function structuredRecommendationsToCards(
       typeof platform?.url === 'string' && platform.url ? platform.url : undefined
 
     const matched = matchVenuesInText(title, 1, location)
-    if (matched.length > 0) {
+    if (matched.length > 0 && !takeoutScene) {
       cards.push(...buildSkillVenueCards(matched))
       continue
+    }
+
+    if (takeoutScene) {
+      const fallback = buildTakeoutDetailCard(rec)
+      if (fallback) {
+        cards.push(fallback)
+        continue
+      }
     }
 
     cards.push({
@@ -235,9 +345,22 @@ export function structuredRecommendationsToCards(
   return cards.slice(0, 4)
 }
 
+function stripJsonFromDisplay(text: string): string {
+  if (JSON_BLOCK_RE.test(text)) {
+    return text.replace(JSON_BLOCK_RE, '').trim()
+  }
+  const start = text.search(JSON_START_RE)
+  if (start < 0) return text.trim()
+  return text.slice(0, start).trim()
+}
+
 export function splitAssistantStructured(text: string): StructuredSplit {
-  const match = text.match(JSON_BLOCK_RE)
-  if (!match) {
+  const closed = text.match(JSON_BLOCK_RE)
+  const extracted = closed
+    ? { rawJson: closed[1]?.trim() ?? '', complete: true }
+    : extractJsonBlock(text)
+
+  if (!extracted.rawJson) {
     return {
       displayContent: text.trim(),
       rawJson: null,
@@ -246,8 +369,8 @@ export function splitAssistantStructured(text: string): StructuredSplit {
     }
   }
 
-  const rawJson = match[1]?.trim() ?? ''
-  const displayContent = text.replace(JSON_BLOCK_RE, '').trim()
+  const rawJson = extracted.rawJson
+  const displayContent = stripJsonFromDisplay(text)
   const payload = tryParseJson(rawJson)
   const recommendationNames = extractRecommendationNamesFromPayload(payload)
   const followUpActions = extractFollowUpActions(payload)
@@ -257,6 +380,8 @@ export function splitAssistantStructured(text: string): StructuredSplit {
         payloadType: payloadKind(payload),
         recommendationNames,
         followUpActions,
+        structuredPayload: payload,
+        jsonBlockComplete: extracted.complete,
         isProfileComplete:
           payload.type === 'profile_complete' ||
           payloadKind(payload) === 'profile_complete',
@@ -264,8 +389,14 @@ export function splitAssistantStructured(text: string): StructuredSplit {
           payload.type === 'medical_safety_response' ||
           payload.scene_type === 'safety',
       }
-    : followUpActions.length > 0
-      ? { followUpActions, recommendationNames }
+    : followUpActions.length > 0 || recommendationNames.length > 0
+      ? {
+          followUpActions,
+          recommendationNames,
+          structuredPayload: null,
+          jsonBlockComplete: extracted.complete,
+          payloadType: undefined,
+        }
       : null
 
   return { displayContent, rawJson, payload, meta }
@@ -283,22 +414,26 @@ export function getMessageRecommendationCards(
   const meta = options?.assistantMeta
   if (meta?.isMedicalSafety) return []
 
-  const hasJsonBlock = /---JSON_START---/i.test(assistantContent)
+  const hasJsonBlock = JSON_START_RE.test(assistantContent)
+  const payload =
+    meta?.structuredPayload ??
+    (hasJsonBlock ? splitAssistantStructured(assistantContent).payload : null)
   const prose =
-    meta || !hasJsonBlock
+    meta?.structuredPayload || !hasJsonBlock
       ? assistantContent
       : splitAssistantStructured(assistantContent).displayContent
+
+  if (payload) {
+    const structuredCards = structuredRecommendationsToCards(payload, location)
+    if (structuredCards.length > 0) return structuredCards
+  }
 
   if (!hasJsonBlock && meta?.recommendationNames?.length) {
     const matched = matchVenuesInText(meta.recommendationNames.join(' '), 3, location)
     if (matched.length > 0) return buildSkillVenueCards(matched)
   }
 
-  if (hasJsonBlock) {
-    const payload = splitAssistantStructured(assistantContent).payload
-    const structuredCards = structuredRecommendationsToCards(payload, location)
-    if (structuredCards.length > 0) return structuredCards
-
+  if (hasJsonBlock || meta?.structuredPayload) {
     const names = meta?.recommendationNames ?? extractRecommendationNamesFromPayload(payload)
     if (names.length > 0) {
       const matched = matchVenuesInText(names.join(' '), 3, location)

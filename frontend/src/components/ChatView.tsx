@@ -48,6 +48,7 @@ import { TrainingProfileSheet } from './qinglu/TrainingProfileSheet'
 import { QuickActionBar } from './qinglu/QuickActionBar'
 import type { TaskSceneType } from '../lib/taskPrompts'
 import { RichCard } from './qinglu/RichCard'
+import { TakeoutVenueCard } from './qinglu/TakeoutVenueCard'
 import { PageTransition } from './layout/PageTransition'
 import { usePersistedBoolean } from '../hooks/usePersistedBoolean'
 
@@ -831,33 +832,47 @@ export function ChatView({
                               {nearbyLoading ? (
                                 <p className="text-xs text-body-secondary">{t('chat.nearbyLoading')}</p>
                               ) : (
-                                inlineCards.map((card) => (
-                                  <RichCard
-                                    key={`${card.title}-${card.tag}`}
-                                    {...card}
-                                    onNavigate={
-                                      card.lat != null && card.lon != null
-                                        ? () =>
-                                            openSmartNavigation(
-                                              card.lat!,
-                                              card.lon!,
-                                              card.title,
-                                              location
-                                                ? {
-                                                    lat: location.lat,
-                                                    lon: location.lon,
-                                                  }
-                                                : undefined,
-                                              {
-                                                country: location?.country,
-                                                region: location?.region,
-                                              },
-                                            )
-                                        : undefined
-                                    }
-                                    onDetail={() => openSheet(card)}
-                                  />
-                                ))
+                                inlineCards.map((card) =>
+                                  card.cardLayout === 'takeout' ? (
+                                    <TakeoutVenueCard
+                                      key={`takeout-${card.title}`}
+                                      title={card.title}
+                                      titleLink={card.titleLink}
+                                      galleryImages={card.galleryImages}
+                                      intro={card.intro}
+                                      bullets={card.bullets}
+                                      listingUrl={card.listingUrl}
+                                      city={card.city}
+                                      onDetail={() => openSheet(card)}
+                                    />
+                                  ) : (
+                                    <RichCard
+                                      key={`${card.title}-${card.tag}`}
+                                      {...card}
+                                      onNavigate={
+                                        card.lat != null && card.lon != null
+                                          ? () =>
+                                              openSmartNavigation(
+                                                card.lat!,
+                                                card.lon!,
+                                                card.title,
+                                                location
+                                                  ? {
+                                                      lat: location.lat,
+                                                      lon: location.lon,
+                                                    }
+                                                  : undefined,
+                                                {
+                                                  country: location?.country,
+                                                  region: location?.region,
+                                                },
+                                              )
+                                          : undefined
+                                      }
+                                      onDetail={() => openSheet(card)}
+                                    />
+                                  ),
+                                )
                               )}
                             </div>
                           )}

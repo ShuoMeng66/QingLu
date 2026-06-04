@@ -14,7 +14,11 @@ export function buildUserContextPrompt(): string {
     budget != null && budget > 0 ? getRemainingKcal(profile, consumed) : null
   const mealCount = consumed > 0 ? '已有记录' : '暂无记录（可能未填写）'
 
-  const lines: string[] = ['【用户实况 · App 已采集，界面顶部已展示】']
+  const nickname = profile.nickname?.trim() || '用户'
+  const lines: string[] = [
+    '【用户实况 · App 已采集，界面顶部已展示】',
+    `当前登录用户昵称：${nickname}（回复中称呼此人，勿使用 Skill 演示档案 user-profiles.json 中的小明/小红/王总）`,
+  ]
 
   if (location) {
     const label = formatLocationLabel(location.city, location.region)

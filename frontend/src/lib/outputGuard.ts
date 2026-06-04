@@ -81,6 +81,13 @@ function detectMarkdownViolations(draft: string): string[] {
   if (/^#{1,6}\s/m.test(draft)) issues.push('使用了 Markdown 标题')
   if (/^\|.+\|/m.test(draft) && draft.includes('|---')) issues.push('使用了 Markdown 表格')
   if (/```/.test(draft)) issues.push('使用了代码块')
+  const emojiCount = (draft.match(/[\u{1F300}-\u{1FAFF}]/gu) ?? []).length
+  if (emojiCount > 6 || (draft.length > 120 && emojiCount > 3)) {
+    issues.push('emoji 或装饰符号过多，需改为短句 IM 风格')
+  }
+  if (/^\s*[-*•]\s/m.test(draft) && draft.split('\n').filter((l) => /^\s*[-*•]\s/.test(l)).length >= 3) {
+    issues.push('使用了过长 Markdown 列表，外卖场景应只保留一句摘要')
+  }
   return issues
 }
 
