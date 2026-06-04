@@ -40,7 +40,7 @@ authRouter.get('/health', async (_req, res) => {
       smtpReachable = true
     } catch (error) {
       smtpError = formatSmtpError(error)
-      console.warn('[BurnPal] SMTP verify failed:', error)
+      console.warn('[QingLu] SMTP verify failed:', error)
     }
   }
 
@@ -50,7 +50,7 @@ authRouter.get('/health', async (_req, res) => {
       resendReachable = true
     } catch (error) {
       resendError = formatEmailError(error)
-      console.warn('[BurnPal] Resend verify failed:', error)
+      console.warn('[QingLu] Resend verify failed:', error)
     }
   }
 
@@ -78,8 +78,8 @@ authRouter.get('/health', async (_req, res) => {
     resendKeySource: resendKey.keySource,
     resendKeyOnRender: resendKey.renderEnvPresent,
     resendKeyViaVercelProxy: resendKey.proxyForwarded,
-    proxySecretConfigured: Boolean(process.env.BURNPAL_PROXY_SECRET?.trim()),
-    resendFrom: resend ? (process.env.RESEND_FROM?.trim() || 'BurnPal <onboarding@resend.dev>') : undefined,
+    proxySecretConfigured: Boolean(process.env.QINGLU_PROXY_SECRET?.trim()),
+    resendFrom: resend ? (process.env.RESEND_FROM?.trim() || 'QingLu <onboarding@resend.dev>') : undefined,
     onRender: Boolean(process.env.RENDER),
     hint,
     verifyError,

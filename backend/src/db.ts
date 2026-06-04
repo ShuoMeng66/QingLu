@@ -3,7 +3,7 @@ import path from 'node:path'
 import Database from 'better-sqlite3'
 
 const DATA_DIR = path.resolve(process.cwd(), 'data')
-const DB_PATH = path.join(DATA_DIR, 'burnpal.db')
+const DB_PATH = path.join(DATA_DIR, 'qinglu.db')
 
 if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true })

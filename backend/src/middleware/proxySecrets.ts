@@ -13,12 +13,12 @@ function headerValue(value: string | string[] | undefined): string {
   return String(value ?? '').trim()
 }
 
-/** Trust Resend credentials forwarded by Vercel Edge (same BURNPAL_PROXY_SECRET on both sides) */
+/** Trust Resend credentials forwarded by Vercel Edge (same QINGLU_PROXY_SECRET on both sides) */
 export function proxySecretsMiddleware(req: Request, _res: Response, next: NextFunction): void {
-  const expected = String(process.env.BURNPAL_PROXY_SECRET ?? '').trim()
-  const secret = headerValue(req.headers['x-burnpal-proxy-secret'])
-  const resendKey = headerValue(req.headers['x-burnpal-resend-key'])
-  const resendFrom = headerValue(req.headers['x-burnpal-resend-from'])
+  const expected = String(process.env.QINGLU_PROXY_SECRET ?? '').trim()
+  const secret = headerValue(req.headers['x-qinglu-proxy-secret'])
+  const resendKey = headerValue(req.headers['x-qinglu-resend-key'])
+  const resendFrom = headerValue(req.headers['x-qinglu-resend-from'])
 
   const store: RequestStore = {}
 

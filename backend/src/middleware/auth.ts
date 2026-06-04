@@ -1,7 +1,7 @@
 import type { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 
-const JWT_SECRET = process.env.JWT_SECRET ?? 'burnpal-dev-secret-change-me'
+const JWT_SECRET = process.env.JWT_SECRET ?? 'qinglu-dev-secret-change-me'
 
 export interface AuthPayload {
   sub: string

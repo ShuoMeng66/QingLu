@@ -55,7 +55,7 @@ export async function requestVerificationCode(email: string): Promise<void> {
   try {
     await sendVerificationEmail(normalized, code)
   } catch (error) {
-    console.error('[BurnPal] Verification email delivery failed:', error)
+    console.error('[QingLu] Verification email delivery failed:', error)
     throw new VerificationError(formatEmailError(error), 503)
   }
 }

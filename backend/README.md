@@ -44,7 +44,7 @@ Codes expire after 10 minutes. Resend is limited to once per 60 seconds. After 5
    `RESEND_FROM=QingLu <noreply@你的域名.com>`
 4. 环境变量二选一（或两处都配同一 Key）：
    - **仅 Render**：`RESEND_API_KEY` + `RESEND_FROM` → Manual Deploy Render
-   - **仅 Vercel**（推荐若你一直在 Vercel 配 Key）：在 **Vercel** 填 `RESEND_API_KEY`；在 **Vercel 与 Render** 填相同 `BURNPAL_PROXY_SECRET`（随机字符串，历史 env 名保留）；然后 **Redeploy Vercel + Render**
+   - **仅 Vercel**（推荐）：在 **Vercel** 填 `RESEND_API_KEY`；在 **Vercel 与 Render** 填相同 `QINGLU_PROXY_SECRET`（随机字符串）；然后 **Redeploy Vercel + Render**
 5. **Manual Deploy** 两侧（改 env 后必须部署才生效）
 6. 检查 `GET /api/auth/health`（经 Vercel 转发到 Render）：
 
@@ -52,7 +52,7 @@ Codes expire after 10 minutes. Resend is limited to once per 60 seconds. After 5
 |------|------|
 | `resend: true` | 已配置 Resend |
 | `resendReachable: true` | Resend API 可达 |
-| `resendKeySource: "vercel-proxy"` | 使用 Vercel 转发的 Key（需 `BURNPAL_PROXY_SECRET` 配对） |
+| `resendKeySource: "vercel-proxy"` | 使用 Vercel 转发的 Key（需 `QINGLU_PROXY_SECRET` 配对） |
 
 ### 仍收不到验证码？
 

@@ -32,9 +32,6 @@
 >
 > 把 OpenClaw Skill 与百炼大模型接到真实生活场景——外卖、聚餐、训练、恢复与一起动——让 AI 成为你的本地生活减脂管家。
 
-> [!IMPORTANT]
-> 产品品牌为 **QingLu（轻鹭）**（原 BurnPal）。代码仓库：[`ShuoMeng66/QingLu`](https://github.com/ShuoMeng66/QingLu)。
-
 ## 📖 概览
 
 QingLu 是一套 **React + Vite 前端** + **Express 账户后端** + **OpenClaw / 百炼 AI** 的全栈 Demo。Skill 包在构建时打入 system prompt，主对话经 Edge Middleware 代理百炼 API，门面检索与输出守门与主链路分离，适合黑客松演示与二次集成。
@@ -136,22 +133,13 @@ VITE_OPENCLAW_AGENT=qwen-plus
 
 ## ☁️ 部署到 Vercel
 
-### 1. 推送到 GitHub
+### 1. 在 Vercel 导入仓库
 
-```bash
-git remote add origin git@github.com:ShuoMeng66/QingLu.git
-# 若在 GitHub 将仓库改名为 QingLu 后：
-# git remote set-url origin git@github.com:ShuoMeng66/QingLu.git
-git push -u origin main
-```
-
-### 2. 在 Vercel 导入仓库
-
-1. 打开 [vercel.com/new](https://vercel.com/new) → Import 本仓库 `ShuoMeng66/QingLu`
+1. 打开 [vercel.com/new](https://vercel.com/new) → Import [`ShuoMeng66/QingLu`](https://github.com/ShuoMeng66/QingLu)
 2. **Framework Preset**: Other（已配置 `vercel.json`）
 3. 无需改 Build 命令（根目录 `vercel.json` 已指定 `frontend` 构建）
 
-### 3. 环境变量（Vercel Project → Settings → Environment Variables）
+### 2. 环境变量（Vercel Project → Settings → Environment Variables）
 
 | 变量 | 说明 | 示例 |
 |------|------|------|
@@ -165,7 +153,7 @@ git push -u origin main
 | `VITE_GUARD_AGENT` | 可选，输出守门模型 | `deepseek-v4-flash` |
 | `BACKEND_URL` | 已部署的后端公网地址（账户/云同步） | `https://your-api.onrender.com` |
 | `RESEND_API_KEY` | 验证码发信（可只配在 Vercel，见下） | `re_…` |
-| `BURNPAL_PROXY_SECRET` | Vercel→Render 转发 Resend 密钥时的共享口令 | 与 Render 相同 |
+| `QINGLU_PROXY_SECRET` | Vercel→Render 转发 Resend 密钥时的共享口令 | 与 Render 相同 |
 
 **多模型分工**：
 
@@ -211,7 +199,7 @@ git push -u origin main
 
 **登录一直「处理中…」**：多半是 `BACKEND_URL` 未设置、Render 冷启动或代理超时。打开 `https://你的域名/api/auth/health` 应返回 JSON（不是 HTML 404）。登录请求约 22s 后会提示超时；Splash 页会自动 ping health 以预热后端。
 
-### 4. 账户后端（云同步 / 注册）
+### 3. 账户后端（云同步 / 注册）
 
 SQLite 后端不适合 Vercel Serverless 持久化，请单独部署 `backend/` 到 Render、Railway、Fly.io 等，然后在 Vercel 设置 `BACKEND_URL`。
 
@@ -220,8 +208,8 @@ Render 示例：
 - Root: `backend`
 - Build: `npm install && npm run build`
 - Start: `npm start`
-- 环境变量：`JWT_SECRET`、**`RESEND_API_KEY`**、**`BURNPAL_PROXY_SECRET`**（见 `backend/.env.example`）
-- **Resend 可只配在 Vercel**：在 Vercel 与 Render 填相同的 `BURNPAL_PROXY_SECRET`，Middleware 会把 `RESEND_API_KEY` 安全转给 Render 发信
+- 环境变量：`JWT_SECRET`、**`RESEND_API_KEY`**、**`QINGLU_PROXY_SECRET`**（见 `backend/.env.example`）
+- **Resend 可只配在 Vercel**：在 Vercel 与 Render 填相同的 `QINGLU_PROXY_SECRET`，Middleware 会把 `RESEND_API_KEY` 安全转给 Render 发信
 
 ---
 
@@ -232,7 +220,7 @@ QingLu/
 ├── frontend/          # Vite + React 前端（qinglu 组件、今日管家、输出守门）
 ├── backend/           # Express + SQLite 账户与云同步
 ├── Agent/
-│   ├── burnpal_skill/ # OpenClaw Skill 包（vendor 路径名保留；产品名 QingLu）
+│   ├── burnpal_skill/ # OpenClaw Skill 包（上游 CCLYX/burnpal.skill）
 │   ├── _legacy/       # 早期 hackathod_skill（Heartbeat 脚本等）
 │   └── trace2skill/   # 对话轨迹 → Skill 进化
 ├── api/               # Vercel Serverless 代理（OpenClaw + 后端转发）
@@ -256,7 +244,7 @@ QingLu/
 </p>
 
 > [!NOTE]
-> 统计卡片由 [github-readme-stats](https://github.com/anuraghazra/github-readme-stats) 公共实例生成，反映 GitHub 公开数据；若仓库改名或设为私有，卡片可能需更新 `username` / `repo` 参数或自行部署 stats 服务。
+> 统计卡片由 [github-readme-stats](https://github.com/anuraghazra/github-readme-stats) 公共实例生成；若仓库设为私有或卡片加载失败，可更新 `username` / `repo` 参数或[自托管 stats](https://github.com/anuraghazra/github-readme-stats#deploy-on-your-own)。
 
 ## 👥 团队与贡献
 

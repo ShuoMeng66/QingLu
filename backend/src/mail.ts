@@ -300,12 +300,12 @@ export function formatResendError(error: unknown): string {
   if (/Resend 400|Resend 401|Resend 403|API 400|API 401|invalid.*key|unauthorized/i.test(message)) {
     const diag = resendKeyDiagnostics()
     if (diag.keySource === 'vercel-proxy') {
-      return 'Resend 拒绝了 Vercel 转发的 API Key。请在 Vercel 更新 RESEND_API_KEY 并 Redeploy（需与 BURNPAL_PROXY_SECRET 配对）。'
+      return 'Resend 拒绝了 Vercel 转发的 API Key。请在 Vercel 更新 RESEND_API_KEY 并 Redeploy（需与 QINGLU_PROXY_SECRET 配对）。'
     }
     if (diag.renderEnvPresent && diag.proxyForwarded) {
       return 'Render 上的 RESEND_API_KEY 无效，但已通过 Vercel 转发；请检查 Vercel 的 RESEND_API_KEY。'
     }
-    return 'Resend 拒绝了 API Key。密钥需写在 Render，或同时配置 Vercel 的 RESEND_API_KEY + 两侧的 BURNPAL_PROXY_SECRET。'
+    return 'Resend 拒绝了 API Key。密钥需写在 Render，或同时配置 Vercel 的 RESEND_API_KEY + 两侧的 QINGLU_PROXY_SECRET。'
   }
   if (/Resend 403|API 403/i.test(message)) {
     return 'Resend API 权限不足，请重新创建具备 Sending access 的 API Key'
@@ -332,7 +332,7 @@ export function emailHealthHint(provider: EmailProvider, reachable: boolean): st
     return 'SMTP 无法连接，请核对授权码与端口(465)，或改用 RESEND_API_KEY。'
   }
   if (provider === 'resend') {
-    return 'Resend 不可用：在 Render 配置 RESEND_API_KEY，或在 Vercel 配置 RESEND_API_KEY + BURNPAL_PROXY_SECRET（两侧相同）后 Redeploy'
+    return 'Resend 不可用：在 Render 配置 RESEND_API_KEY，或在 Vercel 配置 RESEND_API_KEY + QINGLU_PROXY_SECRET（两侧相同）后 Redeploy'
   }
   return '未配置邮件：设置 RESEND_API_KEY 或 SMTP_*。'
 }
