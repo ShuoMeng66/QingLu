@@ -1,4 +1,4 @@
-> **Vendor 拷贝**（BurnPal 主仓库）：上游 [CCLYX/burnpal.skill](https://github.com/CCLYX/burnpal.skill) @ `3e504c6fd4d322164f3c788fb629e22db79c749e`。本目录为一次性同步副本；Skill 与数据修改请先在上游仓库完成，再重新 vendor 到 `Agent/burnpal_skill/`。
+> **Vendor 拷贝**（BurnPal 主仓库）：上游 [CCLYX/burnpal.skill](https://github.com/CCLYX/burnpal.skill) @ `3e504c6fd4d322164f3c788fb629e22db79c749e`；`skills/` 四模块已于 2026-05 同步 `burnpal-skills-v2/burnpal-modified` 并合并 QingLu 外卖卡片字段（`item_id` / `takeout.json` 对齐）。根目录 `SKILL.md`、`assets/user-profiles.json`、`references/evolved-lessons.md` 仍由本仓库维护。
 
 # 🔥 BurnPal — 健身人群本地生活全天候私人管家
 
