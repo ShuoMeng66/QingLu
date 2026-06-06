@@ -15,6 +15,7 @@ import { ChatPage } from '../pages/ChatPage'
 import { SettingsPage } from '../pages/SettingsPage'
 
 import { SplashPage } from '../pages/SplashPage'
+import { HealthProfilePage } from '../pages/HealthProfilePage'
 import { OnboardProfilePage } from '../pages/OnboardProfilePage'
 import { ProfileReadyPage } from '../pages/ProfileReadyPage'
 
@@ -54,6 +55,7 @@ function AppRoutesInner() {
       <Route path="about" element={<AboutPage />} />
       <Route element={<ProfileProviderLayout />}>
         <Route path="onboard" element={<OnboardProfilePage />} />
+        <Route path="onboard/profile" element={<HealthProfilePage />} />
         <Route path="ready" element={<ProfileReadyPage />} />
       </Route>
       <Route element={<AppProviderLayout />}>

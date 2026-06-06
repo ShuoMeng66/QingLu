@@ -1,17 +1,12 @@
-import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppShell } from '../components/qinglu/AppShell'
 import { QingluLogo } from '../components/qinglu/QingluLogo'
 import { PageTransition } from '../components/layout/PageTransition'
-import { TrainingProfileSheet } from '../components/qinglu/TrainingProfileSheet'
-import { syncTodayFromProfile } from '../lib/profileReady'
-import { isProfileComplete, loadUserProfile } from '../lib/userProfile'
 import { useI18n } from '../hooks/useI18n'
 
 export function OnboardProfilePage() {
   const navigate = useNavigate()
   const { t } = useI18n()
-  const [sheetOpen, setSheetOpen] = useState(false)
 
   return (
     <AppShell scrollable showMesh>
@@ -29,7 +24,7 @@ export function OnboardProfilePage() {
         <button
           type="button"
           className="btn-vitality mt-8 w-full rounded-full py-4 text-base font-semibold"
-          onClick={() => setSheetOpen(true)}
+          onClick={() => navigate('/onboard/profile')}
         >
           {t('onboard.cta')}
         </button>
@@ -41,15 +36,6 @@ export function OnboardProfilePage() {
           {t('onboard.skip')}
         </button>
       </PageTransition>
-      <TrainingProfileSheet
-        open={sheetOpen}
-        onClose={() => setSheetOpen(false)}
-        onSaved={() => {
-          const p = loadUserProfile()
-          if (isProfileComplete(p)) syncTodayFromProfile(p)
-          navigate('/ready', { replace: true })
-        }}
-      />
     </AppShell>
   )
 }
