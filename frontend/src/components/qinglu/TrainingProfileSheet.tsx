@@ -7,14 +7,26 @@ import { useOptionalProfileContext } from '../../context/ProfileProvider'
 import { useToast } from '../../context/ToastContext'
 import { useI18n } from '../../hooks/useI18n'
 import {
-  getAvoidOptions,
   getCuisineOptions,
   getGoalOptions,
 } from '../../lib/i18n/chatCopy'
 import {
-  getBeginnerEatingOutOptions,
+  getCommonAreaOptions,
+  getCommonSportOptions,
+  getDietaryCustomOptions,
+  getDietStrategyOptions,
+  getDiningBudgetOptions,
+  getFoodRestrictionOptions,
+  getGoalIntensityOptions,
+  getHealthBoundaryOptions,
+  getPreferredVenueOptions,
+  getTakeoutBudgetOptions,
+  getTastePreferenceOptions,
+  getTrainingLevelOptions,
+  type GoalIntensity,
+} from '../../lib/healthProfileOptions'
+import {
   getBeginnerSessionOptions,
-  getBeginnerStyleOptions,
   getBlockPhaseOptions,
   getCardioStyleOptions,
   getCarbStrategyOptions,
@@ -93,6 +105,14 @@ export function TrainingProfileSheet({ open, onClose, onSaved }: TrainingProfile
     })
   }
 
+  const updatePreferences = (patch: NonNullable<UserProfile['preferences']>) => {
+    updateProfile({
+      preferences: { ...profile.preferences, ...patch },
+    })
+  }
+
+  const prefs = profile.preferences
+
   const handleSave = () => {
     if (!profile.height_cm || !profile.weight_kg || !profile.goal) {
       toast(t('profile.validationMissing'), 'error')
@@ -108,7 +128,18 @@ export function TrainingProfileSheet({ open, onClose, onSaved }: TrainingProfile
 
   const goalOptions = getGoalOptions(locale)
   const cuisineOptions = getCuisineOptions(locale)
-  const avoidOptions = getAvoidOptions(locale)
+  const goalIntensityOptions = getGoalIntensityOptions(locale)
+  const dietStrategyOptions = getDietStrategyOptions(locale)
+  const tasteOptions = getTastePreferenceOptions(locale)
+  const foodRestrictionOptions = getFoodRestrictionOptions(locale)
+  const dietaryCustomOptions = getDietaryCustomOptions(locale)
+  const takeoutBudgetOptions = getTakeoutBudgetOptions(locale)
+  const diningBudgetOptions = getDiningBudgetOptions(locale)
+  const sportOptions = getCommonSportOptions(locale)
+  const venueOptions = getPreferredVenueOptions(locale)
+  const areaOptions = getCommonAreaOptions(locale)
+  const healthBoundaryOptions = getHealthBoundaryOptions(locale)
+  const trainingLevelOptions = getTrainingLevelOptions(locale)
   const tp = profile.training_profile
   const tier = getProfileTier(profile)
   const isAdvanced = tier === 'advanced'
@@ -173,19 +204,35 @@ export function TrainingProfileSheet({ open, onClose, onSaved }: TrainingProfile
                 </p>
               </ProfileSection>
 
-              <ProfileSection title={t('profile.sectionGoal')}>
-                <div className="flex flex-wrap gap-2">
+              <ProfileSection title={t('health.sectionGoal')}>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">
+                  {t('health.currentGoal')}
+                </p>
+                <div className="mb-3 flex flex-wrap gap-2">
                   {goalOptions.map((option) => (
-                    <button
+                    <ChipButton
                       key={option.id}
-                      type="button"
-                      className={`rounded-full px-3 py-1.5 text-xs font-medium ${
-                        profile.goal === option.id ? 'btn-vitality' : 'bg-white/60 text-slate-500'
-                      }`}
+                      active={profile.goal === option.id}
+                      label={option.label}
                       onClick={() => updateProfile({ goal: option.id as FitnessGoal })}
-                    >
-                      {option.label}
-                    </button>
+                    />
+                  ))}
+                </div>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">
+                  {t('health.goalIntensity')}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {goalIntensityOptions.map((option) => (
+                    <ChipButton
+                      key={option.id}
+                      active={prefs?.goal_intensity === option.id}
+                      label={option.label}
+                      onClick={() =>
+                        updatePreferences({
+                          goal_intensity: option.id as GoalIntensity,
+                        })
+                      }
+                    />
                   ))}
                 </div>
               </ProfileSection>
@@ -291,49 +338,149 @@ export function TrainingProfileSheet({ open, onClose, onSaved }: TrainingProfile
                 </div>
               </ProfileSection>
 
-              {!isAdvanced && (
-                <ProfileSection title={t('profile.sectionBeginner')}>
-                  <p className="mb-1.5 text-[11px] font-medium text-slate-500">
-                    {t('profile.beginnerSessions')}
-                  </p>
-                  <div className="mb-3 flex flex-wrap gap-2">
-                    {getBeginnerSessionOptions(locale).map((option) => (
-                      <ChipButton
-                        key={option.id}
-                        active={bs?.weekly_sessions === option.id}
-                        label={option.label}
-                        onClick={() => updateBeginner({ weekly_sessions: option.id })}
-                      />
-                    ))}
-                  </div>
-                  <p className="mb-1.5 text-[11px] font-medium text-slate-500">
-                    {t('profile.beginnerStyle')}
-                  </p>
-                  <div className="mb-3 flex flex-wrap gap-2">
-                    {getBeginnerStyleOptions(locale).map((option) => (
-                      <ChipButton
-                        key={option.id}
-                        active={bs?.workout_style === option.id}
-                        label={option.label}
-                        onClick={() => updateBeginner({ workout_style: option.id })}
-                      />
-                    ))}
-                  </div>
-                  <p className="mb-1.5 text-[11px] font-medium text-slate-500">
-                    {t('profile.beginnerEatingOut')}
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {getBeginnerEatingOutOptions(locale).map((option) => (
-                      <ChipButton
-                        key={option.id}
-                        active={bs?.eating_out === option.id}
-                        label={option.label}
-                        onClick={() => updateBeginner({ eating_out: option.id })}
-                      />
-                    ))}
-                  </div>
-                </ProfileSection>
-              )}
+              <ProfileSection title={t('health.sectionDiet')}>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">
+                  {t('health.dietStrategy')}
+                </p>
+                <TagCloud
+                  options={dietStrategyOptions.map((o) => ({ value: o.value, label: o.label }))}
+                  selected={prefs?.diet_strategies ?? []}
+                  onChange={(next) => updatePreferences({ diet_strategies: next })}
+                />
+                <p className="mb-1.5 mt-4 text-[11px] font-medium text-slate-500">
+                  {t('health.tastePreference')}
+                </p>
+                <TagCloud
+                  options={tasteOptions.map((o) => ({ value: o.value, label: o.label }))}
+                  selected={prefs?.taste_preferences ?? []}
+                  onChange={(next) => updatePreferences({ taste_preferences: next })}
+                />
+                <p className="mb-1.5 mt-4 text-[11px] font-medium text-slate-500">
+                  {t('profile.cuisines')}
+                </p>
+                <TagCloud
+                  options={cuisineOptions}
+                  selected={prefs?.favorite_cuisines ?? []}
+                  onChange={(next) => updatePreferences({ favorite_cuisines: next })}
+                />
+                <p className="mb-1.5 mt-4 text-[11px] font-medium text-slate-500">
+                  {t('health.foodRestrictions')}
+                </p>
+                <TagCloud
+                  options={foodRestrictionOptions.map((o) => ({ value: o.value, label: o.label }))}
+                  selected={prefs?.food_restrictions ?? prefs?.avoid ?? []}
+                  onChange={(next) => updatePreferences({ food_restrictions: next })}
+                />
+                <p className="mb-1.5 mt-4 text-[11px] font-medium text-slate-500">
+                  {t('health.dietaryCustoms')}
+                </p>
+                <p className="mb-2 text-[11px] leading-relaxed text-slate-400">
+                  {t('health.dietaryCustomsHint')}
+                </p>
+                <TagCloud
+                  options={dietaryCustomOptions.map((o) => ({ value: o.value, label: o.label }))}
+                  selected={prefs?.dietary_customs ?? []}
+                  onChange={(next) => updatePreferences({ dietary_customs: next })}
+                />
+              </ProfileSection>
+
+              <ProfileSection title={t('health.sectionBudget')}>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">
+                  {t('health.takeoutBudget')}
+                </p>
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {takeoutBudgetOptions.map((option) => (
+                    <ChipButton
+                      key={option.id}
+                      active={prefs?.takeout_budget === option.value}
+                      label={option.label}
+                      onClick={() => updatePreferences({ takeout_budget: option.value })}
+                    />
+                  ))}
+                </div>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">
+                  {t('health.diningBudget')}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {diningBudgetOptions.map((option) => (
+                    <ChipButton
+                      key={option.id}
+                      active={prefs?.dining_budget === option.value}
+                      label={option.label}
+                      onClick={() => updatePreferences({ dining_budget: option.value })}
+                    />
+                  ))}
+                </div>
+              </ProfileSection>
+
+              <ProfileSection title={t('health.sectionSport')}>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">
+                  {t('health.commonSports')}
+                </p>
+                <TagCloud
+                  options={sportOptions.map((o) => ({ value: o.value, label: o.label }))}
+                  selected={prefs?.common_sports ?? []}
+                  onChange={(next) => updatePreferences({ common_sports: next })}
+                />
+                <p className="mb-1.5 mt-4 text-[11px] font-medium text-slate-500">
+                  {t('health.trainingLevel')}
+                </p>
+                <div className="mb-3 flex flex-wrap gap-2">
+                  {trainingLevelOptions.map((option) => (
+                    <ChipButton
+                      key={option.id}
+                      active={tp?.experience === option.id}
+                      label={option.label}
+                      onClick={() => updateTraining({ experience: option.id })}
+                    />
+                  ))}
+                </div>
+                <p className="mb-1.5 text-[11px] font-medium text-slate-500">
+                  {t('health.preferredVenue')}
+                </p>
+                <TagCloud
+                  options={venueOptions.map((o) => ({ value: o.value, label: o.label }))}
+                  selected={prefs?.preferred_venues ?? []}
+                  onChange={(next) => updatePreferences({ preferred_venues: next })}
+                />
+                {!isAdvanced && (
+                  <>
+                    <p className="mb-1.5 mt-4 text-[11px] font-medium text-slate-500">
+                      {t('profile.beginnerSessions')}
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      {getBeginnerSessionOptions(locale).map((option) => (
+                        <ChipButton
+                          key={option.id}
+                          active={bs?.weekly_sessions === option.id}
+                          label={option.label}
+                          onClick={() => updateBeginner({ weekly_sessions: option.id })}
+                        />
+                      ))}
+                    </div>
+                  </>
+                )}
+              </ProfileSection>
+
+              <ProfileSection title={t('health.sectionArea')}>
+                <TagCloud
+                  options={areaOptions.map((o) => ({ value: o.value, label: o.label }))}
+                  selected={prefs?.common_areas ?? []}
+                  onChange={(next) => updatePreferences({ common_areas: next })}
+                />
+              </ProfileSection>
+
+              <ProfileSection title={t('health.sectionBoundary')}>
+                <TagCloud
+                  options={healthBoundaryOptions.map((o) => ({ value: o.value, label: o.label }))}
+                  selected={prefs?.health_boundaries ?? []}
+                  onChange={(next) => {
+                    updatePreferences({ health_boundaries: next })
+                    const limits = next.filter((v) => v !== '无')
+                    updateTraining({ limitations: limits })
+                  }}
+                />
+              </ProfileSection>
 
               {isAdvanced && (
               <ProfileSection title={t('profile.sectionTraining')}>
@@ -650,29 +797,6 @@ export function TrainingProfileSheet({ open, onClose, onSaved }: TrainingProfile
                 </div>
               </ProfileSection>
               )}
-
-              <ProfileSection title={t('profile.sectionDiet')}>
-                <p className="mb-2 text-xs font-medium text-slate-500">{t('profile.cuisines')}</p>
-                <TagCloud
-                  options={cuisineOptions}
-                  selected={profile.preferences?.favorite_cuisines ?? []}
-                  onChange={(next) =>
-                    updateProfile({
-                      preferences: { ...profile.preferences, favorite_cuisines: next },
-                    })
-                  }
-                />
-                <p className="mb-2 mt-4 text-xs font-medium text-slate-500">{t('profile.avoid')}</p>
-                <TagCloud
-                  options={avoidOptions}
-                  selected={profile.preferences?.avoid ?? []}
-                  onChange={(next) =>
-                    updateProfile({
-                      preferences: { ...profile.preferences, avoid: next },
-                    })
-                  }
-                />
-              </ProfileSection>
 
               {profile.profile_complete && profile.daily_targets?.kcal && (
                 <p className="mt-4 rounded-xl bg-emerald-50/80 px-3 py-2 text-xs leading-relaxed text-emerald-700">

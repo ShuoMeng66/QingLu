@@ -106,27 +106,31 @@ export function displayConversationTitle(title: string, locale: AppLocale): stri
 export function getGoalOptions(locale: AppLocale): { id: FitnessGoal; label: string }[] {
   return [
     { id: 'fat_loss', label: translate(locale, 'goal.fat_loss') },
-    { id: 'muscle_gain', label: translate(locale, 'goal.muscle_gain') },
     { id: 'maintain', label: translate(locale, 'goal.maintain') },
+    { id: 'muscle_gain', label: translate(locale, 'goal.muscle_gain') },
+    { id: 'healthy_living', label: translate(locale, 'goal.healthy_living') },
   ]
 }
 
 export const CUISINE_OPTION_IDS = [
   'sichuan',
+  'cantonese',
+  'chinese',
   'light',
   'japanese',
-  'cantonese',
   'western',
   'vegetarian',
 ] as const
 
+/** @deprecated 使用 healthProfileOptions 中的 food_restrictions / dietary_customs */
 export const AVOID_OPTION_IDS = ['organ', 'fried', 'sugar', 'alcohol'] as const
 
 const CUISINE_STORAGE: Record<(typeof CUISINE_OPTION_IDS)[number], string> = {
   sichuan: '川菜',
+  cantonese: '粤菜',
+  chinese: '中餐',
   light: '轻食',
   japanese: '日料',
-  cantonese: '粤菜',
   western: '西餐',
   vegetarian: '素食',
 }

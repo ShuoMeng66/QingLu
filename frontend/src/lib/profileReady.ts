@@ -10,10 +10,13 @@ import {
   type UserProfile,
 } from './userProfile'
 
+import { formatPreferencesForPrompt } from './healthProfileOptions'
+
 const GOAL_LABEL_ZH: Record<string, string> = {
   fat_loss: '减脂',
   muscle_gain: '增肌',
   maintain: '维持',
+  healthy_living: '健康生活',
 }
 
 export function syncTodayFromProfile(profile: UserProfile): void {
@@ -36,10 +39,16 @@ export function getProfileReadySummary(profile: UserProfile, locale: AppLocale =
     GOAL_LABEL_ZH[profile.goal ?? ''] ??
     getGoalOptions(locale).find((o) => o.id === profile.goal)?.label ??
     '—'
-  const avoid = profile.preferences?.avoid?.filter(Boolean).join('、') || '无特殊忌口'
+  const hp = formatPreferencesForPrompt(profile)
+  const avoid = [hp.food_restrictions, hp.dietary_customs]
+    .filter((p) => p && p !== '无')
+    .join('、') || '无特殊忌口'
   const cuisines = profile.preferences?.favorite_cuisines?.filter(Boolean).join('、')
-  const dietStrategy = cuisines ? `偏好 ${cuisines}，少油控糖` : '均衡饮食、少油控糖'
-  const region = profile.location_city?.trim() || '未填写'
+  const dietStrategy = [hp.diet_strategy, cuisines ? `菜系 ${cuisines}` : '']
+    .filter(Boolean)
+    .join('；') || '均衡饮食、少油控糖'
+  const region =
+    hp.common_areas !== '—' ? hp.common_areas : profile.location_city?.trim() || '未填写'
   return { goalLabel, dietStrategy, avoid, region }
 }
 

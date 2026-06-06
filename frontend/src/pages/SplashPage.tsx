@@ -8,6 +8,7 @@ import { UserAccountAvatar } from '../components/auth/UserAccountAvatar'
 import { AppShell } from '../components/qinglu/AppShell'
 import { QingluLogo } from '../components/qinglu/QingluLogo'
 import { PageTransition } from '../components/layout/PageTransition'
+import { SplashHeadline } from '../components/qinglu/SplashHeadline'
 import { SplashHeroVisual } from '../components/qinglu/SplashHeroVisual'
 import { pingAuthHealth } from '../lib/api/client'
 import { SPLASH_BACKGROUND_SRC } from '../data/splashAssets'
@@ -66,12 +67,7 @@ export function SplashPage() {
         <div className="relative z-10 grid w-full flex-1 lg:min-h-dvh lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
           <div className="flex items-start justify-start px-[clamp(1.75rem,8vw,7rem)] pb-16 pt-24 lg:pb-20 lg:pl-[clamp(2.5rem,10vw,8rem)]">
             <div className="splash-hero-copy max-w-xl">
-              <h1 className="font-display-serif font-bold leading-[1.12] tracking-wide">
-                <span className="splash-hero-headline block">{t('splash.headline1')}</span>
-                <span className="splash-hero-headline block pl-[0.2em] sm:pl-14 md:pl-16">
-                  {t('splash.headline2')}
-                </span>
-              </h1>
+              <SplashHeadline />
               <p className="splash-hero-tagline mt-6 max-w-lg font-medium">
                 {t('splash.tagline')}
               </p>

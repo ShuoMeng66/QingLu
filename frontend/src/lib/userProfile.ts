@@ -1,6 +1,7 @@
 import { notifyUserDataChanged } from './userDataSync'
+import type { GoalIntensity } from './healthProfileOptions'
 
-export type FitnessGoal = 'fat_loss' | 'muscle_gain' | 'maintain'
+export type FitnessGoal = 'fat_loss' | 'muscle_gain' | 'maintain' | 'healthy_living'
 export type ProfileTier = 'beginner' | 'advanced'
 export type TrainingExperience = 'beginner' | 'intermediate' | 'advanced'
 export type TrainingSplit = 'full_body' | 'upper_lower' | 'ppl' | 'bro' | 'custom'
@@ -76,7 +77,19 @@ export interface UserProfile {
   }
   preferences?: {
     favorite_cuisines?: string[]
+    /** @deprecated 合并到 food_restrictions / dietary_customs */
     avoid?: string[]
+    goal_intensity?: GoalIntensity
+    diet_strategies?: string[]
+    taste_preferences?: string[]
+    food_restrictions?: string[]
+    dietary_customs?: string[]
+    takeout_budget?: string
+    dining_budget?: string
+    common_sports?: string[]
+    preferred_venues?: string[]
+    common_areas?: string[]
+    health_boundaries?: string[]
   }
   location_city?: string
   profile_complete?: boolean
@@ -85,9 +98,10 @@ export interface UserProfile {
 const STORAGE_KEY = 'qinglu.user-profile-v1'
 
 export const GOAL_OPTIONS: { id: FitnessGoal; label: string }[] = [
-  { id: 'fat_loss', label: '科学减脂' },
-  { id: 'muscle_gain', label: '增肌塑形' },
-  { id: 'maintain', label: '维持体态' },
+  { id: 'fat_loss', label: '减脂' },
+  { id: 'maintain', label: '维持' },
+  { id: 'muscle_gain', label: '增肌' },
+  { id: 'healthy_living', label: '健康生活' },
 ]
 
 export const EMPTY_PROFILE: UserProfile = {
@@ -276,8 +290,13 @@ export function computeDailyTargets(profile: UserProfile): UserProfile['daily_ta
     if (profile.beginner_summary?.eating_out === 'often') tdee *= 1.02
   }
 
-  if (profile.goal === 'fat_loss') tdee *= 0.82
-  else if (profile.goal === 'muscle_gain') tdee *= 1.08
+  if (profile.goal === 'fat_loss') {
+    const intensity = profile.preferences?.goal_intensity
+    if (intensity === 'light') tdee *= 0.88
+    else if (intensity === 'strict') tdee *= 0.78
+    else tdee *= 0.82
+  } else if (profile.goal === 'muscle_gain') tdee *= 1.08
+  else if (profile.goal === 'healthy_living') tdee *= 0.95
 
   const kcal = Math.round(tdee)
   const proteinPerKg =
@@ -304,10 +323,13 @@ export function computeDailyTargets(profile: UserProfile): UserProfile['daily_ta
 export function computeTrainingPlan(profile: UserProfile): UserProfile['training'] {
   const tier = getProfileTier(profile)
 
+  const sports = profile.preferences?.common_sports?.filter(Boolean).slice(0, 2)
+  const sportSuffix = sports?.length ? sports.join('、') : ''
+
   if (tier === 'beginner') {
     const freq = beginnerFrequency(profile.beginner_summary)
     const style = profile.beginner_summary?.workout_style
-    const styleLabel = style ? BEGINNER_STYLE_LABEL[style] : '综合活动'
+    const styleLabel = sportSuffix || (style ? BEGINNER_STYLE_LABEL[style] : '综合活动')
     const session = `${styleLabel} · 每周约 ${freq} 次`
     const hour = profile.goal === 'fat_loss' ? 19 : 18
     return {
@@ -330,7 +352,8 @@ export function computeTrainingPlan(profile: UserProfile): UserProfile['training
   const cardioSuffix =
     tp?.cardio_style && tp.cardio_style !== 'none' ? ` · ${tp.cardio_style} 有氧` : ''
 
-  const session = `${splitLabel} · ${focusLabel} · ${minutes} 分钟${muscleSuffix}${blockSuffix}${cardioSuffix}`
+  const sessionPrefix = sportSuffix || `${splitLabel} · ${focusLabel}`
+  const session = `${sessionPrefix} · ${minutes} 分钟${muscleSuffix}${blockSuffix}${cardioSuffix}`
 
   const hour =
     tp?.preferred_time === 'morning'

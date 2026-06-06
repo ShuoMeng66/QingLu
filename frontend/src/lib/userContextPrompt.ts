@@ -1,4 +1,5 @@
 import { formatLocationLabel } from './citySkyline'
+import { formatPreferencesForPrompt } from './healthProfileOptions'
 import { getTodayConsumedKcal } from './mealLog'
 import { getCachedUserLocation } from './userLocation'
 import { getProfileTier, getRemainingKcal, loadUserProfile } from './userProfile'
@@ -118,8 +119,16 @@ export function buildUserContextPrompt(): string {
     lines.push(`恢复：${parts.join('；')}`)
   }
 
-  const avoid = profile.preferences?.avoid?.filter(Boolean) ?? []
-  if (avoid.length) lines.push(`饮食忌口：${avoid.join('、')}`)
+  const hp = formatPreferencesForPrompt(profile)
+  const avoidParts = [
+    hp.food_restrictions !== '无' ? hp.food_restrictions : '',
+    hp.dietary_customs !== '无' ? hp.dietary_customs : '',
+    ...(profile.preferences?.avoid?.filter(Boolean) ?? []),
+  ].filter(Boolean)
+  if (avoidParts.length) lines.push(`饮食忌口：${avoidParts.join('、')}`)
+  if (hp.takeout_budget !== '—') lines.push(`外卖预算：${hp.takeout_budget}`)
+  if (hp.dining_budget !== '—') lines.push(`聚餐预算：${hp.dining_budget}`)
+  if (hp.common_areas !== '—') lines.push(`常用区域：${hp.common_areas}`)
 
   const hasLocation = Boolean(location || profile.location_city?.trim())
   const rules: string[] = []

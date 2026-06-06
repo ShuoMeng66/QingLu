@@ -10,6 +10,7 @@ import { getTodayConsumedKcal } from './mealLog'
 import { loadTodaySnapshot } from './todaySnapshot'
 import { getCachedUserLocation } from './userLocation'
 import { formatLocationLabel } from './citySkyline'
+import { formatPreferencesForPrompt } from './healthProfileOptions'
 import { getProfileTier, getRemainingKcal, loadUserProfile, type UserProfile } from './userProfile'
 import type { TaskSceneType } from './taskPrompts'
 
@@ -20,12 +21,7 @@ const GOAL_LABEL: Record<string, string> = {
   fat_loss: '减脂',
   muscle_gain: '增肌',
   maintain: '维持',
-}
-
-const GOAL_INTENSITY: Record<string, string> = {
-  fat_loss: '中度控制',
-  muscle_gain: '稳步增肌',
-  maintain: '维持当前体重',
+  healthy_living: '健康生活',
 }
 
 function formatLocation(profile: UserProfile): string {
@@ -39,9 +35,20 @@ function formatGoal(profile: UserProfile): string {
 }
 
 function formatDietStrategy(profile: UserProfile): string {
+  const prefs = formatPreferencesForPrompt(profile)
   const cuisines = profile.preferences?.favorite_cuisines?.filter(Boolean) ?? []
-  if (cuisines.length) return cuisines.map((c) => `少油${c}`).join('、')
-  return '均衡、少油控糖'
+  const cuisinePart = cuisines.length ? cuisines.join('、') : ''
+  const parts = [prefs.diet_strategy, cuisinePart].filter(Boolean)
+  return parts.length ? parts.join('；') : '均衡、少油控糖'
+}
+
+function formatFoodRestrictions(profile: UserProfile): string {
+  const prefs = formatPreferencesForPrompt(profile)
+  const legacy = profile.preferences?.avoid?.filter(Boolean) ?? []
+  const parts = [prefs.food_restrictions, prefs.dietary_customs, legacy.join('、')].filter(
+    (p) => p && p !== '无',
+  )
+  return parts.length ? [...new Set(parts.join('、').split('、'))].join('、') : '无'
 }
 
 function formatWorkoutPrefs(profile: UserProfile): string {
@@ -75,19 +82,26 @@ function buildUserProfileBlock(profile: UserProfile, todayLocation: string) {
   const budget = profile.daily_targets?.kcal ?? 0
   const remaining = budget > 0 ? getRemainingKcal(profile, consumed) : null
   const today = loadTodaySnapshot()
+  const hp = formatPreferencesForPrompt(profile)
+  const areas = hp.common_areas !== '—' ? hp.common_areas : todayLocation
 
   return {
     name: profile.nickname?.trim() || '用户',
     goal: formatGoal(profile),
-    goal_intensity: GOAL_INTENSITY[profile.goal ?? ''] ?? '—',
+    goal_intensity: hp.goal_intensity,
     diet_strategy: formatDietStrategy(profile),
-    food_restrictions: profile.preferences?.avoid?.filter(Boolean).join('、') || '无',
-    taste_preference: profile.preferences?.favorite_cuisines?.join('、') || '均衡',
-    takeout_budget: '30–50元',
-    dining_budget: '100–200元',
-    workout_preferences: formatWorkoutPrefs(profile),
-    fitness_level: formatFitnessLevel(profile),
-    common_locations: todayLocation,
+    food_restrictions: formatFoodRestrictions(profile),
+    taste_preference:
+      [hp.taste_preference, profile.preferences?.favorite_cuisines?.join('、')]
+        .filter((p) => p && p !== '—')
+        .join('；') || '均衡',
+    takeout_budget: hp.takeout_budget,
+    dining_budget: hp.dining_budget,
+    workout_preferences: hp.common_sports !== '—' ? hp.common_sports : formatWorkoutPrefs(profile),
+    fitness_level: hp.fitness_level !== '—' ? hp.fitness_level : formatFitnessLevel(profile),
+    preferred_venues: hp.preferred_venues,
+    common_locations: areas,
+    health_boundaries: hp.health_boundaries,
     risk_notes: formatRiskNotes(profile),
     today_intake_kcal: consumed,
     daily_target_kcal: budget || '—',

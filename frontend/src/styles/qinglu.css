@@ -232,8 +232,34 @@
 
 /* Splash landing hero copy */
 .splash-hero-headline {
-  font-size: clamp(3.25rem, 8vw, 5.5rem);
-  color: #0f172a;
+  font-size: clamp(2rem, 4.8vw, 3.25rem);
+  color: #334155;
+}
+
+.splash-hero-headline--offset {
+  padding-left: 0.15em;
+}
+
+@media (min-width: 640px) {
+  .splash-hero-headline--offset {
+    padding-left: 2.75rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .splash-hero-headline--offset {
+    padding-left: 3.25rem;
+  }
+}
+
+.splash-hero-kw-primary {
+  color: #3d8b2a;
+  font-weight: 800;
+}
+
+.splash-hero-kw-secondary {
+  color: #0f766e;
+  font-weight: 800;
 }
 
 .splash-hero-tagline {
