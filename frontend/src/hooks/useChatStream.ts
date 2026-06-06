@@ -9,6 +9,10 @@ import type { ChatMessage, OpenClawConfig } from '../types/openclaw'
 
 export interface StreamRevealContext {
   userMessage: string
+  /** Full model draft before display strip */
+  rawDraft: string
+  /** Rich cards / structured payload present (JSON block) */
+  hasStructuredPayload: boolean
 }
 
 export interface StreamSendOptions {
@@ -154,12 +158,18 @@ export function useChatStream({
         'C',
       )
 
-      let displayContent = splitAssistantStructured(draft).displayContent
+      const structured = splitAssistantStructured(draft)
+      let displayContent = structured.displayContent
+      const revealCtx: StreamRevealContext = {
+        userMessage,
+        rawDraft: draft,
+        hasStructuredPayload: Boolean(structured.payload || structured.meta?.structuredPayload),
+      }
 
       try {
         options?.onReviewPhase?.(true)
         if (options?.onBeforeReveal) {
-          displayContent = await options.onBeforeReveal(displayContent, { userMessage })
+          displayContent = await options.onBeforeReveal(displayContent, revealCtx)
         }
       } finally {
         options?.onReviewPhase?.(false)
@@ -168,8 +178,6 @@ export function useChatStream({
       if (signal.aborted || streamConversationRef.current !== conversationId) {
         return false
       }
-
-      const structured = splitAssistantStructured(draft)
       const finalContent = displayContent
       const assistantMeta = structured.meta ?? undefined
 

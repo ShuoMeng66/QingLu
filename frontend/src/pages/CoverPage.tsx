@@ -18,7 +18,7 @@ import '../styles/cover.css'
 
 const MOTION_CHIPS = [
 
-  { id: 'eat', label: '吃什么', hint: '附近轻食' },
+  { id: 'eat', label: '聚餐怎么吃', hint: '帮我规划聚餐' },
 
   { id: 'train', label: '去哪练', hint: '健身房推荐' },
 

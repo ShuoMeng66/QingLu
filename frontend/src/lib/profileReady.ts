@@ -10,7 +10,13 @@ import {
   type UserProfile,
 } from './userProfile'
 
-import { formatPreferencesForPrompt } from './healthProfileOptions'
+import {
+  formatPreferencesForPrompt,
+  getCommonAreaOptions,
+  getDietaryCustomOptions,
+  getDietStrategyOptions,
+  getFoodRestrictionOptions,
+} from './healthProfileOptions'
 
 const GOAL_LABEL_ZH: Record<string, string> = {
   fat_loss: '减脂',
@@ -32,6 +38,53 @@ export function syncTodayFromProfile(profile: UserProfile): void {
     body_status: '正常',
     special_note: '',
   })
+}
+
+export interface ProfileReadyTagGroups {
+  goalLabel: string
+  dietTags: string[]
+  avoidTags: string[]
+  regionTags: string[]
+}
+
+function labelsFromStored(
+  values: string[] | undefined,
+  options: { value: string; label: string }[],
+): string[] {
+  if (!values?.length) return []
+  return values
+    .map((v) => options.find((o) => o.value === v || o.label === v)?.label ?? v)
+    .filter(Boolean)
+}
+
+export function getProfileReadyTagGroups(
+  profile: UserProfile,
+  locale: AppLocale = 'zh',
+): ProfileReadyTagGroups {
+  const summary = getProfileReadySummary(profile, locale)
+  const prefs = profile.preferences
+
+  const dietTags = [
+    ...labelsFromStored(prefs?.diet_strategies, getDietStrategyOptions(locale)),
+    ...(prefs?.favorite_cuisines ?? []),
+  ].filter(Boolean)
+
+  const avoidTags = [
+    ...labelsFromStored(prefs?.food_restrictions, getFoodRestrictionOptions(locale)),
+    ...labelsFromStored(prefs?.dietary_customs, getDietaryCustomOptions(locale)),
+  ].filter((tag) => tag && tag !== '无' && tag !== '无忌口' && tag !== '无特殊忌口')
+
+  const regionTags = labelsFromStored(prefs?.common_areas, getCommonAreaOptions(locale))
+  if (!regionTags.length && profile.location_city?.trim()) {
+    regionTags.push(profile.location_city.trim())
+  }
+
+  return {
+    goalLabel: summary.goalLabel,
+    dietTags: dietTags.length ? dietTags : summary.dietStrategy.split(/[；;]/).filter(Boolean),
+    avoidTags: avoidTags.length ? avoidTags : [summary.avoid],
+    regionTags: regionTags.length ? regionTags : [summary.region],
+  }
 }
 
 export function getProfileReadySummary(profile: UserProfile, locale: AppLocale = 'zh') {

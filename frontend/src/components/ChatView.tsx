@@ -33,7 +33,6 @@ import { enrichCardsWithGeocode } from '../lib/skillVenueMatch'
 import { enrichCardsWithFacade } from '../lib/venueEnrichment'
 import { debugPerf } from '../lib/debugPerf'
 import { formatDistance, formatWalkMinutes } from '../lib/userLocation'
-import { AgentPhaseRail } from './agents/AgentPhaseRail'
 import { AppShell } from './qinglu/AppShell'
 import { QingluLogo } from './qinglu/QingluLogo'
 import { UserAccountAvatar } from './auth/UserAccountAvatar'
@@ -790,13 +789,6 @@ export function ChatView({
                 onScroll={handleScroll}
               >
                 <div className="qinglu-chat-column w-full py-4">
-                  {!useDemo && (
-                    <AgentPhaseRail
-                      phase={clusterTurn.phase}
-                      plan={clusterTurn.plan}
-                      score={clusterTurn.score}
-                    />
-                  )}
                   <AnimatePresence initial={false}>
                     {displayMessages.map((message, index) => {
                       const prevMessage = index > 0 ? displayMessages[index - 1] : null

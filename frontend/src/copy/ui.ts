@@ -10,7 +10,7 @@ export const BRAND = {
 } as const
 
 export const QUICK_ACTIONS = [
-  { id: 'eat', icon: '🍽', label: '吃什么', prompt: '今天下班后吃什么比较合适？' },
+  { id: 'eat', icon: '🍽', label: '聚餐怎么吃', prompt: '朋友约饭/公司聚餐，帮我推荐不扫兴又可控热量的餐厅和点菜方案。' },
   { id: 'train', icon: '🏃', label: '去哪练', prompt: '帮我找附近适合力量训练的健身房' },
   { id: 'recover', icon: '🌿', label: '恢复一下', prompt: '今天练完腿了，给我一些拉伸恢复建议' },
   { id: 'move', icon: '💪', label: '一起动', prompt: '帮我安排今天的运动计划' },

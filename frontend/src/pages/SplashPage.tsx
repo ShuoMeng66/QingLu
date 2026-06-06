@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useI18n } from '../hooks/useI18n'
 import { useAuth } from '../context/AuthContext'
@@ -24,8 +24,6 @@ export function SplashPage() {
       /* warm backend / Render cold start; ignore failures */
     })
   }, [])
-
-  const [authOpen, setAuthOpen] = useState(false)
 
   useEffect(() => {
     if (!loading && user) {
@@ -65,15 +63,14 @@ export function SplashPage() {
         </header>
 
         <div className="relative z-10 grid w-full flex-1 lg:min-h-dvh lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)]">
-          <div className="flex items-start justify-start px-[clamp(1.75rem,8vw,7rem)] pb-16 pt-24 lg:pb-20 lg:pl-[clamp(2.5rem,10vw,8rem)]">
-            <div className="splash-hero-copy max-w-xl">
+          <div className="flex items-start justify-center px-[clamp(1.25rem,6vw,4rem)] pb-16 pt-24 lg:justify-start lg:pb-20 lg:pl-[clamp(2.5rem,10vw,8rem)] lg:pr-8">
+            <div className="splash-hero-copy max-w-xl text-center lg:text-left">
               <SplashHeadline />
-              <p className="splash-hero-tagline mt-6 max-w-lg font-medium">
-                {t('splash.tagline')}
-              </p>
+              <p className="splash-hero-subhead mt-5">{t('splash.subtitle')}</p>
+              <p className="splash-hero-desc mx-auto mt-3 max-w-md lg:mx-0">{t('splash.tagline')}</p>
               <motion.button
                 type="button"
-                className="btn-vitality mt-10 w-full max-w-sm rounded-full px-14 py-5 text-xl font-semibold sm:mt-12 sm:w-auto"
+                className="btn-vitality mx-auto mt-8 w-full max-w-sm rounded-full px-14 py-5 text-xl font-semibold lg:mx-0 sm:mt-10 sm:w-auto"
                 animate={{ scale: [1, 1.02, 1] }}
                 transition={{ duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
                 whileTap={{ scale: 0.97 }}
@@ -81,25 +78,12 @@ export function SplashPage() {
               >
                 {t('splash.wakeBtn')}
               </motion.button>
-              <p className="splash-hero-subtitle mt-5">{t('splash.subtitle')}</p>
-
-              <div className="mt-8 max-w-md">
-                <button
-                  type="button"
-                  className="text-sm font-medium text-lime-800 underline decoration-lime-400/60"
-                  onClick={() => setAuthOpen((v) => !v)}
-                >
-                  {t('splash.loginFold')}
-                </button>
-                {authOpen && (
-                  <div className="mt-4">
-                    <AccountAuthPanel
-                      variant="compact"
-                      defaultMode="login"
-                      onSuccess={() => navigate(resolvePostAuthPath(), { replace: true })}
-                    />
-                  </div>
-                )}
+              <div className="splash-login-slot mx-auto mt-8 max-w-md lg:mx-0">
+                <AccountAuthPanel
+                  variant="compact"
+                  defaultMode="login"
+                  onSuccess={() => navigate(resolvePostAuthPath(), { replace: true })}
+                />
               </div>
             </div>
           </div>

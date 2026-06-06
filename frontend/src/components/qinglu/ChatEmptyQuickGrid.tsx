@@ -2,12 +2,11 @@ import { motion } from 'framer-motion'
 import { Dumbbell, Leaf, Salad, ShoppingBag, Users } from 'lucide-react'
 import { useMemo } from 'react'
 import { useI18n } from '../../hooks/useI18n'
-import { getQuickActions } from '../../lib/i18n/chatCopy'
 import { buildTaskPrompt, type TaskSceneType } from '../../lib/taskPrompts'
 
 const ICONS = {
   takeout: ShoppingBag,
-  eat: Salad,
+  gathering: Salad,
   train: Dumbbell,
   recover: Leaf,
   move: Users,
@@ -19,11 +18,7 @@ interface ChatEmptyQuickGridProps {
 }
 
 export function ChatEmptyQuickGrid({ disabled = false, onSelect }: ChatEmptyQuickGridProps) {
-  const { locale, t } = useI18n()
-  const eatPrompt = useMemo(
-    () => getQuickActions(locale).find((action) => action.id === 'eat')?.prompt ?? '',
-    [locale],
-  )
+  const { t } = useI18n()
 
   const items = useMemo(
     () =>
@@ -36,10 +31,11 @@ export function ChatEmptyQuickGrid({ disabled = false, onSelect }: ChatEmptyQuic
           scene: 'takeout' as TaskSceneType,
         },
         {
-          id: 'eat' as const,
-          label: t('quick.eat.label'),
-          hint: t('quick.defaultHint'),
-          prompt: eatPrompt,
+          id: 'gathering' as const,
+          label: t('today.task.gathering.title'),
+          hint: t('today.task.gathering.cta'),
+          prompt: buildTaskPrompt('gathering'),
+          scene: 'gathering' as TaskSceneType,
         },
         {
           id: 'train' as const,
@@ -63,7 +59,7 @@ export function ChatEmptyQuickGrid({ disabled = false, onSelect }: ChatEmptyQuic
           scene: 'move' as TaskSceneType,
         },
       ] as const,
-    [eatPrompt, t],
+    [t],
   )
 
   return (

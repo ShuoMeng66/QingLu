@@ -271,7 +271,7 @@ export function AppProvider({ children }: AppProviderProps) {
       onReviewPhase: (active: boolean) => {
         if (active) setReviewing(true)
       },
-      onBeforeReveal: async (draft: string, ctx: { userMessage: string }) => {
+      onBeforeReveal: async (draft: string, ctx: import('../hooks/useChatStream').StreamRevealContext) => {
         const prefs = loadAppPreferences()
         const result = await runOutputGuard({
           config,
@@ -279,6 +279,8 @@ export function AppProvider({ children }: AppProviderProps) {
           enabled: prefs.ai.outputGuard !== false,
           userMessage: ctx.userMessage,
           draft,
+          rawDraft: ctx.rawDraft,
+          hasStructuredPayload: ctx.hasStructuredPayload,
           userLocation: getCachedUserLocation(),
         })
         return result.finalContent
