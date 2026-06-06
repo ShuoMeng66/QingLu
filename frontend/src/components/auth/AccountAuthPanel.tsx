@@ -264,19 +264,19 @@ export function AccountAuthPanel({
     codeSentEmail === normalizeEmail(email)
 
   const shellClass = landing
-    ? 'splash-auth-card rounded-[28px] border border-white/90 bg-white/95 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:p-6'
+    ? 'splash-auth-card splash-auth-card--compact'
     : 'glass-panel rounded-[24px] p-4 shadow-glass sm:p-5'
 
   return (
     <section className={shellClass}>
       {landing ? (
-        <div className="splash-auth-card__header mb-4 flex items-start gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-lime-400 text-white shadow-md">
-            <Cloud className="h-5 w-5" aria-hidden="true" />
+        <div className="splash-auth-card__header flex items-start gap-2.5">
+          <span className="splash-auth-card__icon flex shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-lime-400 text-white shadow-md">
+            <Cloud className="h-4 w-4" aria-hidden="true" />
           </span>
-          <div className="min-w-0 pt-0.5">
-            <h2 className="text-base font-semibold text-slate-800">{t('splash.accountTitle')}</h2>
-            <p className="mt-1 text-sm leading-relaxed text-slate-500">
+          <div className="min-w-0">
+            <h2 className="text-sm font-semibold text-slate-800">{t('splash.accountTitle')}</h2>
+            <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
               {mode === 'register' ? t('auth.registerIntro') : t('auth.intro')}
             </p>
           </div>
@@ -290,14 +290,14 @@ export function AccountAuthPanel({
         </>
       )}
 
-      <div className={`flex gap-2.5 ${landing ? 'mb-5' : 'mb-4 mt-4'}`}>
+      <div className={`flex gap-2 ${landing ? 'splash-auth-card__tabs' : 'mb-4 mt-4'}`}>
         {(['login', 'register'] as const).map((id) => (
           <button
             key={id}
             type="button"
             className={
               landing
-                ? `flex-1 rounded-full py-2.5 text-sm font-semibold transition-colors ${
+                ? `flex-1 rounded-full py-2 text-xs font-semibold transition-colors sm:text-sm ${
                     mode === id
                       ? 'btn-vitality shadow-sm'
                       : 'border border-slate-200 bg-white text-slate-600 hover:border-emerald-200 hover:text-emerald-700'
@@ -321,12 +321,17 @@ export function AccountAuthPanel({
         ))}
       </div>
 
-      <form className="flex flex-col gap-3" onSubmit={(event) => void handleSubmit(event)}>
+      <form
+        className={`flex flex-col ${landing ? 'splash-auth-card__form gap-2' : 'gap-3'}`}
+        onSubmit={(event) => void handleSubmit(event)}
+      >
         {mode === 'register' && (
-          <label className="flex flex-col gap-1.5 text-sm">
+          <label className={`flex flex-col gap-1 ${landing ? 'text-xs' : 'gap-1.5 text-sm'}`}>
             <span className="font-medium text-slate-700">{t('auth.displayName')}</span>
             <input
-              className="rounded-xl border border-white/80 bg-white/70 px-3 py-2.5 outline-none focus:border-emerald-400"
+              className={`rounded-xl border border-white/80 bg-white/70 px-3 outline-none focus:border-emerald-400 ${
+                landing ? 'py-2 text-sm' : 'py-2.5'
+              }`}
               value={displayName}
               onChange={(event) => setDisplayName(event.target.value)}
               placeholder={t('auth.displayNamePlaceholder')}
@@ -334,13 +339,15 @@ export function AccountAuthPanel({
           </label>
         )}
 
-        <label className="flex flex-col gap-1.5 text-sm">
+        <label className={`flex flex-col ${landing ? 'gap-1 text-xs' : 'gap-1.5 text-sm'}`}>
           <span className="font-medium text-slate-700">{t('auth.email')}</span>
           <input
             type="email"
             required
             autoComplete="email"
-            className="rounded-xl border border-white/80 bg-white/70 px-3 py-2.5 outline-none focus:border-emerald-400"
+            className={`rounded-xl border border-white/80 bg-white/70 px-3 outline-none focus:border-emerald-400 ${
+              landing ? 'py-2 text-sm' : 'py-2.5'
+            }`}
             value={email}
             onChange={(event) => setEmail(event.target.value)}
           />
@@ -350,7 +357,7 @@ export function AccountAuthPanel({
         </label>
 
         {mode === 'register' && (
-          <label className="flex flex-col gap-1.5 text-sm">
+          <label className={`flex flex-col ${landing ? 'gap-1 text-xs' : 'gap-1.5 text-sm'}`}>
             <span className="font-medium text-slate-700">{t('auth.verificationCode')}</span>
             {codeSentToCurrentEmail && (
               <span className="text-xs text-emerald-600">
@@ -366,14 +373,18 @@ export function AccountAuthPanel({
                 inputMode="numeric"
                 autoComplete="one-time-code"
                 placeholder={t('auth.verificationCodePlaceholder')}
-                className="min-w-0 flex-1 rounded-xl border border-white/80 bg-white/70 px-3 py-2.5 outline-none focus:border-emerald-400"
+                className={`min-w-0 flex-1 rounded-xl border border-white/80 bg-white/70 px-3 outline-none focus:border-emerald-400 ${
+                  landing ? 'py-2 text-sm' : 'py-2.5'
+                }`}
                 value={verificationCode}
                 onChange={(event) => setVerificationCode(event.target.value)}
               />
               <button
                 type="button"
                 disabled={sendingCode || countdown > 0 || !isValidEmail(email)}
-                className="shrink-0 rounded-xl border border-white/80 bg-white/70 px-3 py-2.5 text-sm font-semibold text-slate-700 disabled:opacity-50"
+                className={`shrink-0 rounded-xl border border-white/80 bg-white/70 px-3 font-semibold text-slate-700 disabled:opacity-50 ${
+                  landing ? 'py-2 text-xs' : 'py-2.5 text-sm'
+                }`}
                 onClick={() => void sendCodeToEmail(email)}
               >
                 {countdown > 0
@@ -384,27 +395,33 @@ export function AccountAuthPanel({
           </label>
         )}
 
-        <label className="flex flex-col gap-1.5 text-sm">
+        <label className={`flex flex-col ${landing ? 'gap-1 text-xs' : 'gap-1.5 text-sm'}`}>
           <span className="font-medium text-slate-700">{t('auth.password')}</span>
           <input
             type="password"
             required
             minLength={6}
             autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
-            className="rounded-xl border border-white/80 bg-white/70 px-3 py-2.5 outline-none focus:border-emerald-400"
+            className={`rounded-xl border border-white/80 bg-white/70 px-3 outline-none focus:border-emerald-400 ${
+              landing ? 'py-2 text-sm' : 'py-2.5'
+            }`}
             value={password}
             onChange={(event) => setPassword(event.target.value)}
           />
         </label>
 
         {mode === 'login' && (
-          <p className="text-xs leading-relaxed text-slate-500">{t('auth.loginForgotHint')}</p>
+          <p className={`leading-relaxed text-slate-500 ${landing ? 'text-[11px]' : 'text-xs'}`}>
+            {t('auth.loginForgotHint')}
+          </p>
         )}
 
         <button
           type="submit"
           disabled={submitting || sendingCode}
-          className="btn-vitality mt-1 rounded-full py-2.5 text-sm font-semibold disabled:opacity-50"
+          className={`btn-vitality rounded-full font-semibold disabled:opacity-50 ${
+            landing ? 'py-2 text-sm' : 'mt-1 py-2.5 text-sm'
+          }`}
         >
           {submitting
             ? t('auth.submitting')

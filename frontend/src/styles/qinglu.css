@@ -403,21 +403,38 @@
 
 .splash-login-slot {
   width: 100%;
-  margin-top: 2rem;
+  max-width: 22rem;
+  margin-top: 1.5rem;
 }
 
-.splash-trust-badges {
-  text-align: left;
+.splash-auth-card {
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.07);
 }
 
-.splash-hero-copy.text-center .splash-trust-badges {
-  text-align: center;
+.splash-auth-card--compact {
+  padding: 1rem 1.125rem;
 }
 
-@media (min-width: 1024px) {
-  .splash-hero-copy.text-center .splash-trust-badges {
-    text-align: left;
+@media (min-width: 640px) {
+  .splash-auth-card--compact {
+    padding: 1.125rem 1.25rem;
   }
+}
+
+.splash-auth-card__header {
+  margin-bottom: 0.75rem;
+}
+
+.splash-auth-card__icon {
+  width: 2.25rem;
+  height: 2.25rem;
+}
+
+.splash-auth-card__tabs {
+  margin-bottom: 0.75rem;
 }
 
 .splash-scroll-hint {

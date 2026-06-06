@@ -12,7 +12,6 @@ import { PageTransition } from '../components/layout/PageTransition'
 import { SplashHeadline } from '../components/qinglu/SplashHeadline'
 import { SplashHeroVisual } from '../components/qinglu/SplashHeroVisual'
 import { SplashAboutSection } from '../components/qinglu/SplashAboutSection'
-import { SplashTrustBadges } from '../components/qinglu/SplashTrustBadges'
 import { pingAuthHealth } from '../lib/api/client'
 import { SPLASH_BACKGROUND_SRC } from '../data/splashAssets'
 import { resolvePostAuthPath } from '../lib/profileRouting'
@@ -93,8 +92,6 @@ export function SplashPage() {
                       onSuccess={() => navigate(resolvePostAuthPath(), { replace: true })}
                     />
                   </div>
-
-                  <SplashTrustBadges />
                 </div>
               </div>
             </div>
