@@ -17,7 +17,7 @@ export function TodayStatusBar({ onEdit, onSetupProfile }: TodayStatusBarProps) 
 
   if (!complete) {
     return (
-      <div className="qinglu-chat-column px-5 pb-2 pt-1">
+      <div className="w-full px-4 pb-2 pt-1 lg:px-6">
         <button
           type="button"
           className="w-full rounded-[18px] border border-lime-400/40 bg-lime-50/90 px-4 py-3 text-left text-sm text-body-primary"
@@ -36,7 +36,7 @@ export function TodayStatusBar({ onEdit, onSetupProfile }: TodayStatusBarProps) 
   const status = today.body_status || t('today.bodyNormal')
 
   return (
-    <div className="qinglu-chat-column px-5 pb-2 pt-1">
+    <div className="w-full px-4 pb-2 pt-1 lg:px-6">
       <div className="flex flex-wrap items-center gap-2 rounded-[18px] border border-lime-400/30 bg-white/70 px-3 py-2.5 text-xs shadow-sm backdrop-blur-sm">
         <span className="font-semibold text-body-primary">
           {t('today.statusLabel', { name })}

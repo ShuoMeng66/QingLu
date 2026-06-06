@@ -140,13 +140,47 @@
   height: 0;
 }
 
-/* Empty chat welcome — fixed in layout, not inside scroll area */
+/* Empty chat welcome — centered hero between discovery & quick grid */
 .qinglu-chat-empty-hero {
   flex: 1 1 auto;
   min-height: 0;
   touch-action: manipulation;
   user-select: none;
   -webkit-user-drag: none;
+}
+
+.chat-empty-quick-grid {
+  width: 100%;
+  max-width: 56rem;
+  margin-inline: auto;
+  padding-inline: 0.25rem;
+}
+
+.chat-empty-layout {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.chat-header-account {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.chat-location-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.72);
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-body-secondary, #64748b);
+  backdrop-filter: blur(12px);
 }
 
 .qinglu-chat-empty-hero h2,

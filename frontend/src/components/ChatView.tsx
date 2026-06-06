@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import {
+  ChevronDown,
   LayoutDashboard,
   Maximize2,
   Menu,
@@ -41,7 +42,7 @@ import { ChatComposer } from './qinglu/ChatComposer'
 import { TodayStatusBar } from './qinglu/TodayStatusBar'
 import { TodayStatusSheet } from './qinglu/TodayStatusSheet'
 import { QingluDiscoveryCard } from './qinglu/QingluDiscoveryCard'
-import { TodayTaskSection } from './qinglu/TodayTaskSection'
+import { ChatEmptyQuickGrid } from './qinglu/ChatEmptyQuickGrid'
 import { ChatHistorySidebar } from './qinglu/ChatHistorySidebar'
 import { DetailBottomSheet, type DetailSheetData } from './qinglu/DetailBottomSheet'
 import { TrainingProfileSheet } from './qinglu/TrainingProfileSheet'
@@ -699,21 +700,26 @@ export function ChatView({
               <div className="lg:hidden">
                 <QingluLogo compact />
               </div>
-              <div className="ml-auto flex items-center gap-3">
-                <UserAccountAvatar showLabel={false} />
+              <div className="chat-header-account ml-auto">
                 <span
-                  className={`text-xs font-medium ${
-                    connected || status === 'checking' ? 'text-lime-600' : 'text-body-secondary'
+                  className={`hidden h-2 w-2 shrink-0 rounded-full lg:inline-block ${
+                    connected || status === 'checking' ? 'bg-lime-500' : 'bg-slate-300'
                   }`}
-                  title={statusMessage || undefined}
-                >
-                  {connectionLabel}
-                </span>
+                  title={statusMessage || connectionLabel}
+                  aria-label={connectionLabel}
+                />
                 {location && (
-                  <span className="hidden text-xs text-body-secondary/70 sm:inline">
+                  <span className="chat-location-chip hidden sm:inline-flex">
                     {formatLocationLabel(location.city, location.region)}
+                    <ChevronDown className="h-3.5 w-3.5 opacity-60" aria-hidden="true" />
                   </span>
                 )}
+                <div className="hidden md:block">
+                  <UserAccountAvatar showLabel />
+                </div>
+                <div className="md:hidden">
+                  <UserAccountAvatar showLabel={false} />
+                </div>
               </div>
             </div>
           </header>
@@ -750,19 +756,32 @@ export function ChatView({
 
           <div className="relative z-0 flex min-h-0 flex-1 flex-col overflow-hidden">
             {isEmpty ? (
-              <div className="qinglu-scroll-hidden flex min-h-0 flex-1 flex-col overflow-y-auto">
+              <div className="chat-empty-layout qinglu-scroll-hidden overflow-y-auto">
                 {!discoveryHidden && (
                   <QingluDiscoveryCard
                     onSendPrompt={(text) => void handleQuickAction(text)}
                     onDismiss={() => setDiscoveryHidden(true)}
                   />
                 )}
-                <TodayTaskSection
-                  disabled={isBusy}
-                  onRunTask={(prompt, scene) =>
-                    void onQuickPrompt(prompt, { sceneType: scene, autoSend: true })
-                  }
-                />
+                <div className="qinglu-chat-empty-hero flex flex-col items-center justify-center px-4 py-6 text-center">
+                  <h2 className="font-display-serif text-2xl font-semibold text-body-primary sm:text-3xl">
+                    {t('chat.emptyTitle')}
+                  </h2>
+                  <p className="mt-2 max-w-md text-sm leading-relaxed text-body-secondary">
+                    {t('chat.emptyHint')}
+                  </p>
+                </div>
+                <div className="shrink-0 px-4 pb-4 lg:px-6">
+                  <ChatEmptyQuickGrid
+                    disabled={isBusy}
+                    onSelect={(prompt, scene) =>
+                      void onQuickPrompt(
+                        prompt,
+                        scene ? { sceneType: scene, autoSend: true } : { autoSend: true },
+                      )
+                    }
+                  />
+                </div>
               </div>
             ) : (
               <div
