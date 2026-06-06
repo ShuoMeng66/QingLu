@@ -43,7 +43,17 @@ export function QingluDiscoveryCard({ onSendPrompt, onDismiss }: QingluDiscovery
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
     >
-      <article className="rounded-[22px] border border-sky-200/60 bg-gradient-to-br from-sky-50/95 to-lime-50/80 p-4 shadow-sm">
+      <article className="qinglu-discovery-card relative overflow-hidden rounded-[22px] border border-sky-200/50 shadow-sm">
+        <img
+          src="/images/discovery-cityscape.png"
+          alt=""
+          className="qinglu-discovery-card__bg"
+          aria-hidden="true"
+          loading="lazy"
+          decoding="async"
+        />
+        <div className="qinglu-discovery-card__scrim" aria-hidden="true" />
+        <div className="relative z-[1] p-4">
         <p className="text-xs font-semibold text-sky-800">{t('discovery.eyebrow')}</p>
         <p className="mt-2 text-sm leading-relaxed text-body-primary">{t('discovery.body')}</p>
         <p className="mt-2 text-xs text-body-secondary">
@@ -79,6 +89,7 @@ export function QingluDiscoveryCard({ onSendPrompt, onDismiss }: QingluDiscovery
           >
             {t('discovery.dismiss')}
           </button>
+        </div>
         </div>
       </article>
     </motion.div>
