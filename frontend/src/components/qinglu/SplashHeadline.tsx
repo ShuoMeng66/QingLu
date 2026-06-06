@@ -6,11 +6,12 @@ export function SplashHeadline() {
 
   if (locale === 'zh') {
     return (
-      <h1 className="font-display-serif font-bold leading-[1.22] tracking-wide text-slate-800">
-        <span className="splash-hero-headline block">
+      <h1 className="splash-hero-title font-display-serif font-bold text-slate-800">
+        <span className="splash-hero-headline splash-hero-headline--line1 block">
+          <span className="splash-hero-sparkle" aria-hidden="true" />
           让<span className="splash-hero-kw-primary">减脂</span>融入
         </span>
-        <span className="splash-hero-headline splash-hero-headline--offset block">
+        <span className="splash-hero-headline splash-hero-headline--offset splash-hero-headline--line2 block">
           每一次<span className="splash-hero-kw-secondary">生活选择</span>
         </span>
       </h1>
@@ -19,9 +20,12 @@ export function SplashHeadline() {
 
   if (locale === 'zh-TW' || locale === 'zh-HK') {
     return (
-      <h1 className="font-display-serif font-bold leading-[1.22] tracking-wide text-slate-800">
-        <span className="splash-hero-headline block">{t('splash.headline1')}</span>
-        <span className="splash-hero-headline splash-hero-headline--offset block">
+      <h1 className="splash-hero-title font-display-serif font-bold text-slate-800">
+        <span className="splash-hero-headline splash-hero-headline--line1 block">
+          <span className="splash-hero-sparkle" aria-hidden="true" />
+          {t('splash.headline1')}
+        </span>
+        <span className="splash-hero-headline splash-hero-headline--offset splash-hero-headline--line2 block">
           {t('splash.headline2')}
         </span>
       </h1>
@@ -29,9 +33,12 @@ export function SplashHeadline() {
   }
 
   return (
-    <h1 className="font-display-serif font-bold leading-[1.22] tracking-wide text-slate-800">
-      <span className="splash-hero-headline block">{t('splash.headline1')}</span>
-      <span className="splash-hero-headline splash-hero-headline--offset block">
+    <h1 className="splash-hero-title font-display-serif font-bold text-slate-800">
+      <span className="splash-hero-headline splash-hero-headline--line1 block">
+        <span className="splash-hero-sparkle" aria-hidden="true" />
+        {t('splash.headline1')}
+      </span>
+      <span className="splash-hero-headline splash-hero-headline--offset splash-hero-headline--line2 block">
         {t('splash.headline2')}
       </span>
     </h1>

@@ -272,11 +272,10 @@ export function AppProvider({ children }: AppProviderProps) {
         if (active) setReviewing(true)
       },
       onBeforeReveal: async (draft: string, ctx: import('../hooks/useChatStream').StreamRevealContext) => {
-        const prefs = loadAppPreferences()
         const result = await runOutputGuard({
           config,
           connected,
-          enabled: prefs.ai.outputGuard !== false,
+          enabled: true,
           userMessage: ctx.userMessage,
           draft,
           rawDraft: ctx.rawDraft,

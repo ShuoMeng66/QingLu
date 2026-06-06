@@ -290,48 +290,96 @@
   transform: none;
 }
 
-/* Splash landing hero copy */
+/* Splash landing — reference layout */
+.splash-hero-section {
+  isolation: isolate;
+}
+
+.splash-hero-title {
+  line-height: 1.12;
+  letter-spacing: 0.02em;
+}
+
 .splash-hero-headline {
-  font-size: clamp(2rem, 4.8vw, 3.25rem);
-  color: #334155;
+  font-size: clamp(2.5rem, 6.2vw, 4.35rem);
+  color: #1e293b;
+  line-height: 1.1;
+}
+
+.splash-hero-headline--line1 {
+  position: relative;
+  padding-top: 0.15em;
+}
+
+.splash-hero-headline--line2 {
+  margin-top: 0.18em;
 }
 
 .splash-hero-headline--offset {
-  padding-left: 0.15em;
+  padding-left: 0.2em;
 }
 
 @media (min-width: 640px) {
   .splash-hero-headline--offset {
-    padding-left: 2.75rem;
+    padding-left: 3.5rem;
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .splash-hero-headline--offset {
-    padding-left: 3.25rem;
+    padding-left: 4.25rem;
+  }
+}
+
+.splash-hero-sparkle {
+  position: absolute;
+  left: -0.35rem;
+  top: 0.15rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 30%, #bef264, #4ade80 45%, transparent 70%);
+  opacity: 0.85;
+  filter: blur(0.2px);
+}
+
+@media (min-width: 640px) {
+  .splash-hero-sparkle {
+    left: -1.25rem;
+    width: 1.35rem;
+    height: 1.35rem;
   }
 }
 
 .splash-hero-kw-primary {
-  color: #3d8b2a;
+  background: linear-gradient(135deg, #3d8b2a 0%, #65a30d 55%, #16a34a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   font-weight: 800;
 }
 
 .splash-hero-kw-secondary {
-  color: #0f766e;
+  background: linear-gradient(135deg, #0f766e 0%, #0d9488 50%, #059669 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
   font-weight: 800;
 }
 
-/* Sub-headline under main title (e.g. AI 管家说明) */
+.splash-hero-body {
+  margin-top: clamp(2.75rem, 6vh, 4.5rem);
+}
+
 .splash-hero-subhead {
   font-size: clamp(1rem, 2.1vw, 1.1875rem);
-  line-height: 1.5;
+  line-height: 1.55;
   font-weight: 500;
   color: #475569;
 }
 
-/* Small explanatory copy — 聚餐…本地选择 */
 .splash-hero-desc {
+  margin-top: 0.875rem;
   font-size: clamp(0.6875rem, 1.1vw, 0.8125rem);
   line-height: 1.7;
   font-weight: 400;
@@ -347,14 +395,37 @@
   .splash-hero-copy.text-center .splash-hero-desc {
     text-align: left;
   }
-}
 
-.splash-hero-copy.text-center .splash-hero-headline--offset {
-  padding-left: 0;
+  .splash-hero-copy.text-center .splash-hero-headline--offset {
+    padding-left: 4.25rem;
+  }
 }
 
 .splash-login-slot {
   width: 100%;
+  margin-top: 2rem;
+}
+
+.splash-trust-badges {
+  text-align: left;
+}
+
+.splash-hero-copy.text-center .splash-trust-badges {
+  text-align: center;
+}
+
+@media (min-width: 1024px) {
+  .splash-hero-copy.text-center .splash-trust-badges {
+    text-align: left;
+  }
+}
+
+.splash-scroll-hint {
+  scroll-margin-top: 2rem;
+}
+
+.splash-about-section {
+  scroll-margin-top: 0;
 }
 
 /* Profile ready — summary / today / priorities layout */

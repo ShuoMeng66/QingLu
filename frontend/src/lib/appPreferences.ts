@@ -17,8 +17,8 @@ export interface AiPreferences {
   detail: AiDetail
   useEmoji: boolean
   citeNearby: boolean
-  /** 展示前用 deepseek-v4-flash 做输出守门 */
-  outputGuard: boolean
+  /** @deprecated 展示前质检常驻开启，不再提供用户开关 */
+  outputGuard?: boolean
 }
 
 export interface AppPreferences {
@@ -39,7 +39,6 @@ export const DEFAULT_PREFERENCES: AppPreferences = {
     detail: 'balanced',
     useEmoji: true,
     citeNearby: true,
-    outputGuard: true,
   },
   mealReminders: true,
   locationShare: true,

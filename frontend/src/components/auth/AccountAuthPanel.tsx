@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { Cloud } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { useToast } from '../../context/ToastContext'
@@ -9,7 +10,7 @@ import { agentLog } from '../../lib/debugLog'
 interface AccountAuthPanelProps {
   defaultMode?: 'login' | 'register'
   onSuccess?: (mode: 'login' | 'register') => void
-  variant?: 'compact' | 'full'
+  variant?: 'compact' | 'full' | 'landing'
 }
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -44,6 +45,7 @@ export function AccountAuthPanel({
   const autoSendAttemptedForRef = useRef<string | null>(null)
 
   const compact = variant === 'compact'
+  const landing = variant === 'landing'
 
   useEffect(() => {
     if (mode !== 'register') return
@@ -261,21 +263,49 @@ export function AccountAuthPanel({
     codeSentEmail != null &&
     codeSentEmail === normalizeEmail(email)
 
-  return (
-    <section className="glass-panel rounded-[24px] p-4 shadow-glass sm:p-5">
-      <h2 className="text-base font-semibold text-slate-800">{t('splash.accountTitle')}</h2>
-      <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
-        {mode === 'register' ? t('auth.registerIntro') : t('auth.intro')}
-      </p>
+  const shellClass = landing
+    ? 'splash-auth-card rounded-[28px] border border-white/90 bg-white/95 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.08)] sm:p-6'
+    : 'glass-panel rounded-[24px] p-4 shadow-glass sm:p-5'
 
-      <div className="mb-4 mt-4 flex gap-2">
+  return (
+    <section className={shellClass}>
+      {landing ? (
+        <div className="splash-auth-card__header mb-4 flex items-start gap-3">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-lime-400 text-white shadow-md">
+            <Cloud className="h-5 w-5" aria-hidden="true" />
+          </span>
+          <div className="min-w-0 pt-0.5">
+            <h2 className="text-base font-semibold text-slate-800">{t('splash.accountTitle')}</h2>
+            <p className="mt-1 text-sm leading-relaxed text-slate-500">
+              {mode === 'register' ? t('auth.registerIntro') : t('auth.intro')}
+            </p>
+          </div>
+        </div>
+      ) : (
+        <>
+          <h2 className="text-base font-semibold text-slate-800">{t('splash.accountTitle')}</h2>
+          <p className="mt-1.5 text-sm leading-relaxed text-slate-500">
+            {mode === 'register' ? t('auth.registerIntro') : t('auth.intro')}
+          </p>
+        </>
+      )}
+
+      <div className={`flex gap-2.5 ${landing ? 'mb-5' : 'mb-4 mt-4'}`}>
         {(['login', 'register'] as const).map((id) => (
           <button
             key={id}
             type="button"
-            className={`flex-1 rounded-full py-2 text-sm font-semibold ${
-              mode === id ? 'btn-vitality' : 'bg-white/60 text-slate-500'
-            }`}
+            className={
+              landing
+                ? `flex-1 rounded-full py-2.5 text-sm font-semibold transition-colors ${
+                    mode === id
+                      ? 'btn-vitality shadow-sm'
+                      : 'border border-slate-200 bg-white text-slate-600 hover:border-emerald-200 hover:text-emerald-700'
+                  }`
+                : `flex-1 rounded-full py-2 text-sm font-semibold ${
+                    mode === id ? 'btn-vitality' : 'bg-white/60 text-slate-500'
+                  }`
+            }
             onClick={() => {
               setMode(id)
               if (id === 'login') {

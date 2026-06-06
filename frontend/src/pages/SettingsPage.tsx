@@ -199,11 +199,6 @@ export function SettingsPage() {
                 checked={preferences.ai.citeNearby}
                 onChange={(citeNearby) => setAiPreferences({ citeNearby })}
               />
-              <ToggleSwitch
-                label={t('settings.aiOutputGuard')}
-                checked={preferences.ai.outputGuard !== false}
-                onChange={(outputGuard) => setAiPreferences({ outputGuard })}
-              />
             </div>
           </section>
 

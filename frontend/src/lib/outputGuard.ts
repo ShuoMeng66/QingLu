@@ -16,16 +16,18 @@ const GUARD_TIMEOUT_MS = 22_000
 const SAFE_FALLBACK =
   '抱歉，这版回复未通过质检。请再说一下你的需求（例如附近吃什么、今日还能吃多少），我会按你当前位置重新推荐。'
 
-/** Format / style — should revise when possible, not hard-block when cards exist */
-const SOFT_ISSUE_PATTERNS = [
-  /emoji|装饰符号|Markdown 列表|Markdown 标题/i,
+/** 仅以下问题可拦截展示；格式/风格类问题只记录、不挡回复 */
+const CRITICAL_ISSUE_PATTERNS = [
+  /推荐了与用户位置不符的门店/,
+  /用户不在京沪演示数据覆盖区/,
+  /重复追问用户已知的位置信息/,
 ]
 
 export interface OutputGuardResult {
   finalContent: string
   approved: boolean
   issues: string[]
-  guardUsed: 'local' | 'llm' | 'revise' | 'passthrough' | 'fallback' | 'lenient'
+  guardUsed: 'local' | 'llm' | 'revise' | 'passthrough' | 'fallback'
 }
 
 interface GuardLlmPayload {
@@ -81,18 +83,18 @@ export function detectRemoteVenueMentions(
   return remote
 }
 
-function isSoftIssue(issue: string): boolean {
-  return SOFT_ISSUE_PATTERNS.some((re) => re.test(issue))
+function isCriticalIssue(issue: string): boolean {
+  return CRITICAL_ISSUE_PATTERNS.some((re) => re.test(issue))
 }
 
-function partitionIssues(issues: string[]): { hard: string[]; soft: string[] } {
-  const hard: string[] = []
-  const soft: string[] = []
+function partitionIssues(issues: string[]): { critical: string[]; nonCritical: string[] } {
+  const critical: string[] = []
+  const nonCritical: string[] = []
   for (const issue of issues) {
-    if (isSoftIssue(issue)) soft.push(issue)
-    else hard.push(issue)
+    if (isCriticalIssue(issue)) critical.push(issue)
+    else nonCritical.push(issue)
   }
-  return { hard, soft }
+  return { critical, nonCritical }
 }
 
 function detectMarkdownViolations(draft: string, hasStructuredPayload: boolean): string[] {
@@ -101,14 +103,14 @@ function detectMarkdownViolations(draft: string, hasStructuredPayload: boolean):
   if (/^\|.+\|/m.test(draft) && draft.includes('|---')) issues.push('使用了 Markdown 表格')
   if (/```/.test(draft)) issues.push('使用了代码块')
   const emojiCount = (draft.match(/[\u{1F300}-\u{1FAFF}]/gu) ?? []).length
-  const emojiLimit = hasStructuredPayload ? 10 : 8
-  if (emojiCount > emojiLimit || (draft.length > 160 && emojiCount > 5)) {
-    issues.push('emoji 或装饰符号过多，需改为短句 IM 风格')
+  const emojiLimit = hasStructuredPayload ? 14 : 10
+  if (emojiCount > emojiLimit || (draft.length > 220 && emojiCount > 8)) {
+    issues.push('emoji 或装饰符号偏多，建议改为短句 IM 风格')
   }
   const bulletLines = draft.split('\n').filter((l) => /^\s*[-*•]\s/.test(l)).length
-  const bulletLimit = hasStructuredPayload ? 6 : 4
+  const bulletLimit = hasStructuredPayload ? 10 : 6
   if (bulletLines >= bulletLimit) {
-    issues.push('使用了过长 Markdown 列表，外卖场景应只保留一句摘要')
+    issues.push('列表略长，外卖/推荐场景建议保留一句摘要')
   }
   return issues
 }
@@ -116,8 +118,8 @@ function detectMarkdownViolations(draft: string, hasStructuredPayload: boolean):
 export interface LocalGuardResult {
   passed: boolean
   issues: string[]
-  hardIssues: string[]
-  softIssues: string[]
+  criticalIssues: string[]
+  nonCriticalIssues: string[]
 }
 
 export function runLocalOutputGuard(
@@ -158,24 +160,24 @@ export function runLocalOutputGuard(
     }
   }
 
-  const { hard, soft } = partitionIssues(issues)
+  const { critical, nonCritical } = partitionIssues(issues)
   return {
-    passed: hard.length === 0,
+    passed: critical.length === 0,
     issues,
-    hardIssues: hard,
-    softIssues: soft,
+    criticalIssues: critical,
+    nonCriticalIssues: nonCritical,
   }
 }
 
 function buildGuardSystemPrompt(): string {
   return [
     '你是 QingLu 输出守门 Agent，在回复展示给用户之前做最后一道质检。',
-    '检查：①是否推荐了与用户位置不符的具体门店；②是否编造 Skill 未收录的店名；③是否违反 IM 短句（无 Markdown 标题/表格/代码块）；④是否重复追问 App 已知的地址/热量。',
-    '用户不在北京/上海时，不得把京沪 JSON 示例店当作附近推荐。',
-    '若回复含 ---JSON_START--- 结构化卡片且文字仅 1–2 句摘要，视为合格；空文字+完整 JSON 也通过。',
-    '轻微格式问题（emoji 略多、短列表）severity 应为 low，优先 approved:true 或给出 revisedContent，不要无故拦截。',
+    '默认倾向放行：只有严重问题才 approved:false 且 severity:high。',
+    '严重问题（必须拦截）：①推荐了与用户位置不符的具体门店；②用户不在京沪却把京沪 JSON 示例店当附近推荐；③重复追问 App 已知的地址/热量；④明显编造 Skill 未收录的店名并当作真推荐。',
+    '非严重问题（应放行）：Markdown/emoji/列表略长、摘要过短、文字为空但含 ---JSON_START--- 结构化卡片。',
+    '含结构化卡片时，文字可为 1–2 句摘要或为空；以卡片内容为准，不要因格式拦下。',
+    '格式类问题请 severity:low，优先 approved:true；能轻改则在 revisedContent 给出修订，否则 revisedContent 为 null 但仍可 approved:true。',
     '仅输出 JSON：{"approved":true|false,"issues":["…"],"revisedContent":"修订全文或null","severity":"low|high"}',
-    '若 approved 为 false 且能安全修订，在 revisedContent 给出完整替代回复（短句、有 kcal 时保留数字）；否则 revisedContent 为 null。',
   ].join('\n')
 }
 
@@ -192,7 +194,7 @@ async function callGuardLlm(
   const prefs = loadAppPreferences()
 
   const structuredNote = hasStructuredPayload
-    ? '助手草稿含结构化 JSON 卡片，文字摘要可为空或极短。'
+    ? '助手草稿含结构化 JSON 卡片，展示文字可为空或极短，请重点检查门店位置与事实性。'
     : ''
 
   const userContent =
@@ -212,7 +214,7 @@ async function callGuardLlm(
           `用户问题：${userMessage}`,
           `原草稿：\n${draft}`,
           structuredNote,
-          `必须修复的问题：\n${localIssues.map((i) => `- ${i}`).join('\n')}`,
+          `必须修复的严重问题：\n${localIssues.map((i) => `- ${i}`).join('\n')}`,
           userContext,
           '请重写完整回复，输出 JSON，approved 应为 true，revisedContent 为修订后的全文。',
         ]
@@ -244,17 +246,19 @@ async function callGuardLlm(
   }
 }
 
-function lenientPassthrough(
-  trimmedDraft: string,
-  issues: string[],
-  hasStructuredPayload: boolean,
-): OutputGuardResult {
-  return {
-    finalContent: trimmedDraft,
-    approved: true,
-    issues,
-    guardUsed: hasStructuredPayload ? 'lenient' : 'passthrough',
-  }
+function collectCriticalIssues(issues: string[]): string[] {
+  return issues.filter(isCriticalIssue)
+}
+
+function shouldBlockReply(params: {
+  criticalIssues: string[]
+  llm: GuardLlmPayload | null
+}): boolean {
+  const { criticalIssues, llm } = params
+  if (criticalIssues.length === 0) return false
+  if (llm?.approved === true) return false
+  if (llm?.severity === 'low') return false
+  return true
 }
 
 export async function runOutputGuard(params: {
@@ -280,6 +284,7 @@ export async function runOutputGuard(params: {
     signal,
   } = params
   const trimmedDraft = draft.trim()
+  const guardDraft = rawDraft.trim() || trimmedDraft
 
   if (!enabled) {
     return {
@@ -290,19 +295,10 @@ export async function runOutputGuard(params: {
     }
   }
 
-  if (!trimmedDraft && hasStructuredPayload) {
-    return {
-      finalContent: '',
-      approved: true,
-      issues: [],
-      guardUsed: 'lenient',
-    }
-  }
-
   const guardStart = performance.now()
   const local = runLocalOutputGuard(trimmedDraft, userMessage, userLocation, {
     hasStructuredPayload,
-    rawDraft,
+    rawDraft: guardDraft,
   })
 
   debugPerf(
@@ -310,8 +306,8 @@ export async function runOutputGuard(params: {
     'local_guard_done',
     {
       passed: local.passed,
-      hardCount: local.hardIssues.length,
-      softCount: local.softIssues.length,
+      criticalCount: local.criticalIssues.length,
+      nonCriticalCount: local.nonCriticalIssues.length,
       hasStructuredPayload,
       draftLen: trimmedDraft.length,
       localMs: Math.round(performance.now() - guardStart),
@@ -319,7 +315,7 @@ export async function runOutputGuard(params: {
     'B',
   )
 
-  if (local.hardIssues.length === 0) {
+  if (local.issues.length === 0) {
     debugPerf(
       'outputGuard.ts:runOutputGuard',
       'skip_llm_local_clean',
@@ -329,14 +325,19 @@ export async function runOutputGuard(params: {
     return {
       finalContent: trimmedDraft,
       approved: true,
-      issues: local.softIssues,
+      issues: [],
       guardUsed: 'local',
     }
   }
 
   if (!connected || !config.token.trim()) {
-    if (local.hardIssues.length === 0 || hasStructuredPayload) {
-      return lenientPassthrough(trimmedDraft, local.issues, hasStructuredPayload)
+    if (local.criticalIssues.length === 0) {
+      return {
+        finalContent: trimmedDraft,
+        approved: true,
+        issues: local.issues,
+        guardUsed: 'local',
+      }
     }
     return {
       finalContent: SAFE_FALLBACK,
@@ -349,7 +350,7 @@ export async function runOutputGuard(params: {
   let llm = await callGuardLlm(
     config,
     userMessage,
-    rawDraft.trim() || trimmedDraft,
+    guardDraft,
     local.issues,
     signal,
     'review',
@@ -357,91 +358,82 @@ export async function runOutputGuard(params: {
   )
 
   let issues = [...local.issues, ...(llm?.issues ?? [])]
-  const llmRejected = llm?.approved === false
-  const lowSeverity = llm?.severity === 'low' || !llm?.severity
-  let approved = local.hardIssues.length === 0 && !llmRejected
+  const criticalIssues = collectCriticalIssues(issues)
 
-  if (llmRejected && lowSeverity && hasStructuredPayload) {
-    return lenientPassthrough(trimmedDraft, issues, true)
-  }
-
-  if (llm?.revisedContent?.trim() && llm.approved === false) {
+  if (llm?.revisedContent?.trim()) {
     const revised = llm.revisedContent.trim()
     const recheck = runLocalOutputGuard(revised, userMessage, userLocation, {
       hasStructuredPayload,
-      rawDraft,
+      rawDraft: guardDraft,
     })
-    if (recheck.hardIssues.length === 0) {
+    if (recheck.criticalIssues.length === 0) {
       return {
         finalContent: revised,
         approved: true,
         issues: llm.issues ?? issues,
+        guardUsed: llm.approved === false ? 'revise' : 'llm',
+      }
+    }
+  }
+
+  if (!shouldBlockReply({ criticalIssues, llm })) {
+    debugPerf(
+      'outputGuard.ts:runOutputGuard',
+      'guard_complete',
+      {
         guardUsed: 'llm',
-      }
-    }
-  }
-
-  if (!approved) {
-    const revise = await callGuardLlm(
-      config,
-      userMessage,
-      rawDraft.trim() || trimmedDraft,
-      issues,
-      signal,
-      'revise',
-      hasStructuredPayload,
+        approved: true,
+        totalMs: Math.round(performance.now() - guardStart),
+      },
+      'B',
     )
-    if (revise?.revisedContent?.trim()) {
-      const revised = revise.revisedContent.trim()
-      const recheck = runLocalOutputGuard(revised, userMessage, userLocation, {
-        hasStructuredPayload,
-        rawDraft,
-      })
-      if (recheck.hardIssues.length === 0) {
-        return {
-          finalContent: revised,
-          approved: true,
-          issues,
-          guardUsed: 'revise',
-        }
-      }
-    }
-
-    if (hasStructuredPayload) {
-      return lenientPassthrough(trimmedDraft, issues, true)
-    }
-
-    if (local.hardIssues.length === 0 || (llm == null && trimmedDraft.length > 40)) {
-      return lenientPassthrough(trimmedDraft, issues, hasStructuredPayload)
-    }
-
-    if (llmRejected && lowSeverity && trimmedDraft.length > 20) {
-      return lenientPassthrough(trimmedDraft, issues, hasStructuredPayload)
-    }
-
     return {
-      finalContent: SAFE_FALLBACK,
-      approved: false,
-      issues,
-      guardUsed: 'fallback',
+      finalContent: trimmedDraft,
+      approved: true,
+      issues: local.nonCriticalIssues,
+      guardUsed: 'llm',
     }
   }
 
-  debugPerf(
-    'outputGuard.ts:runOutputGuard',
-    'guard_complete',
-    {
-      guardUsed: llm ? 'llm' : 'local',
-      approved: true,
-      totalMs: Math.round(performance.now() - guardStart),
-    },
-    'B',
+  const revise = await callGuardLlm(
+    config,
+    userMessage,
+    guardDraft,
+    criticalIssues,
+    signal,
+    'revise',
+    hasStructuredPayload,
   )
 
+  if (revise?.revisedContent?.trim()) {
+    const revised = revise.revisedContent.trim()
+    const recheck = runLocalOutputGuard(revised, userMessage, userLocation, {
+      hasStructuredPayload,
+      rawDraft: guardDraft,
+    })
+    if (recheck.criticalIssues.length === 0) {
+      return {
+        finalContent: revised,
+        approved: true,
+        issues,
+        guardUsed: 'revise',
+      }
+    }
+  }
+
+  if (llm == null && local.criticalIssues.length === 0) {
+    return {
+      finalContent: trimmedDraft,
+      approved: true,
+      issues: local.issues,
+      guardUsed: 'passthrough',
+    }
+  }
+
   return {
-    finalContent: trimmedDraft,
-    approved: true,
-    issues: [],
-    guardUsed: llm ? 'llm' : 'local',
+    finalContent: SAFE_FALLBACK,
+    approved: false,
+    issues,
+    guardUsed: 'fallback',
   }
 }
