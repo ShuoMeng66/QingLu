@@ -2,28 +2,18 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { splitAssistantStructured } from '../../lib/assistantStructured'
 import type { ChatMessage } from '../../types/openclaw'
-import type { MessageFeedback } from '../../types/agentCluster'
 import { MarkdownContent } from '../MarkdownContent'
 import { useI18n } from '../../hooks/useI18n'
 import { QingluAvatar } from './QingluAvatar'
 
 interface ChatBubbleProps {
   message: ChatMessage
-  isLastAssistant?: boolean
   loading?: boolean
-  feedback?: MessageFeedback | null
-  onRegenerate?: () => void
   onEdit?: (content: string) => void
-  onRetry?: () => void
-  onFeedback?: (vote: MessageFeedback) => void
 }
 
 const BUBBLE_SPRING = { type: 'spring' as const, stiffness: 300, damping: 25 }
 const EDIT_TRANSITION = { duration: 0.28, ease: [0.25, 0.1, 0.25, 1] as const }
-
-async function copyText(text: string) {
-  await navigator.clipboard.writeText(text)
-}
 
 function UserEditPanel({
   draft,
@@ -107,17 +97,11 @@ function UserEditPanel({
 
 export function ChatBubble({
   message,
-  isLastAssistant = false,
   loading = false,
-  feedback = null,
-  onRegenerate,
   onEdit,
-  onRetry,
-  onFeedback,
 }: ChatBubbleProps) {
   const { t } = useI18n()
   const isUser = message.role === 'user'
-  const [copied, setCopied] = useState(false)
   const [editing, setEditing] = useState(false)
   const [draft, setDraft] = useState(message.content)
   const isError = message.status === 'error'
@@ -128,12 +112,6 @@ export function ChatBubble({
     message.streaming && hasJsonBlock
       ? splitAssistantStructured(message.content).displayContent
       : message.content
-
-  const handleCopy = async () => {
-    await copyText(message.content)
-    setCopied(true)
-    window.setTimeout(() => setCopied(false), 1500)
-  }
 
   const cancelEdit = () => {
     setEditing(false)
@@ -150,11 +128,7 @@ export function ChatBubble({
     onEdit?.(trimmed)
   }
 
-  const showAssistantActions =
-    !isUser && !message.streaming && !editing && (message.content || isError)
   const showUserActions = isUser && !editing && !loading
-  const showFeedback =
-    !isUser && !message.streaming && !editing && message.status === 'done' && message.content
 
   if (isUser) {
     return (
@@ -233,67 +207,6 @@ export function ChatBubble({
           )}
           {message.streaming && !isThinking && <span className="cursor-blink" />}
         </div>
-        {(showAssistantActions || showFeedback) && (
-          <div className="mt-2 flex flex-wrap items-center gap-2">
-            {showAssistantActions && (
-              <button
-                type="button"
-                className="rounded-full px-2 py-0.5 text-[11px] text-slate-500 transition hover:bg-white/50 hover:text-slate-700"
-                onClick={() => void handleCopy()}
-              >
-                {copied ? t('action.copied') : t('action.copy')}
-              </button>
-            )}
-            {showAssistantActions && isLastAssistant && !isError && (
-              <button
-                type="button"
-                className="rounded-full px-2 py-0.5 text-[11px] text-slate-500 transition hover:bg-white/50 hover:text-slate-700 disabled:opacity-40"
-                disabled={loading}
-                onClick={onRegenerate}
-              >
-                {loading ? t('action.regenerating') : t('action.regenerate')}
-              </button>
-            )}
-            {showAssistantActions && isError && (
-              <button
-                type="button"
-                className="rounded-full px-2 py-0.5 text-[11px] text-lime-600 transition hover:bg-lime-50 disabled:opacity-40 dark:hover:bg-lime-950/40"
-                disabled={loading}
-                onClick={onRetry}
-              >
-                {t('action.retry')}
-              </button>
-            )}
-            {showFeedback && (
-              <>
-                <button
-                  type="button"
-                  aria-pressed={feedback === 'up'}
-                  className={`rounded-full px-2.5 py-0.5 text-[11px] transition ${
-                    feedback === 'up'
-                      ? 'bg-lime-100 font-medium text-lime-700 dark:bg-lime-950/50 dark:text-lime-400'
-                      : 'text-slate-500 hover:bg-white/50 hover:text-slate-700'
-                  }`}
-                  onClick={() => onFeedback?.('up')}
-                >
-                  {feedback === 'up' ? t('action.helpfulMarked') : t('action.helpful')}
-                </button>
-                <button
-                  type="button"
-                  aria-pressed={feedback === 'down'}
-                  className={`rounded-full px-2.5 py-0.5 text-[11px] transition ${
-                    feedback === 'down'
-                      ? 'bg-amber-100 font-medium text-amber-700 dark:bg-amber-950/40 dark:text-amber-400'
-                      : 'text-slate-500 hover:bg-white/50 hover:text-slate-700'
-                  }`}
-                  onClick={() => onFeedback?.('down')}
-                >
-                  {feedback === 'down' ? t('action.improveMarked') : t('action.improve')}
-                </button>
-              </>
-            )}
-          </div>
-        )}
       </div>
     </motion.article>
   )

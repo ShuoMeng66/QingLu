@@ -25,6 +25,7 @@ import { formatLocationLabel } from '../lib/citySkyline'
 import { openSmartNavigation } from '../lib/openMaps'
 import { getMessageRecommendationCards } from '../lib/assistantStructured'
 import { FollowUpActions } from './qinglu/FollowUpActions'
+import { MessageAssistantToolbar } from './qinglu/MessageAssistantToolbar'
 import { enrichCardsWithGeocode } from '../lib/skillVenueMatch'
 import { enrichCardsWithFacade } from '../lib/venueEnrichment'
 import { debugPerf } from '../lib/debugPerf'
@@ -725,18 +726,19 @@ export function ChatView({
                           : []
                       const inlineCards =
                         geoCardsByMessageId[message.id] ?? inlineCardsBase
+                      const isAssistantMessage = message.role === 'assistant'
+                      const showAssistantToolbar =
+                        isAssistantMessage &&
+                        !message.streaming &&
+                        message.status !== 'aborted' &&
+                        (Boolean(message.content) || message.status === 'error')
 
                       return (
-                        <div key={message.id}>
+                        <div key={message.id} className={isAssistantMessage ? 'assistant-message-group' : undefined}>
                           <ChatBubble
                             message={message}
-                            isLastAssistant={message.id === lastAssistantId}
                             loading={isBusy}
-                            feedback={feedbackMap[message.id] ?? getFeedbackForMessage(message.id)}
-                            onRegenerate={handleRegenerateClick}
                             onEdit={(content) => handleEditClick(message.id, content)}
-                            onRetry={() => handleRetryClick(message.id)}
-                            onFeedback={(vote) => handleFeedback(message.id, vote)}
                           />
                           {followUps.length > 0 && onFollowUpAction && (
                             <FollowUpActions
@@ -793,6 +795,18 @@ export function ChatView({
                                 )
                               )}
                             </div>
+                          )}
+                          {showAssistantToolbar && (
+                            <MessageAssistantToolbar
+                              content={message.content}
+                              isLastAssistant={message.id === lastAssistantId}
+                              loading={isBusy}
+                              isError={message.status === 'error'}
+                              feedback={feedbackMap[message.id] ?? getFeedbackForMessage(message.id)}
+                              onRegenerate={handleRegenerateClick}
+                              onRetry={() => handleRetryClick(message.id)}
+                              onFeedback={(vote) => handleFeedback(message.id, vote)}
+                            />
                           )}
                         </div>
                       )
