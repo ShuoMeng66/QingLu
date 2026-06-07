@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { isDeveloperModeEnabled, setDeveloperModeEnabled } from '../lib/developerMode'
 import { useI18n } from '../hooks/useI18n'
 import type { ConnectionStatus, OpenClawConfig, OpenClawModel } from '../types/openclaw'
 import { DEFAULT_CONFIG } from '../types/openclaw'
@@ -166,12 +167,19 @@ export function SettingsPanel({
 export const ADVANCED_SETTINGS_COMMANDS = ['#开发者', '#开发者模式', '开发者模式'] as const
 
 export function useAdvancedSettingsUnlock() {
-  const [showAdvanced, setShowAdvanced] = useState(false)
+  const [showAdvanced, setShowAdvanced] = useState(() => isDeveloperModeEnabled())
   const [commandInput, setCommandInput] = useState('')
+
+  useEffect(() => {
+    const onChange = () => setShowAdvanced(isDeveloperModeEnabled())
+    window.addEventListener('qinglu:developer-mode-changed', onChange)
+    return () => window.removeEventListener('qinglu:developer-mode-changed', onChange)
+  }, [])
 
   const tryUnlock = (value: string) => {
     const normalized = value.trim()
     if (ADVANCED_SETTINGS_COMMANDS.includes(normalized as (typeof ADVANCED_SETTINGS_COMMANDS)[number])) {
+      setDeveloperModeEnabled(true)
       setShowAdvanced(true)
       setCommandInput('')
       return true

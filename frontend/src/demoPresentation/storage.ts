@@ -1,5 +1,6 @@
 import type { ChatMessage } from '../types/openclaw'
 import type { Conversation } from '../types/conversation'
+import { isDeveloperModeEnabled } from '../lib/developerMode'
 
 const STORAGE_KEY = 'qinglu.demo-presentation-v1'
 export const DEMO_PRESENTATION_CONVERSATION_ID = 'demo-presentation-main'
@@ -55,6 +56,13 @@ function saveState(state: DemoPresentationState) {
 }
 
 export function isDemoPresentationEnabled(): boolean {
+  if (!isDeveloperModeEnabled()) {
+    const state = loadState()
+    if (state.enabled) {
+      saveState({ ...state, enabled: false })
+    }
+    return false
+  }
   return loadState().enabled
 }
 
@@ -70,6 +78,9 @@ export function setDemoPresentationEnabled(
   enabled: boolean,
   savedNormalActiveId?: string | null,
 ): DemoPresentationState {
+  if (enabled && !isDeveloperModeEnabled()) {
+    return loadState()
+  }
   const current = loadState()
   const next: DemoPresentationState = {
     ...current,

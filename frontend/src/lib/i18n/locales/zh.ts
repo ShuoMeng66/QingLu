@@ -459,7 +459,7 @@ export const ZH: Record<MessageKey, string> = {
   'settings.developer': 'Developer',
   'settings.developerAria': 'Developer',
   'settings.demoPresentation': 'Demo 固定对话流',
-  'settings.demoPresentationHint': '演示专用。脚本与图片位于 demoPre/，与正常对话隔离存储。',
+  'settings.demoPresentationHint': '需先在上方输入 #开发者模式 解锁。演示专用，脚本与图片位于 demoPre/，与正常对话隔离。',
   'settings.demoPresentationToggle': '开启 Demo 展示',
   'settings.language': '显示语言',
   'settings.location': '位置服务',

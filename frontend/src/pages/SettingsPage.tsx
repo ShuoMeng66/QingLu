@@ -270,6 +270,7 @@ export function SettingsPage() {
                   checked={demoPresentationEnabled}
                   onChange={(checked) => {
                     if (checked) {
+                      if (!showAdvanced) return
                       turnOn(activeId)
                       toast(t('toast.demoPresentationEnabled'), 'success')
                     } else {
