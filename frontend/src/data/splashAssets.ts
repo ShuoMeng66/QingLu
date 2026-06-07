@@ -32,7 +32,7 @@ export interface SplashCarouselSlide {
 export const SPLASH_CAROUSEL: SplashCarouselSlide[] = [
   {
     id: 'outdoor',
-    src: '/images/splash/hero-outdoor-play.png',
+    src: '/images/splash/hero-outdoor-play.jpg',
     altKey: 'splash.heroAlt',
     objectPosition: 'center 22%',
     badges: [
@@ -55,7 +55,7 @@ export const SPLASH_CAROUSEL: SplashCarouselSlide[] = [
   },
   {
     id: 'meal',
-    src: '/images/splash/hero-healthy-meal.png',
+    src: '/images/splash/hero-healthy-meal.jpg',
     altKey: 'splash.heroAltFood',
     objectPosition: 'center 18%',
     badges: [
@@ -78,7 +78,7 @@ export const SPLASH_CAROUSEL: SplashCarouselSlide[] = [
   },
   {
     id: 'gym',
-    src: '/images/splash/hero-gym-training.png',
+    src: '/images/splash/hero-gym-training.jpg',
     altKey: 'splash.heroAltDining',
     objectPosition: 'center 15%',
     badges: [
@@ -101,7 +101,7 @@ export const SPLASH_CAROUSEL: SplashCarouselSlide[] = [
   },
   {
     id: 'recovery',
-    src: '/images/splash/hero-recovery-stretch.png',
+    src: '/images/splash/hero-recovery-stretch.jpg',
     altKey: 'splash.heroAltSwim',
     objectPosition: 'center 20%',
     badges: [

@@ -9,16 +9,18 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const SCENES_DIR = path.join(__dirname, 'scenes')
 const ASSETS_DIR = path.join(__dirname, 'assets')
 const PUBLIC_DIR = path.resolve(__dirname, '../frontend/public/demoPre')
+const SPLASH_PUBLIC_DIR = path.resolve(__dirname, '../frontend/public/images/splash')
+const SCENES_PUBLIC_DIR = path.resolve(__dirname, '../frontend/public/images')
 const OUT_FILE = path.resolve(
   __dirname,
   '../frontend/src/demoPresentation/scenes.generated.ts',
 )
 
 const PLACEHOLDER_IMAGES = [
-  path.resolve(__dirname, '../frontend/public/images/splash/hero-healthy-meal.png'),
-  path.resolve(__dirname, '../frontend/public/images/splash/hero-gym-training.png'),
-  path.resolve(__dirname, '../frontend/public/images/splash/hero-recovery-stretch.png'),
-  path.resolve(__dirname, '../frontend/public/images/splash/hero-outdoor-play.png'),
+  path.resolve(__dirname, '../frontend/public/images/splash/hero-healthy-meal.jpg'),
+  path.resolve(__dirname, '../frontend/public/images/splash/hero-gym-training.jpg'),
+  path.resolve(__dirname, '../frontend/public/images/splash/hero-recovery-stretch.jpg'),
+  path.resolve(__dirname, '../frontend/public/images/splash/hero-outdoor-play.jpg'),
 ]
 
 const DEFAULT_TAKEOUT_FILES = [
@@ -28,14 +30,13 @@ const DEFAULT_TAKEOUT_FILES = [
   'light-chinese-meal.jpg',
 ]
 
-function copyRecursive(src, dest) {
+function syncAssetDir(assetSubdir, publicDir) {
+  const src = path.join(ASSETS_DIR, assetSubdir)
   if (!fs.existsSync(src)) return
-  fs.mkdirSync(dest, { recursive: true })
+  fs.mkdirSync(publicDir, { recursive: true })
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
-    const from = path.join(src, entry.name)
-    const to = path.join(dest, entry.name)
-    if (entry.isDirectory()) copyRecursive(from, to)
-    else fs.copyFileSync(from, to)
+    if (!entry.isFile()) continue
+    fs.copyFileSync(path.join(src, entry.name), path.join(publicDir, entry.name))
   }
 }
 
@@ -46,13 +47,14 @@ function ensureTakeoutPlaceholders() {
   for (let i = 0; i < DEFAULT_TAKEOUT_FILES.length; i += 1) {
     const filename = DEFAULT_TAKEOUT_FILES[i]
     const dest = path.join(takeoutPublic, filename)
-    if (fs.existsSync(dest)) continue
-
     const assetSrc = path.join(ASSETS_DIR, 'takeout', filename)
+
     if (fs.existsSync(assetSrc)) {
       fs.copyFileSync(assetSrc, dest)
       continue
     }
+
+    if (fs.existsSync(dest)) continue
 
     const placeholder = PLACEHOLDER_IMAGES[i % PLACEHOLDER_IMAGES.length]
     if (fs.existsSync(placeholder)) {
@@ -80,7 +82,9 @@ function loadScenes() {
 const scenes = loadScenes()
 
 if (fs.existsSync(ASSETS_DIR)) {
-  copyRecursive(ASSETS_DIR, PUBLIC_DIR)
+  syncAssetDir('takeout', path.join(PUBLIC_DIR, 'takeout'))
+  syncAssetDir('splash', SPLASH_PUBLIC_DIR)
+  syncAssetDir('scenes', SCENES_PUBLIC_DIR)
 }
 ensureTakeoutPlaceholders()
 

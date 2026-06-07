@@ -4,9 +4,9 @@ import { QINGLU_VENUES, type QingluVenueRecord } from '../data/qingluVenues.gene
 import { QINGLU_TAKEOUT, type QingluTakeoutRecord } from '../data/qingluTakeout.generated'
 
 const TAKEOUT_GALLERY = [
-  '/images/splash/hero-healthy-meal.png',
-  '/images/splash/hero-gym-training.png',
-  '/images/splash/hero-recovery-stretch.png',
+  '/images/splash/hero-healthy-meal.jpg',
+  '/images/splash/hero-gym-training.jpg',
+  '/images/splash/hero-recovery-stretch.jpg',
 ] as const
 
 function normalizeName(value: string): string {

@@ -12,16 +12,16 @@ import {
 } from './recommendationIntent'
 
 const VENUE_IMAGE_BY_CUISINE: Array<{ pattern: RegExp; src: string }> = [
-  { pattern: /火锅|麻辣烫/, src: '/images/splash/hero-healthy-meal.png' },
-  { pattern: /轻食|沙拉|外卖|FOODBOWL/i, src: '/images/splash/hero-healthy-meal.png' },
-  { pattern: /川菜|湘|鄂/, src: '/images/splash/hero-healthy-meal.png' },
-  { pattern: /日料|寿司/, src: '/images/splash/hero-healthy-meal.png' },
-  { pattern: /健身|力量|瑜伽|游泳|拳击/, src: '/images/splash/hero-gym-training.png' },
-  { pattern: /推拿|按摩|拉伸|恢复|SPA/i, src: '/images/splash/hero-recovery-stretch.png' },
-  { pattern: /飞盘|骑行|徒步|跑|球|活动/, src: '/images/splash/hero-outdoor-play.png' },
+  { pattern: /火锅|麻辣烫/, src: '/images/splash/hero-healthy-meal.jpg' },
+  { pattern: /轻食|沙拉|外卖|FOODBOWL/i, src: '/images/splash/hero-healthy-meal.jpg' },
+  { pattern: /川菜|湘|鄂/, src: '/images/splash/hero-healthy-meal.jpg' },
+  { pattern: /日料|寿司/, src: '/images/splash/hero-healthy-meal.jpg' },
+  { pattern: /健身|力量|瑜伽|游泳|拳击/, src: '/images/splash/hero-gym-training.jpg' },
+  { pattern: /推拿|按摩|拉伸|恢复|SPA/i, src: '/images/splash/hero-recovery-stretch.jpg' },
+  { pattern: /飞盘|骑行|徒步|跑|球|活动/, src: '/images/splash/hero-outdoor-play.jpg' },
 ]
 
-const DEFAULT_VENUE_IMAGE = '/images/splash/hero-healthy-meal.png'
+const DEFAULT_VENUE_IMAGE = '/images/splash/hero-healthy-meal.jpg'
 
 const GEO_CACHE_KEY = 'qinglu.venue-geocode-v1'
 
