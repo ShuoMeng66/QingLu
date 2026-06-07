@@ -163,7 +163,7 @@ export function SettingsPanel({
   )
 }
 
-export const ADVANCED_SETTINGS_COMMANDS = ['#开发者', '开发者模式'] as const
+export const ADVANCED_SETTINGS_COMMANDS = ['#开发者', '#开发者模式', '开发者模式'] as const
 
 export function useAdvancedSettingsUnlock() {
   const [showAdvanced, setShowAdvanced] = useState(false)

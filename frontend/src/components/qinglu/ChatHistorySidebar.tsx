@@ -41,13 +41,15 @@ function HistoryItem({
 
   return (
     <div
-      className={`sidebar-history-item group flex items-start gap-1 rounded-2xl px-2 py-1.5 transition-colors ${
-        active ? 'sidebar-history-item--active bg-white/70' : 'sidebar-history-item--idle hover:bg-white/50'
+      className={`sidebar-history-item group flex items-start gap-1 rounded-[18px] px-2.5 py-2 transition-colors ${
+        active
+          ? 'sidebar-history-item--active border border-white/80 bg-white/75 shadow-sm'
+          : 'sidebar-history-item--idle hover:bg-white/50'
       }`}
     >
       <button
         type="button"
-        className="min-w-0 flex-1 px-2 py-1 text-left"
+        className="min-w-0 flex-1 px-1 py-0.5 text-left"
         onClick={() => onSelect(conversation.id)}
       >
         <div className="flex items-center gap-2">
@@ -101,11 +103,11 @@ export function ChatHistorySidebar({
 
       <div className="qinglu-shell-divider" aria-hidden="true" />
 
-      <div className="flex min-h-0 flex-1 flex-col gap-3 p-3">
+      <div className="flex min-h-0 flex-1 flex-col gap-3.5 p-3.5">
         <button
           type="button"
           disabled={loading}
-          className="btn-vitality flex items-center justify-center gap-2 rounded-full py-2.5 text-sm font-semibold disabled:opacity-40"
+          className="btn-vitality flex w-full items-center justify-center gap-2 rounded-full py-3 text-sm font-semibold disabled:opacity-40"
           onClick={onCreate}
         >
           <MessageSquarePlus className="h-4 w-4" />

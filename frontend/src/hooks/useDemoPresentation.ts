@@ -1,0 +1,74 @@
+import { useCallback, useEffect, useState } from 'react'
+import type { ChatMessage } from '../types/openclaw'
+import type { Conversation } from '../types/conversation'
+import {
+  disableDemoPresentation,
+  enableDemoPresentation,
+  getDemoPresentationConversation,
+  getSavedNormalActiveId,
+  isDemoPresentationEnabled,
+  resetDemoPresentationConversation,
+  updateDemoPresentationMessages,
+  DEMO_PRESENTATION_CONVERSATION_ID,
+} from '../demoPresentation'
+import { applyDemoProfile } from '../lib/demoProfiles'
+
+export function useDemoPresentation() {
+  const [enabled, setEnabled] = useState(() => isDemoPresentationEnabled())
+  const [conversation, setConversation] = useState<Conversation>(() =>
+    getDemoPresentationConversation(),
+  )
+
+  const refresh = useCallback(() => {
+    setEnabled(isDemoPresentationEnabled())
+    setConversation(getDemoPresentationConversation())
+  }, [])
+
+  useEffect(() => {
+    const onChange = () => refresh()
+    window.addEventListener('qinglu:demo-presentation-changed', onChange)
+    return () => window.removeEventListener('qinglu:demo-presentation-changed', onChange)
+  }, [refresh])
+
+  useEffect(() => {
+    if (enabled) applyDemoProfile('user_a')
+  }, [enabled])
+
+  const turnOn = useCallback((currentActiveId: string) => {
+    enableDemoPresentation(currentActiveId)
+    refresh()
+  }, [refresh])
+
+  const turnOff = useCallback(() => {
+    disableDemoPresentation()
+    refresh()
+    return getSavedNormalActiveId()
+  }, [refresh])
+
+  const updateMessages = useCallback(
+    (
+      _conversationId: string,
+      next: ChatMessage[] | ((current: ChatMessage[]) => ChatMessage[]),
+    ) => {
+      const updated = updateDemoPresentationMessages(next)
+      setConversation(updated)
+    },
+    [],
+  )
+
+  const resetConversation = useCallback(() => {
+    resetDemoPresentationConversation()
+    refresh()
+  }, [refresh])
+
+  return {
+    enabled,
+    conversation,
+    demoActiveId: DEMO_PRESENTATION_CONVERSATION_ID,
+    turnOn,
+    turnOff,
+    updateMessages,
+    resetConversation,
+    refresh,
+  }
+}

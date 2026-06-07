@@ -140,13 +140,55 @@
   height: 0;
 }
 
-/* Empty chat welcome — centered hero between discovery & quick grid */
-.qinglu-chat-empty-hero {
-  flex: 1 1 auto;
+/* Chat main scroll + sticky footer */
+.chat-main-scroll {
+  display: flex;
   min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.chat-sticky-footer {
+  flex-shrink: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.55);
+  padding: 0.5rem 1rem 1rem;
+  backdrop-filter: blur(12px);
+}
+
+@media (min-width: 1024px) {
+  .chat-sticky-footer {
+    padding-inline: 1.5rem;
+  }
+}
+
+.qinglu-chat-empty-hero {
   touch-action: manipulation;
   user-select: none;
   -webkit-user-drag: none;
+}
+
+.qinglu-chat-empty-hero--compact {
+  padding: 1rem 1.25rem 0.5rem;
+  text-align: center;
+}
+
+.qinglu-chat-empty-hero--compact h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+@media (min-width: 640px) {
+  .qinglu-chat-empty-hero--compact h2 {
+    font-size: 1.25rem;
+  }
+}
+
+.qinglu-chat-empty-hero--compact p {
+  margin-top: 0.375rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
 }
 
 .chat-empty-quick-grid {
@@ -156,11 +198,8 @@
   padding-inline: 0.25rem;
 }
 
-.chat-empty-layout {
-  display: flex;
-  min-height: 0;
-  flex: 1 1 auto;
-  flex-direction: column;
+.chat-empty-quick-grid--footer {
+  padding-bottom: 0.25rem;
 }
 
 .chat-header-account {

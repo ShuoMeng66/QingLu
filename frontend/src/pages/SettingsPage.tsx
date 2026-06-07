@@ -6,6 +6,7 @@ import { PageTransition } from '../components/layout/PageTransition'
 import { ToggleSwitch } from '../components/qinglu/ToggleSwitch'
 import { SettingsPanel, useAdvancedSettingsUnlock } from '../components/SettingsPanel'
 import { useAppContext } from '../context/AppContext'
+import { useDemoPresentation } from '../hooks/useDemoPresentation'
 import { useAuth } from '../context/AuthContext'
 import { usePreferences } from '../context/PreferencesContext'
 import { useToast } from '../context/ToastContext'
@@ -64,6 +65,8 @@ export function SettingsPage() {
     t,
   } = usePreferences()
   const {
+    activeId,
+    selectConversation,
     draftConfig,
     config,
     status,
@@ -75,6 +78,7 @@ export function SettingsPage() {
     handleResetSettings,
     handleTestSettings,
   } = useAppContext()
+  const { enabled: demoPresentationEnabled, turnOn, turnOff } = useDemoPresentation()
   const { user, syncing: authSyncing } = useAuth()
 
   const { showAdvanced, commandInput, setCommandInput, tryUnlock } = useAdvancedSettingsUnlock()
@@ -239,20 +243,44 @@ export function SettingsPage() {
           </section>
 
           {showAdvanced ? (
-            <section className="glass-panel rounded-[24px] p-4 shadow-glass">
-              <SettingsPanel
-                config={draftConfig}
-                activeConfig={config}
-                status={status}
-                statusMessage={statusMessage}
-                models={models}
-                showAdvanced={showAdvanced}
-                onChange={setDraftConfig}
-                onTest={() => void handleTestSettings()}
-                onSave={handleSaveSettings}
-                onReset={handleResetSettings}
-              />
-            </section>
+            <>
+              <section className="glass-panel rounded-[24px] p-4 shadow-glass">
+                <SettingsPanel
+                  config={draftConfig}
+                  activeConfig={config}
+                  status={status}
+                  statusMessage={statusMessage}
+                  models={models}
+                  showAdvanced={showAdvanced}
+                  onChange={setDraftConfig}
+                  onTest={() => void handleTestSettings()}
+                  onSave={handleSaveSettings}
+                  onReset={handleResetSettings}
+                />
+              </section>
+              <section className="glass-panel rounded-[24px] p-4 shadow-glass">
+                <h2 className="mb-1 text-sm font-semibold text-slate-800">
+                  {t('settings.demoPresentation')}
+                </h2>
+                <p className="mb-3 text-xs leading-relaxed text-slate-500">
+                  {t('settings.demoPresentationHint')}
+                </p>
+                <ToggleSwitch
+                  label={t('settings.demoPresentationToggle')}
+                  checked={demoPresentationEnabled}
+                  onChange={(checked) => {
+                    if (checked) {
+                      turnOn(activeId)
+                      toast(t('toast.demoPresentationEnabled'), 'success')
+                    } else {
+                      const savedId = turnOff()
+                      if (savedId) selectConversation(savedId)
+                      toast(t('toast.demoPresentationDisabled'))
+                    }
+                  }}
+                />
+              </section>
+            </>
           ) : (
             <div className="glass-panel rounded-[24px] p-4 shadow-glass">
               <label className="flex flex-col gap-1 text-xs text-slate-500">

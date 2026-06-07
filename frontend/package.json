@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "bundle:skill": "node scripts/bundle-qinglu-skill-modules.mjs && node scripts/bundle-qinglu-venues.mjs && node scripts/bundle-qinglu-takeout.mjs",
-    "build": "npm run bundle:skill && tsc -b && vite build",
-    "dev": "npm run bundle:skill && vite",
+    "bundle:demo-pre": "node ../demoPre/bundle.mjs",
+    "build": "npm run bundle:skill && npm run bundle:demo-pre && tsc -b && vite build",
+    "dev": "npm run bundle:skill && npm run bundle:demo-pre && vite",
     "lint": "eslint .",
     "preview": "vite preview",
     "evolve-skills": "python ../Agent/trace2skill/run_pipeline.py",

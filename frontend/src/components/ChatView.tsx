@@ -1,13 +1,9 @@
-import { AnimatePresence, motion } from 'framer-motion'
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
+import { AnimatePresence } from 'framer-motion'
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import {
   ChevronDown,
-  LayoutDashboard,
-  Maximize2,
   Menu,
   MessageSquarePlus,
-  Minimize2,
-  PanelLeftClose,
   PanelLeftOpen,
   X,
 } from 'lucide-react'
@@ -45,7 +41,6 @@ import { ChatEmptyQuickGrid } from './qinglu/ChatEmptyQuickGrid'
 import { ChatHistorySidebar } from './qinglu/ChatHistorySidebar'
 import { DetailBottomSheet, type DetailSheetData } from './qinglu/DetailBottomSheet'
 import { TrainingProfileSheet } from './qinglu/TrainingProfileSheet'
-import { QuickActionBar } from './qinglu/QuickActionBar'
 import type { TaskSceneType } from '../lib/taskPrompts'
 import { RichCard } from './qinglu/RichCard'
 import { TakeoutVenueCard } from './qinglu/TakeoutVenueCard'
@@ -53,7 +48,6 @@ import { PageTransition } from './layout/PageTransition'
 import { usePersistedBoolean } from '../hooks/usePersistedBoolean'
 
 const STORAGE_HISTORY_COLLAPSED = 'qinglu.chat.historyCollapsed'
-const STORAGE_DASHBOARD_COLLAPSED = 'qinglu.chat.dashboardCollapsed'
 
 function ChromeToggleButton({
   active,
@@ -97,6 +91,7 @@ interface ChatViewProps {
   input: string
   loading: boolean
   connected: boolean
+  demoPresentationEnabled?: boolean
   status: ConnectionStatus
   statusMessage?: string
   clusterTurn: ClusterTurn
@@ -156,6 +151,7 @@ export function ChatView({
   input,
   loading,
   connected,
+  demoPresentationEnabled = false,
   status,
   statusMessage,
   clusterTurn,
@@ -183,8 +179,6 @@ export function ChatView({
   const [showScrollFab, setShowScrollFab] = useState(false)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [historyCollapsed, setHistoryCollapsed] = usePersistedBoolean(STORAGE_HISTORY_COLLAPSED, false)
-  const [dashboardCollapsed, setDashboardCollapsed] = usePersistedBoolean(STORAGE_DASHBOARD_COLLAPSED, false)
-  const focusMode = historyCollapsed && dashboardCollapsed
   const routeLocation = useRouteLocation()
   const { toast } = useToast()
   const { preferences, t } = usePreferences()
@@ -200,13 +194,13 @@ export function ChatView({
     Record<string, DetailSheetData[]>
   >({})
 
-  const { location, loading: locationLoading } = useUserLocation({
+  const { location } = useUserLocation({
     enabled: preferences.locationShare,
   })
   const { food, foodPlaces, gym, recovery, loading: nearbyLoading } =
     useNearbyRecommendations(location)
 
-  const useDemo = !connected && status !== 'checking'
+  const useDemo = !connected && status !== 'checking' && !demoPresentationEnabled
   const connectionLabel =
     status === 'checking'
       ? t('chat.statusChecking')
@@ -217,34 +211,6 @@ export function ChatView({
         : t('chat.statusOffline')
   const displayMessages = useDemo ? demoMessages : messages
   const isBusy = loading || isTyping
-
-  const quickActionPreviews = useMemo(
-    () => [
-      {
-        id: 'eat',
-        hint: food
-          ? `${food.name} · ${formatDistance(food.distanceM)}`
-          : locationLoading || nearbyLoading
-            ? t('chat.locating')
-            : undefined,
-      },
-      {
-        id: 'train',
-        hint: gym ? `${gym.name} · ${formatDistance(gym.distanceM)}` : undefined,
-      },
-      {
-        id: 'recover',
-        hint: recovery
-          ? `${recovery.name} · ${formatDistance(recovery.distanceM)}`
-          : t('quick.recover.label'),
-      },
-      {
-        id: 'move',
-        hint: t('quick.customPlan'),
-      },
-    ],
-    [food, gym, recovery, locationLoading, nearbyLoading, t],
-  )
 
   const venueCardsCacheRef = useRef<Record<string, DetailSheetData[]>>({})
   const lastVenueEnrichRef = useRef<{ messageId: string; contentLen: number } | null>(
@@ -414,6 +380,22 @@ export function ChatView({
       ])
     },
     [connected, food, gym, recovery, isBusy, onInputChange, onQuickPrompt],
+  )
+
+  const handleQuickGridSelect = useCallback(
+    (prompt: string, scene?: TaskSceneType) => {
+      if (isBusy) return
+      if (connected) {
+        onInputChange('')
+        void onQuickPrompt(
+          prompt,
+          scene ? { sceneType: scene, autoSend: true } : { autoSend: true },
+        )
+        return
+      }
+      void handleQuickAction(prompt)
+    },
+    [connected, handleQuickAction, isBusy, onInputChange, onQuickPrompt],
   )
 
   const lastAssistantId = [...displayMessages]
@@ -642,60 +624,6 @@ export function ChatView({
               >
                 {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
               </button>
-              <div className="hidden items-center gap-2 lg:flex">
-                <ChromeToggleButton
-                  active={!historyCollapsed}
-                  label={historyCollapsed ? t('chat.expandSidebar') : t('chat.collapseSidebar')}
-                  onClick={() => setHistoryCollapsed((collapsed) => !collapsed)}
-                >
-                  {historyCollapsed ? (
-                    <PanelLeftOpen className="h-4 w-4" />
-                  ) : (
-                    <PanelLeftClose className="h-4 w-4" />
-                  )}
-                </ChromeToggleButton>
-                <ChromeToggleButton
-                  active={!dashboardCollapsed}
-                  label={
-                    dashboardCollapsed ? t('chat.expandDashboard') : t('chat.collapseDashboard')
-                  }
-                  onClick={() => setDashboardCollapsed((collapsed) => !collapsed)}
-                >
-                  <LayoutDashboard className="h-4 w-4" />
-                </ChromeToggleButton>
-                <ChromeToggleButton
-                  active={focusMode}
-                  label={focusMode ? t('chat.exitFocusMode') : t('chat.focusMode')}
-                  onClick={() => {
-                    if (focusMode) {
-                      setHistoryCollapsed(false)
-                      setDashboardCollapsed(false)
-                    } else {
-                      setHistoryCollapsed(true)
-                      setDashboardCollapsed(true)
-                    }
-                  }}
-                >
-                  {focusMode ? (
-                    <Minimize2 className="h-4 w-4" />
-                  ) : (
-                    <Maximize2 className="h-4 w-4" />
-                  )}
-                </ChromeToggleButton>
-              </div>
-              <button
-                type="button"
-                className="glass-panel flex h-9 w-9 items-center justify-center rounded-full text-body-secondary shadow-glass lg:hidden"
-                aria-label={
-                  dashboardCollapsed ? t('chat.expandDashboard') : t('chat.collapseDashboard')
-                }
-                title={
-                  dashboardCollapsed ? t('chat.expandDashboard') : t('chat.collapseDashboard')
-                }
-                onClick={() => setDashboardCollapsed((collapsed) => !collapsed)}
-              >
-                <LayoutDashboard className="h-4 w-4" />
-              </button>
               <div className="lg:hidden">
                 <QingluLogo compact />
               </div>
@@ -723,23 +651,18 @@ export function ChatView({
             </div>
           </header>
 
-          <AnimatePresence initial={false}>
-            {!dashboardCollapsed && (
-              <motion.div
-                key="chat-dashboard"
-                initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
-                exit={{ height: 0, opacity: 0 }}
-                transition={{ duration: 0.22, ease: 'easeOut' }}
-                className="shrink-0 overflow-hidden"
-              >
-                <TodayStatusBar
-                  onEdit={() => setTodayStatusOpen(true)}
-                  onSetupProfile={() => setProfileSheetOpen(true)}
-                />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <TodayStatusBar
+            onEdit={() => setTodayStatusOpen(true)}
+            onSetupProfile={() => setProfileSheetOpen(true)}
+          />
+
+          {demoPresentationEnabled && (
+            <div className="qinglu-chat-column px-4 pb-2">
+              <p className="rounded-2xl border border-emerald-200/80 bg-emerald-50/90 px-3 py-2 text-xs leading-relaxed text-emerald-950">
+                {t('chat.demoPresentationBanner')}
+              </p>
+            </div>
+          )}
 
           {useDemo && (
             <div className="qinglu-chat-column px-4 pb-2">
@@ -754,40 +677,24 @@ export function ChatView({
           )}
 
           <div className="relative z-0 flex min-h-0 flex-1 flex-col overflow-hidden">
-            {isEmpty ? (
-              <div className="chat-empty-layout qinglu-scroll-hidden overflow-y-auto">
-                {!discoveryHidden && (
-                  <QingluDiscoveryCard
-                    onSendPrompt={(text) => void handleQuickAction(text)}
-                    onDismiss={() => setDiscoveryHidden(true)}
-                  />
-                )}
-                <div className="qinglu-chat-empty-hero flex flex-col items-center justify-center px-4 py-6 text-center">
-                  <h2 className="font-display-serif text-2xl font-semibold text-body-primary sm:text-3xl">
-                    {t('chat.emptyTitle')}
-                  </h2>
-                  <p className="mt-2 max-w-md text-sm leading-relaxed text-body-secondary">
-                    {t('chat.emptyHint')}
-                  </p>
+            <div
+              className="chat-main-scroll qinglu-scroll-hidden min-h-0 flex-1 overflow-y-auto"
+              ref={scrollRef}
+              onScroll={handleScroll}
+            >
+              {!discoveryHidden && (
+                <QingluDiscoveryCard
+                  onSendPrompt={(text) => void handleQuickAction(text)}
+                  onDismiss={() => setDiscoveryHidden(true)}
+                />
+              )}
+
+              {isEmpty ? (
+                <div className="qinglu-chat-empty-hero qinglu-chat-empty-hero--compact qinglu-chat-column">
+                  <h2 className="font-display-serif text-body-primary">{t('chat.emptyTitle')}</h2>
+                  <p className="text-body-secondary">{t('chat.emptyHint')}</p>
                 </div>
-                <div className="shrink-0 px-4 pb-4 lg:px-6">
-                  <ChatEmptyQuickGrid
-                    disabled={isBusy}
-                    onSelect={(prompt, scene) =>
-                      void onQuickPrompt(
-                        prompt,
-                        scene ? { sceneType: scene, autoSend: true } : { autoSend: true },
-                      )
-                    }
-                  />
-                </div>
-              </div>
-            ) : (
-              <div
-                className="qinglu-scroll-hidden min-h-0 flex-1 overflow-y-auto"
-                ref={scrollRef}
-                onScroll={handleScroll}
-              >
+              ) : (
                 <div className="qinglu-chat-column w-full py-4">
                   <AnimatePresence initial={false}>
                     {displayMessages.map((message, index) => {
@@ -894,15 +801,15 @@ export function ChatView({
                       <ChatBubble key="__typing__" message={typingBubble} loading={isBusy} />
                     )}
                   </AnimatePresence>
-                  <div ref={bottomRef} className="h-4" />
                 </div>
-              </div>
-            )}
+              )}
+              <div ref={bottomRef} className="h-4" />
+            </div>
 
             {showScrollFab && !isEmpty && (
               <button
                 type="button"
-                className="glass-panel fixed bottom-40 right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full text-lime-600 shadow-glass"
+                className="glass-panel fixed bottom-52 right-6 z-30 flex h-11 w-11 items-center justify-center rounded-full text-lime-600 shadow-glass"
                 aria-label={t('chat.scrollToBottom')}
                 onClick={() => {
                   pinnedToBottomRef.current = true
@@ -914,22 +821,21 @@ export function ChatView({
               </button>
             )}
 
-            <div className="relative z-20 shrink-0 px-4 pb-4 pt-2 lg:px-6">
-              <div className="qinglu-shell-divider mb-3" aria-hidden="true" />
+            <div className="chat-sticky-footer relative z-20">
               <div className="qinglu-chat-column w-full max-w-none sm:max-w-[56rem]">
-                {!isEmpty && (
-                  <QuickActionBar
-                    disabled={isBusy}
-                    previews={quickActionPreviews}
-                    onSelect={(prompt) => void handleQuickAction(prompt)}
-                  />
-                )}
+                <ChatEmptyQuickGrid
+                  variant="footer"
+                  disabled={isBusy}
+                  onSelect={handleQuickGridSelect}
+                />
                 <ChatComposer
                   input={input}
                   loading={loading}
-                  connected={connected || useDemo}
+                  connected={connected || useDemo || demoPresentationEnabled}
                   onInputChange={onInputChange}
-                  onSend={useDemo ? () => void handleQuickAction(input) : onSend}
+                  onSend={
+                    useDemo ? () => void handleQuickAction(input) : onSend
+                  }
                   onStop={onStop}
                 />
               </div>

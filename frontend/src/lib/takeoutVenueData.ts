@@ -78,18 +78,32 @@ export function buildTakeoutDetailCard(
     (itemId ? findTakeoutById(itemId) : undefined) ??
     (storeName ? findTakeoutByName(storeName) : undefined)
 
-  if (!takeout && !storeName.trim()) return null
+  const platform = rec.platform_card as Record<string, unknown> | undefined
+  const platformTitle =
+    typeof platform?.title === 'string' && platform.title.trim() ? platform.title.trim() : ''
+  const platformSubtitle =
+    typeof platform?.subtitle === 'string' && platform.subtitle.trim()
+      ? platform.subtitle.trim()
+      : ''
+  const platformMeta =
+    typeof platform?.meta === 'string' && platform.meta.trim() ? platform.meta.trim() : ''
+  const platformTags = Array.isArray(platform?.tags)
+    ? platform.tags.filter((tag): tag is string => typeof tag === 'string' && tag.trim().length > 0)
+    : []
+
+  if (!takeout && !storeName.trim() && !platformTitle) return null
 
   const matchedVenue = takeout ? findVenueForTakeout(takeout) : venue ?? undefined
-  const title = takeout?.name ?? storeName.trim()
+  const title = platformTitle || takeout?.name || storeName.trim()
   const combo = takeout ? pickCombo(takeout, typeof rec.combo_name === 'string' ? rec.combo_name : undefined) : undefined
 
   const intro =
-    typeof rec.intro === 'string' && rec.intro.trim()
+    platformSubtitle ||
+    (typeof rec.intro === 'string' && rec.intro.trim()
       ? rec.intro.trim()
       : typeof rec.highlight === 'string' && rec.highlight.trim()
         ? rec.highlight.trim()
-        : undefined
+        : undefined)
 
   const reason =
     typeof rec.reason === 'string' && rec.reason.trim()
@@ -141,16 +155,22 @@ export function buildTakeoutDetailCard(
     bullets.push({ label: '蛋白质', value: `约 ${protein} g` })
   }
   if (warnings) bullets.push({ label: '避雷', value: warnings })
+  if (platformMeta) bullets.push({ label: '参考', value: platformMeta })
   if (address) bullets.push({ label: '地址/配送', value: address })
 
-  const platform = rec.platform_card as Record<string, unknown> | undefined
   const listingUrl =
     typeof platform?.url === 'string' && platform.url ? platform.url : matchedVenue?.listingUrl
   const searchKeyword =
     typeof platform?.search_keyword === 'string' ? platform.search_keyword : undefined
 
-  const hero = venueImageSrc(matchedVenue)
-  const galleryImages = TAKEOUT_GALLERY.map((src, i) => (i === 0 ? hero : src))
+  const customGallery = Array.isArray(rec.gallery_images)
+    ? rec.gallery_images.filter((src): src is string => typeof src === 'string' && src.trim().length > 0)
+    : typeof rec.image === 'string' && rec.image.trim()
+      ? [rec.image.trim()]
+      : null
+
+  const hero = customGallery?.[0] ?? venueImageSrc(matchedVenue)
+  const galleryImages = customGallery ?? TAKEOUT_GALLERY.map((src, i) => (i === 0 ? hero : src))
 
   return {
     cardLayout: 'takeout',
@@ -162,7 +182,7 @@ export function buildTakeoutDetailCard(
     bullets,
     galleryImages,
     subtitle: reason || intro,
-    tags: combo?.tags?.slice(0, 3) ?? [],
+    tags: platformTags.length > 0 ? platformTags.slice(0, 4) : combo?.tags?.slice(0, 3) ?? [],
     stats: [],
     location: address,
     imageSrc: hero,

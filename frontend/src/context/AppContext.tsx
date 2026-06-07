@@ -24,6 +24,7 @@ export interface AppContextValue {
   activeId: string
   historyConversations: Conversation[]
   conversations: Conversation[]
+  demoPresentationEnabled: boolean
   selectConversation: (id: string) => void
   createNewConversation: () => void
   deleteConversation: (id: string) => { createdNew: boolean }

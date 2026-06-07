@@ -9,7 +9,7 @@ export type QingluSkillModuleId =
 
 export const QINGLU_SKILL_MODULE_IDS: QingluSkillModuleId[] = ["skill1-diet","skill2-venue","skill3-recovery","skill4-social","general"]
 
-export const QINGLU_SKILL_BUNDLED_AT = "2026-06-06T14:58:23.480Z" as const
+export const QINGLU_SKILL_BUNDLED_AT = "2026-06-07T00:53:19.812Z" as const
 export const QINGLU_SKILL_SOURCE_SHA = "3e504c6fd4d322164f3c788fb629e22db79c749e" as const
 
 /** Router SKILL.md + user profiles + evolved lessons */

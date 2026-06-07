@@ -9,6 +9,8 @@ import { useToast } from './ToastContext'
 import { useAgentCluster } from '../hooks/useAgentCluster'
 import { useChatStream } from '../hooks/useChatStream'
 import { useConversations } from '../hooks/useConversations'
+import { useDemoPresentation } from '../hooks/useDemoPresentation'
+import { isDemoPresentationEnabled } from '../demoPresentation'
 import { useOpenClawConfig } from '../hooks/useOpenClawConfig'
 import { useYiqidongQuest } from '../hooks/useYiqidongQuest'
 import {
@@ -119,6 +121,14 @@ export function AppProvider({ children }: AppProviderProps) {
     updateConversationMessages,
   } = useConversations()
 
+  const {
+    enabled: demoPresentationEnabled,
+    conversation: demoConversation,
+    demoActiveId,
+    updateMessages: updateDemoMessages,
+    resetConversation: resetDemoConversation,
+  } = useDemoPresentation()
+
   const connected = status === 'connected'
 
   const scoreAnswer = useCallback(
@@ -137,7 +147,20 @@ export function AppProvider({ children }: AppProviderProps) {
 
   const { questLetter, dismissQuest, clearQuest } = useYiqidongQuest(yiqidongConfig)
 
-  const messages = activeConversation?.messages ?? []
+  const messages = demoPresentationEnabled
+    ? demoConversation.messages
+    : (activeConversation?.messages ?? [])
+
+  const effectiveActiveId = demoPresentationEnabled ? demoActiveId : activeId
+  const effectiveActiveConversation = demoPresentationEnabled
+    ? demoConversation
+    : activeConversation
+
+  const effectiveHistoryConversations = demoPresentationEnabled ? [] : historyConversations
+
+  const effectiveUpdateConversationMessages = demoPresentationEnabled
+    ? updateDemoMessages
+    : updateConversationMessages
 
   const refreshYiqidongUnread = useCallback(() => {
     setYiqidongUnread(countUnreadLetters(getYiqidongLetters()))
@@ -272,6 +295,7 @@ export function AppProvider({ children }: AppProviderProps) {
         if (active) setReviewing(true)
       },
       onBeforeReveal: async (draft: string, ctx: import('../hooks/useChatStream').StreamRevealContext) => {
+        if (isDemoPresentationEnabled()) return draft
         const result = await runOutputGuard({
           config,
           connected,
@@ -297,20 +321,26 @@ export function AppProvider({ children }: AppProviderProps) {
     handleRetryMessage,
   } = useChatStream({
     config,
-    connected,
-    activeId,
+    connected: connected || demoPresentationEnabled,
+    activeId: effectiveActiveId,
     messages,
-    updateConversationMessages,
+    updateConversationMessages: effectiveUpdateConversationMessages,
     onNeedSettings: () => navigate('/settings'),
     toast,
     getStreamSendOptions,
   })
 
   const handleCreateNewConversation = useCallback(() => {
+    if (demoPresentationEnabled) {
+      resetDemoConversation()
+      setInput('')
+      toast(translate(loadAppPreferences().locale, 'toast.newConversation'), 'success')
+      return
+    }
     createNewConversation()
     setInput('')
     toast(translate(loadAppPreferences().locale, 'toast.newConversation'), 'success')
-  }, [createNewConversation, toast])
+  }, [createNewConversation, demoPresentationEnabled, resetDemoConversation, toast])
 
   const handleSelectConversation = useCallback(
     (id: string) => {
@@ -360,6 +390,11 @@ export function AppProvider({ children }: AppProviderProps) {
         rememberPendingUserQuestion(content)
       }
 
+      if (demoPresentationEnabled) {
+        await sendMessage(content)
+        return
+      }
+
       if (messages.length > 0) {
         markTrajectoryFollowUp(activeId)
       }
@@ -393,6 +428,7 @@ export function AppProvider({ children }: AppProviderProps) {
     },
     [
       activeId,
+      demoPresentationEnabled,
       handleStreamAssistantDone,
       messages.length,
       prepareTurn,
@@ -485,10 +521,11 @@ export function AppProvider({ children }: AppProviderProps) {
       handleSaveSettings,
       handleResetSettings,
       handleTestSettings,
-      activeConversation,
-      activeId,
-      historyConversations,
-      conversations,
+      activeConversation: effectiveActiveConversation,
+      activeId: effectiveActiveId,
+      historyConversations: effectiveHistoryConversations,
+      conversations: demoPresentationEnabled ? [demoConversation] : conversations,
+      demoPresentationEnabled,
       selectConversation: handleSelectConversation,
       createNewConversation: handleCreateNewConversation,
       deleteConversation: handleDeleteConversation,
@@ -527,10 +564,12 @@ export function AppProvider({ children }: AppProviderProps) {
       handleSaveSettings,
       handleResetSettings,
       handleTestSettings,
-      activeConversation,
-      activeId,
-      historyConversations,
+      effectiveActiveConversation,
+      effectiveActiveId,
+      effectiveHistoryConversations,
       conversations,
+      demoPresentationEnabled,
+      demoConversation,
       handleSelectConversation,
       handleCreateNewConversation,
       handleDeleteConversation,
