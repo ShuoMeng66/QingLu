@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { ChevronRight, ExternalLink } from 'lucide-react'
 import { openPlatformListing } from '../../lib/platformLinks'
 import { useI18n } from '../../hooks/useI18n'
+import { ActionTags } from './ActionTags'
 
 export interface TakeoutBullet {
   label: string
@@ -15,6 +16,7 @@ export interface TakeoutVenueCardProps {
   galleryImages?: string[]
   intro?: string
   bullets?: TakeoutBullet[]
+  tags?: string[]
   listingUrl?: string
   city?: string
   onDetail?: () => void
@@ -28,6 +30,7 @@ export function TakeoutVenueCard({
   galleryImages = [],
   intro,
   bullets = [],
+  tags = [],
   listingUrl,
   city,
   onDetail,
@@ -66,6 +69,8 @@ export function TakeoutVenueCard({
             {t('platform.view')}
           </motion.button>
         </div>
+
+        {tags.length > 0 && <ActionTags tags={tags} className="mt-0" />}
 
         {images.length > 0 && (
           <div className="grid grid-cols-3 gap-2">

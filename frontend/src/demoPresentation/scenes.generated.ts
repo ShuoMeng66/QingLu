@@ -130,6 +130,32 @@ export const DEMO_SCENES: DemoScene[] = [
     }
   },
   {
+    "id": "xiaoming-02-dinner-calorie-tips",
+    "profileId": "user_a",
+    "title": "小明对话2跟进：聚餐点菜控热量",
+    "match": {
+      "exact": [
+        "这几家餐厅点菜怎么控制热量？",
+        "在火锅店怎么点菜才能不太破功"
+      ],
+      "keywords": [
+        "点菜",
+        "控制热量",
+        "餐厅"
+      ]
+    },
+    "assistant": {
+      "displayText": "结合这几家餐厅的菜品和你的个人资料，避开高糖、高油、内脏、辣菜，优先选择高蛋白低卡菜品。\n\n**Wagas 沃歌斯｜最稳不破功**\n\n适合点：\n- 芒果鸡肉沙拉\n- 低碳水牛肉海藻面\n- 意式大虾配茄汁酱意面\n- 意式蔬菜意面汤\n\n尽量避开：\n- 奶油类意面\n- 甜品\n- 高糖饮品\n\n**左庭右院鲜牛肉火锅｜社交氛围更好**\n\n适合点：\n- 吊龙牛肉\n- 雪花牛肉\n- 金针菇\n- 青菜拼盘\n- 清汤锅底\n\n尽量避开：\n- 牛肉丸\n- 重油蘸料\n- 炸物小吃\n- 甜饮\n\n**和风小馆 · 国贸店｜清淡均衡型**\n\n适合点：\n- 盐烤鸡腿\n- 刺身拼盘\n- 海藻沙拉\n- 味噌汤\n- 米饭半份\n\n尽量避开：\n- 天妇罗\n- 炸猪排\n- 甜口照烧酱过多\n- 高糖酒水"
+    },
+    "stream": {
+      "charsPerTick": 8,
+      "tickMs": 20
+    },
+    "payload": {
+      "scene_type": "dining_guidance"
+    }
+  },
+  {
     "id": "xiaoming-02-dinner-gathering",
     "profileId": "user_a",
     "title": "小明对话2：晚上聚餐推荐",
@@ -154,7 +180,7 @@ export const DEMO_SCENES: DemoScene[] = [
         },
         {
           "label": "点菜怎么控制热量",
-          "message": "在火锅店怎么点菜才能不太破功"
+          "message": "这几家餐厅点菜怎么控制热量？"
         }
       ]
     },

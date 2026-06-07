@@ -764,6 +764,7 @@ export function ChatView({
                                       galleryImages={card.galleryImages}
                                       intro={card.intro}
                                       bullets={card.bullets}
+                                      tags={card.tags}
                                       listingUrl={card.listingUrl}
                                       city={card.city}
                                       onDetail={() => openSheet(card)}

@@ -1,7 +1,7 @@
 import type { DetailSheetData } from '../components/qinglu/DetailBottomSheet'
-import type { TakeoutBullet } from '../components/qinglu/TakeoutVenueCard'
 import { QINGLU_VENUES, type QingluVenueRecord } from '../data/qingluVenues.generated'
 import { QINGLU_TAKEOUT, type QingluTakeoutRecord } from '../data/qingluTakeout.generated'
+import { buildRecommendationBullets } from './recommendationDetailBullets'
 
 const TAKEOUT_GALLERY = [
   '/images/splash/hero-healthy-meal.jpg',
@@ -85,8 +85,6 @@ export function buildTakeoutDetailCard(
     typeof platform?.subtitle === 'string' && platform.subtitle.trim()
       ? platform.subtitle.trim()
       : ''
-  const platformMeta =
-    typeof platform?.meta === 'string' && platform.meta.trim() ? platform.meta.trim() : ''
   const platformTags = Array.isArray(platform?.tags)
     ? platform.tags.filter((tag): tag is string => typeof tag === 'string' && tag.trim().length > 0)
     : []
@@ -119,21 +117,6 @@ export function buildTakeoutDetailCard(
         ? rec.combo_name
         : combo?.name ?? ''
 
-  const avgPrice =
-    rec.avg_price ?? rec.avg_price_yuan ?? takeout?.avg_price_yuan ?? matchedVenue?.avgPrice
-  const kcal =
-    rec.kcal_range ??
-    rec.estimated_kcal ??
-    combo?.kcal_range ??
-    (typeof rec.kcal === 'number' ? String(rec.kcal) : undefined)
-  const protein = rec.protein_g ?? combo?.protein_g
-  const warningsRaw = rec.warnings ?? combo?.warnings
-  const warnings = Array.isArray(warningsRaw)
-    ? warningsRaw.filter((w) => typeof w === 'string').join('；')
-    : typeof warningsRaw === 'string'
-      ? warningsRaw
-      : ''
-
   const address =
     typeof rec.address === 'string' && rec.address.trim()
       ? rec.address.trim()
@@ -141,22 +124,20 @@ export function buildTakeoutDetailCard(
         ? rec.delivery_note.trim()
         : matchedVenue?.address || takeout?.area || matchedVenue?.area || ''
 
-  const bullets: TakeoutBullet[] = []
-  if (reason) bullets.push({ label: '推荐理由', value: reason })
-  if (signature) bullets.push({ label: '招牌菜/套餐', value: String(signature) })
-  if (avgPrice != null && String(avgPrice).trim()) {
-    bullets.push({ label: '人均', value: `约 ¥${avgPrice}` })
+  const enrichedRec: Record<string, unknown> = {
+    ...rec,
+    combo_name: signature || rec.combo_name,
+    kcal_range: rec.kcal_range ?? combo?.kcal_range,
+    avg_price_yuan: rec.avg_price_yuan ?? takeout?.avg_price_yuan ?? matchedVenue?.avgPrice,
+    warnings: rec.warnings ?? combo?.warnings,
+    protein_g: rec.protein_g ?? combo?.protein_g,
   }
-  if (kcal != null && String(kcal).trim()) {
-    const kcalText = String(kcal).includes('kcal') ? String(kcal) : `约 ${kcal} kcal`
-    bullets.push({ label: '热量', value: kcalText })
-  }
-  if (protein != null && String(protein).trim()) {
-    bullets.push({ label: '蛋白质', value: `约 ${protein} g` })
-  }
-  if (warnings) bullets.push({ label: '避雷', value: warnings })
-  if (platformMeta) bullets.push({ label: '参考', value: platformMeta })
-  if (address) bullets.push({ label: '地址/配送', value: address })
+
+  const bullets = buildRecommendationBullets(enrichedRec, 'takeout', {
+    comboName: signature,
+    proteinG: enrichedRec.protein_g,
+    address,
+  })
 
   const listingUrl =
     typeof platform?.url === 'string' && platform.url ? platform.url : matchedVenue?.listingUrl

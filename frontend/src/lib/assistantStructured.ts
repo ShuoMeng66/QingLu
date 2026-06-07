@@ -6,6 +6,10 @@ import type { UserLocation } from './userLocation'
 import { buildSkillVenueCards, matchVenuesInText } from './skillVenueMatch'
 import { getConversationRecommendationCards } from './recommendationIntent'
 import { buildTakeoutDetailCard } from './takeoutVenueData'
+import {
+  buildRecommendationBullets,
+  hasRecommendationDetailFields,
+} from './recommendationDetailBullets'
 
 const JSON_BLOCK_RE = /---JSON_START---([\s\S]*?)---JSON_END---/i
 const JSON_START_RE = /---JSON_START---/i
@@ -278,9 +282,19 @@ function hasPlatformCardData(rec: Record<string, unknown>): boolean {
   )
 }
 
+function resolveGalleryImages(rec: Record<string, unknown>): string[] | undefined {
+  const customGallery = Array.isArray(rec.gallery_images)
+    ? rec.gallery_images.filter((src): src is string => typeof src === 'string' && src.trim().length > 0)
+    : typeof rec.image === 'string' && rec.image.trim()
+      ? [rec.image.trim()]
+      : undefined
+  return customGallery
+}
+
 function buildPlatformDetailCard(
   rec: Record<string, unknown>,
   kind: string,
+  sceneType = '',
 ): DetailSheetData | null {
   const title = recommendationTitle(rec)
   if (!title) return null
@@ -306,6 +320,42 @@ function buildPlatformDetailCard(
     typeof platform?.url === 'string' && platform.url ? platform.url : undefined
   const searchKeyword =
     typeof platform?.search_keyword === 'string' ? platform.search_keyword : undefined
+  const location =
+    typeof rec.address === 'string'
+      ? rec.address
+      : typeof rec.district === 'string'
+        ? rec.district
+        : typeof rec.distance === 'string'
+          ? rec.distance
+          : searchKeyword
+
+  const resolvedSceneType = sceneType || kind
+
+  if (hasRecommendationDetailFields(rec)) {
+    const galleryImages = resolveGalleryImages(rec)
+    const bullets = buildRecommendationBullets(rec, resolvedSceneType)
+
+    return {
+      cardLayout: 'takeout',
+      kind: iconForPayload(kind) === 'gym' ? 'gym' : 'food',
+      tag: tagForPayload(kind),
+      title,
+      titleLink: true,
+      intro: platformSubtitle ?? reason,
+      bullets,
+      galleryImages,
+      subtitle: platformSubtitle ?? reason ?? recommendationSubtitle(rec),
+      tags: platformTags.length > 0 ? platformTags.slice(0, 4) : [],
+      stats: [],
+      location,
+      imageSrc: galleryImages?.[0] ?? imageSrc,
+      iconType: iconForPayload(kind),
+      listingUrl: listingUrl ?? undefined,
+      city: typeof rec.district === 'string' ? rec.district.split('·')[0] : undefined,
+      imageGradient: 'linear-gradient(135deg, #d1fae5 0%, #99f6e4 100%)',
+      _geocodeQuery: searchKeyword ?? `${title} ${rec.district ?? ''}`.trim(),
+    } as DetailSheetData & { _geocodeQuery?: string }
+  }
 
   return {
     kind: iconForPayload(kind) === 'gym' ? 'gym' : 'food',
@@ -315,14 +365,7 @@ function buildPlatformDetailCard(
     intro: platformSubtitle ?? reason,
     tags: platformTags.length > 0 ? platformTags.slice(0, 4) : [],
     stats: recommendationStats(rec),
-    location:
-      typeof rec.address === 'string'
-        ? rec.address
-        : typeof rec.district === 'string'
-          ? rec.district
-          : typeof rec.distance === 'string'
-            ? rec.distance
-            : searchKeyword,
+    location,
     imageSrc,
     iconType: iconForPayload(kind),
     listingUrl: listingUrl ?? undefined,
@@ -359,6 +402,7 @@ export function structuredRecommendationsToCards(
   if (!payload) return []
 
   const kind = payloadKind(payload)
+  const sceneType = typeof payload.scene_type === 'string' ? payload.scene_type : kind
   const takeoutScene = isTakeoutPayload(kind, payload)
   const lists = [
     ...asRecordArray(payload.recommendations),
@@ -379,7 +423,7 @@ export function structuredRecommendationsToCards(
     }
 
     if (hasPlatformCardData(rec)) {
-      const platformCard = buildPlatformDetailCard(rec, kind)
+      const platformCard = buildPlatformDetailCard(rec, kind, sceneType)
       if (platformCard) {
         cards.push(platformCard)
         continue
@@ -406,7 +450,7 @@ export function structuredRecommendationsToCards(
       }
     }
 
-    const fallbackCard = buildPlatformDetailCard(rec, kind)
+    const fallbackCard = buildPlatformDetailCard(rec, kind, sceneType)
     if (fallbackCard) {
       cards.push(fallbackCard)
       continue
