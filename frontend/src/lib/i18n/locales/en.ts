@@ -86,6 +86,7 @@ export const EN: Record<MessageKey, string> = {
   'avoid.organ': 'Organ meats',
   'avoid.sugar': 'High sugar',
   'brand.tagline': 'Your AI local fitness companion',
+  'chat.backToHome': 'Back to home',
   'chat.closeSidebar': 'Close sidebar',
   'chat.collapseSidebar': 'Hide sidebar',
   'chat.expandSidebar': 'Show sidebar',

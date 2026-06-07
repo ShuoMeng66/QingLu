@@ -108,10 +108,7 @@ export function AppProvider({ children }: AppProviderProps) {
   useEffect(() => {
     if (!DEMO_RECORDING_BOOTSTRAP) return
     preloadDemoAssets()
-    if (location.pathname === '/' || location.pathname === '/splash') {
-      navigate('/chat', { replace: true })
-    }
-  }, [location.pathname, navigate])
+  }, [])
 
   const {
     config,

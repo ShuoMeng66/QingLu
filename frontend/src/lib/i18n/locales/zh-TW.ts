@@ -94,6 +94,7 @@ export const ZH_TW: Record<MessageKey, string> = {
   'avoid.organ': '內臟',
   'avoid.sugar': '高糖',
   'brand.tagline': '你的 AI 本地生活減脂管家',
+  'chat.backToHome': '回到首頁',
   'chat.closeSidebar': '關閉側邊欄',
   'chat.collapseDashboard': '收起今日數據',
   'chat.collapseSidebar': '收起側邊欄',

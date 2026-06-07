@@ -7,7 +7,7 @@ import {
   PanelLeftOpen,
   X,
 } from 'lucide-react'
-import { Link, useLocation as useRouteLocation } from 'react-router-dom'
+import { Link, useLocation as useRouteLocation, useNavigate } from 'react-router-dom'
 import type { ChatMessage } from '../types/openclaw'
 import type { ConnectionStatus } from '../types/openclaw'
 import type { Conversation } from '../types/conversation'
@@ -47,6 +47,7 @@ import { RichCard } from './qinglu/RichCard'
 import { TakeoutVenueCard } from './qinglu/TakeoutVenueCard'
 import { PageTransition } from './layout/PageTransition'
 import { usePersistedBoolean } from '../hooks/usePersistedBoolean'
+import { DEMO_RECORDING_BOOTSTRAP } from '../demoPresentation/recording'
 
 const STORAGE_HISTORY_COLLAPSED = 'qinglu.chat.historyCollapsed'
 
@@ -181,6 +182,7 @@ export function ChatView({
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [historyCollapsed, setHistoryCollapsed] = usePersistedBoolean(STORAGE_HISTORY_COLLAPSED, false)
   const routeLocation = useRouteLocation()
+  const navigate = useNavigate()
   const { toast } = useToast()
   const { preferences, t } = usePreferences()
   const [feedbackMap, setFeedbackMap] = useState<Record<string, MessageFeedback>>({})
@@ -629,6 +631,15 @@ export function ChatView({
                 <QingluLogo compact />
               </div>
               <div className="chat-header-account ml-auto">
+                {DEMO_RECORDING_BOOTSTRAP && (
+                  <button
+                    type="button"
+                    className="chat-back-home-link"
+                    onClick={() => navigate('/')}
+                  >
+                    {t('chat.backToHome')}
+                  </button>
+                )}
                 <span
                   className={`hidden h-2 w-2 shrink-0 rounded-full lg:inline-block ${
                     connected || status === 'checking' ? 'bg-lime-500' : 'bg-slate-300'

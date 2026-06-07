@@ -85,6 +85,7 @@ export const KO: Record<MessageKey, string> = {
   'avoid.organ': '내장',
   'avoid.sugar': '고당',
   'brand.tagline': 'AI 로컬 라이프스타일 감량 매니저',
+  'chat.backToHome': '홈으로',
   'chat.closeSidebar': '사이드바 닫기',
   'chat.collapseSidebar': '사이드바 숨기기',
   'chat.expandSidebar': '사이드바 표시',

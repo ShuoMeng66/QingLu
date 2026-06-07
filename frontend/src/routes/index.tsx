@@ -14,7 +14,6 @@ import { ChatPage } from '../pages/ChatPage'
 
 import { SettingsPage } from '../pages/SettingsPage'
 
-import { DEMO_RECORDING_BOOTSTRAP } from '../demoPresentation/recording'
 import { SplashPage } from '../pages/SplashPage'
 import { HealthProfilePage } from '../pages/HealthProfilePage'
 import { OnboardProfilePage } from '../pages/OnboardProfilePage'
@@ -47,21 +46,11 @@ function SpaFallback() {
   return <Navigate to="/" replace />
 }
 
-function IndexRoute() {
-  if (DEMO_RECORDING_BOOTSTRAP) {
-    return <Navigate to="/chat" replace />
-  }
-  return <SplashPage />
-}
-
 function AppRoutesInner() {
   return (
     <Routes>
-      <Route index element={<IndexRoute />} />
-      <Route
-        path="splash"
-        element={DEMO_RECORDING_BOOTSTRAP ? <Navigate to="/chat" replace /> : <SplashPage />}
-      />
+      <Route index element={<SplashPage />} />
+      <Route path="splash" element={<SplashPage />} />
       <Route path="auth" element={<AuthPage />} />
       <Route path="about" element={<AboutPage />} />
       <Route element={<ProfileProviderLayout />}>

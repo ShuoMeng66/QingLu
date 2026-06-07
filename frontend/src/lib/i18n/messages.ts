@@ -87,6 +87,7 @@ export type MessageKey =
   | 'avoid.organ'
   | 'avoid.sugar'
   | 'brand.tagline'
+  | 'chat.backToHome'
   | 'chat.closeSidebar'
   | 'chat.collapseSidebar'
   | 'chat.expandSidebar'

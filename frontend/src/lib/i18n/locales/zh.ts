@@ -83,6 +83,7 @@ export const ZH: Record<MessageKey, string> = {
   'avoid.organ': '内脏',
   'avoid.sugar': '高糖',
   'brand.tagline': '你的 AI 本地生活减脂管家',
+  'chat.backToHome': '回到首页',
   'chat.closeSidebar': '关闭侧边栏',
   'chat.collapseSidebar': '收起侧边栏',
   'chat.expandSidebar': '展开侧边栏',

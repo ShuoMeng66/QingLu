@@ -85,6 +85,7 @@ export const JA: Record<MessageKey, string> = {
   'avoid.organ': '内臓',
   'avoid.sugar': '高糖',
   'brand.tagline': 'AI ローカルライフ減脂管家',
+  'chat.backToHome': 'ホームに戻る',
   'chat.closeSidebar': 'サイドバーを閉じる',
   'chat.collapseSidebar': 'サイドバーを隠す',
   'chat.expandSidebar': 'サイドバーを表示',
