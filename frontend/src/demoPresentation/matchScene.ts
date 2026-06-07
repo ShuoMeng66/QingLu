@@ -42,6 +42,17 @@ export function matchDemoScene(userText: string): DemoScene | null {
   }
 
   for (const scene of DEMO_SCENES) {
+    const groups = scene.match.keywordGroups ?? []
+    if (groups.length === 0) continue
+    const lower = normalized.toLowerCase()
+    const matched = groups.some((group) =>
+      group.length > 0 &&
+      group.every((word) => lower.includes(normalizeDemoText(word).toLowerCase())),
+    )
+    if (matched) return scene
+  }
+
+  for (const scene of DEMO_SCENES) {
     const keywords = scene.match.keywords ?? []
     if (keywords.length === 0) continue
     const lower = normalized.toLowerCase()

@@ -231,7 +231,20 @@ export function useChatStream({
       if (isDemoPresentationEnabled()) {
         const userText = lastUserMessage(apiMessages)
         const scene = matchDemoScene(userText)
-        if (!scene) return
+        if (!scene) {
+          const assistantId = createMessageId()
+          patchMessages(conversationId, (current) => [
+            ...current,
+            {
+              id: assistantId,
+              role: 'assistant',
+              content:
+                '演示模式：未匹配到脚本。请先发送聚餐主对话，再点击「点菜怎么控制热量」跟进芯片，或使用演示脚本中的原句提问。',
+              status: 'done',
+            },
+          ])
+          return
+        }
 
         if (scene.profileId) {
           applyDemoProfile(scene.profileId)

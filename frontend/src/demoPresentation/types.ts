@@ -33,6 +33,7 @@ export interface DemoScene {
   match: {
     exact?: string[]
     keywords?: string[]
+    keywordGroups?: string[][]
   }
   assistant: {
     displayText: string
