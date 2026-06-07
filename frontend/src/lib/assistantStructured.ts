@@ -210,6 +210,10 @@ function payloadKind(payload: Record<string, unknown>): string {
 }
 
 function recommendationTitle(rec: Record<string, unknown>): string {
+  const platform = rec.platform_card as Record<string, unknown> | undefined
+  if (typeof platform?.title === 'string' && platform.title.trim()) {
+    return platform.title.trim()
+  }
   const name =
     rec.restaurant_name ??
     rec.store_name ??
@@ -232,22 +236,100 @@ function recommendationSubtitle(rec: Record<string, unknown>): string | undefine
 
 function recommendationStats(rec: Record<string, unknown>): Array<{ label: string; value: string }> {
   const stats: Array<{ label: string; value: string }> = []
+  const platform = rec.platform_card as Record<string, unknown> | undefined
+  if (typeof platform?.meta === 'string' && platform.meta.trim()) {
+    stats.push({ label: '参考', value: platform.meta.trim() })
+  }
   if (typeof rec.price === 'string' || typeof rec.price === 'number') {
     stats.push({ label: '价格', value: String(rec.price) })
   }
   if (typeof rec.avg_price === 'string' || typeof rec.avg_price === 'number') {
     stats.push({ label: '人均', value: `约 ¥${rec.avg_price}` })
   }
+  if (typeof rec.avg_price_yuan === 'string' || typeof rec.avg_price_yuan === 'number') {
+    stats.push({ label: '价格', value: `约 ¥${rec.avg_price_yuan}` })
+  }
+  if (typeof rec.kcal_range === 'string' && rec.kcal_range.trim()) {
+    stats.push({ label: '热量', value: rec.kcal_range.trim() })
+  }
   if (typeof rec.estimated_kcal === 'number') {
-    stats.push({ label: '热量', value: `约 ${rec.estimated_kcal} kcal` })
+    stats.push({ label: '消耗', value: `约 ${rec.estimated_kcal} kcal` })
   }
   if (typeof rec.kcal === 'number') {
     stats.push({ label: '热量', value: `约 ${rec.kcal} kcal` })
+  }
+  if (typeof rec.protein_g === 'number') {
+    stats.push({ label: '蛋白质', value: `约 ${rec.protein_g} g` })
+  }
+  if (typeof rec.intensity === 'string' && rec.intensity.trim()) {
+    stats.push({ label: '强度', value: rec.intensity.trim() })
   }
   if (typeof rec.rating === 'number') {
     stats.push({ label: '评分', value: String(rec.rating) })
   }
   return stats
+}
+
+function hasPlatformCardData(rec: Record<string, unknown>): boolean {
+  const platform = rec.platform_card as Record<string, unknown> | undefined
+  return Boolean(
+    (typeof rec.image === 'string' && rec.image.trim()) ||
+      (typeof platform?.title === 'string' && platform.title.trim()),
+  )
+}
+
+function buildPlatformDetailCard(
+  rec: Record<string, unknown>,
+  kind: string,
+): DetailSheetData | null {
+  const title = recommendationTitle(rec)
+  if (!title) return null
+
+  const platform = rec.platform_card as Record<string, unknown> | undefined
+  const platformSubtitle =
+    typeof platform?.subtitle === 'string' && platform.subtitle.trim()
+      ? platform.subtitle.trim()
+      : undefined
+  const platformTags = Array.isArray(platform?.tags)
+    ? platform.tags.filter((tag): tag is string => typeof tag === 'string' && tag.trim().length > 0)
+    : []
+  const reason =
+    typeof rec.recommendation_reason === 'string' && rec.recommendation_reason.trim()
+      ? rec.recommendation_reason.trim()
+      : typeof rec.reason === 'string' && rec.reason.trim()
+        ? rec.reason.trim()
+        : undefined
+
+  const imageSrc =
+    typeof rec.image === 'string' && rec.image.trim() ? rec.image.trim() : undefined
+  const listingUrl =
+    typeof platform?.url === 'string' && platform.url ? platform.url : undefined
+  const searchKeyword =
+    typeof platform?.search_keyword === 'string' ? platform.search_keyword : undefined
+
+  return {
+    kind: iconForPayload(kind) === 'gym' ? 'gym' : 'food',
+    tag: tagForPayload(kind),
+    title,
+    subtitle: platformSubtitle ?? reason ?? recommendationSubtitle(rec),
+    intro: platformSubtitle ?? reason,
+    tags: platformTags.length > 0 ? platformTags.slice(0, 4) : [],
+    stats: recommendationStats(rec),
+    location:
+      typeof rec.address === 'string'
+        ? rec.address
+        : typeof rec.district === 'string'
+          ? rec.district
+          : typeof rec.distance === 'string'
+            ? rec.distance
+            : searchKeyword,
+    imageSrc,
+    iconType: iconForPayload(kind),
+    listingUrl: listingUrl ?? undefined,
+    city: typeof rec.district === 'string' ? rec.district.split('·')[0] : undefined,
+    imageGradient: 'linear-gradient(135deg, #d1fae5 0%, #99f6e4 100%)',
+    _geocodeQuery: searchKeyword ?? `${title} ${rec.district ?? ''}`.trim(),
+  } as DetailSheetData & { _geocodeQuery?: string }
 }
 
 function iconForPayload(kind: string): 'food' | 'gym' {
@@ -296,6 +378,14 @@ export function structuredRecommendationsToCards(
       }
     }
 
+    if (hasPlatformCardData(rec)) {
+      const platformCard = buildPlatformDetailCard(rec, kind)
+      if (platformCard) {
+        cards.push(platformCard)
+        continue
+      }
+    }
+
     const platform = rec.platform_card as Record<string, unknown> | undefined
     const searchKeyword =
       typeof platform?.search_keyword === 'string' ? platform.search_keyword : undefined
@@ -314,6 +404,12 @@ export function structuredRecommendationsToCards(
         cards.push(fallback)
         continue
       }
+    }
+
+    const fallbackCard = buildPlatformDetailCard(rec, kind)
+    if (fallbackCard) {
+      cards.push(fallbackCard)
+      continue
     }
 
     cards.push({

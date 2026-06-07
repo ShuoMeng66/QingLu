@@ -128,5 +128,577 @@ export const DEMO_SCENES: DemoScene[] = [
         }
       ]
     }
+  },
+  {
+    "id": "xiaoming-02-dinner-gathering",
+    "profileId": "user_a",
+    "title": "小明对话2：晚上聚餐推荐",
+    "match": {
+      "exact": [
+        "我晚上和朋友在国贸聚餐，大概 4 个人，人均 100–200 元。我最近在减脂塑形，但不想扫兴，也不要太辣。帮我推荐 3 家适合的餐厅，并告诉我每家适合点什么。"
+      ],
+      "keywords": [
+        "晚上",
+        "聚餐",
+        "国贸",
+        "4 个人",
+        "减脂"
+      ]
+    },
+    "assistant": {
+      "displayText": "我会按「不扫兴 + 不太辣 + 可控热量 + 人均预算」来筛选。今天不是严格控卡，所以我不会只推荐轻食，而是优先找适合朋友一起吃、同时你自己也能通过点菜控制负担的餐厅。",
+      "followUpChips": [
+        {
+          "label": "帮我选第一家",
+          "message": "聚餐的话，第一家 Wagas 和第二家火锅你更推荐哪家？"
+        },
+        {
+          "label": "点菜怎么控制热量",
+          "message": "在火锅店怎么点菜才能不太破功"
+        }
+      ]
+    },
+    "stream": {
+      "charsPerTick": 6,
+      "tickMs": 24
+    },
+    "payload": {
+      "scene_type": "dining",
+      "recommendations": [
+        {
+          "restaurant_name": "Wagas 沃歌斯",
+          "cuisine": "轻食 / 西式简餐",
+          "district": "国贸",
+          "avg_price": 80,
+          "diet_friendly_score": 5,
+          "social_friendly_score": 3,
+          "recommendation_reason": "菜品整体清淡，蛋白质和蔬菜选择比较多，不辣，热量也更容易控制。",
+          "suitable_dishes": "芒果鸡肉沙拉、低碳水牛肉海藻面、意式大虾配茄汁酱意面、意式蔬菜意面汤",
+          "warnings": "奶油类意面、甜品、高糖饮品",
+          "image": "/demoPre/restaurants/wagas.jpg",
+          "gallery_images": [
+            "/demoPre/restaurants/wagas.jpg"
+          ],
+          "platform_card": {
+            "title": "Wagas 沃歌斯 · 国贸店",
+            "subtitle": "轻食｜国贸｜人均 ¥80",
+            "meta": "减脂友好度 5 星｜社交友好度 3 星",
+            "tags": [
+              "轻食",
+              "不辣",
+              "稳妥"
+            ]
+          }
+        },
+        {
+          "restaurant_name": "左庭右院鲜牛肉火锅",
+          "cuisine": "鲜牛肉火锅",
+          "district": "国贸",
+          "avg_price": 135,
+          "diet_friendly_score": 3,
+          "social_friendly_score": 5,
+          "recommendation_reason": "这家更适合朋友聚餐，氛围比轻食店更好。鲜牛肉本身蛋白质高，如果选清汤锅底、少蘸料、少主食，是可以做到「不扫兴但尽量可控」的。",
+          "suitable_dishes": "吊龙牛肉、雪花牛肉、金针菇、青菜拼盘、清汤锅底",
+          "warnings": "牛肉丸、重油蘸料、炸物小吃、甜饮",
+          "image": "/demoPre/restaurants/zuotingyouyuan.jpg",
+          "gallery_images": [
+            "/demoPre/restaurants/zuotingyouyuan.jpg"
+          ],
+          "platform_card": {
+            "title": "左庭右院鲜牛肉火锅 · 国贸店",
+            "subtitle": "鲜牛肉火锅｜国贸｜人均 ¥135",
+            "meta": "评分 4.8｜适合朋友聚餐",
+            "tags": [
+              "高蛋白",
+              "清汤可选",
+              "不扫兴"
+            ]
+          }
+        },
+        {
+          "restaurant_name": "和风小馆",
+          "cuisine": "日式简餐",
+          "district": "国贸",
+          "avg_price": 120,
+          "diet_friendly_score": 4,
+          "social_friendly_score": 4,
+          "recommendation_reason": "日式餐厅整体口味更清淡，也不辣。适合想正常聚餐、但又不想吃太油太重的人。",
+          "suitable_dishes": "盐烤鸡腿、刺身拼盘、海藻沙拉、味噌汤、米饭半份",
+          "warnings": "天妇罗、炸猪排、甜口照烧酱过多、高糖酒水",
+          "image": "/demoPre/restaurants/japanese-clean.jpg",
+          "gallery_images": [
+            "/demoPre/restaurants/japanese-clean.jpg"
+          ],
+          "platform_card": {
+            "title": "和风小馆 · 国贸店",
+            "subtitle": "日式简餐｜国贸｜人均 ¥120",
+            "meta": "清淡不辣｜适合朋友小聚",
+            "tags": [
+              "日式",
+              "清淡",
+              "均衡"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "xiaoming-03-pilates-yoga",
+    "profileId": "user_a",
+    "title": "小明对话3：普拉提/瑜伽馆推荐",
+    "match": {
+      "exact": [
+        "那你帮我顺便看看，明天或者周末国贸附近有没有适合新手的普拉提或瑜伽馆？我想做一点低强度塑形。"
+      ],
+      "keywords": [
+        "普拉提",
+        "瑜伽",
+        "国贸",
+        "新手",
+        "低强度"
+      ]
+    },
+    "assistant": {
+      "displayText": "可以。因为你今晚有聚餐，我不建议饭后马上做普拉提或瑜伽。更适合把轻运动安排在明天或周末，选择低强度、新手友好的课程。",
+      "followUpChips": [
+        {
+          "label": "普拉提和瑜伽选哪个",
+          "message": "新手塑形的话，普拉提和瑜伽哪个更适合我"
+        },
+        {
+          "label": "周末怎么安排",
+          "message": "周末聚餐和普拉提怎么搭配比较好"
+        }
+      ]
+    },
+    "stream": {
+      "charsPerTick": 6,
+      "tickMs": 24
+    },
+    "payload": {
+      "scene_type": "venue",
+      "recommendations": [
+        {
+          "venue_name": "CoreFit 普拉提",
+          "class_type": "普拉提体验课",
+          "district": "国贸附近",
+          "distance": "约 1.5km",
+          "price": "¥69 / 次",
+          "intensity": "低中",
+          "beginner_friendly": 5,
+          "goals": "核心激活 / 体态调整 / 轻度塑形",
+          "recommendation_reason": "普拉提比高强度燃脂课更适合新手，动作节奏慢，对身体控制和体态改善更友好。",
+          "warnings": "第一次上课建议选基础小班课，不要直接选高阶器械课。",
+          "image": "/demoPre/sports/pilates.jpg",
+          "gallery_images": [
+            "/demoPre/sports/pilates.jpg"
+          ],
+          "platform_card": {
+            "title": "CoreFit 普拉提 · 国贸店",
+            "subtitle": "普拉提体验课｜国贸｜约 1.5km",
+            "meta": "¥69/次｜低中强度｜新手友好",
+            "tags": [
+              "普拉提",
+              "体态",
+              "核心"
+            ]
+          }
+        },
+        {
+          "venue_name": "Luna Yoga",
+          "class_type": "瑜伽 / 舒缓拉伸",
+          "district": "国贸商圈",
+          "distance": "约 1.2km",
+          "price": "¥79 / 次",
+          "intensity": "低",
+          "beginner_friendly": 5,
+          "goals": "放松肩颈 / 拉伸 / 缓解久坐紧张",
+          "recommendation_reason": "如果你平时久坐多、肩颈紧，瑜伽会比力量课更舒服，也更适合在聚餐后第二天恢复状态。",
+          "suitable_classes": "基础流瑜伽、肩颈舒缓、拉伸修复课",
+          "image": "/demoPre/sports/yoga.jpg",
+          "gallery_images": [
+            "/demoPre/sports/yoga.jpg"
+          ],
+          "platform_card": {
+            "title": "Luna Yoga · 国贸店",
+            "subtitle": "瑜伽｜国贸｜约 1.2km",
+            "meta": "¥79/次｜低强度｜肩颈友好",
+            "tags": [
+              "瑜伽",
+              "拉伸",
+              "肩颈"
+            ]
+          }
+        },
+        {
+          "venue_name": "ShapeLab 体态塑形馆",
+          "class_type": "体态塑形 / 普拉提小班",
+          "district": "国贸附近",
+          "distance": "约 2.0km",
+          "price": "¥99 / 次",
+          "intensity": "低中",
+          "beginner_friendly": 4,
+          "goals": "改善体态 / 核心稳定 / 新手塑形",
+          "recommendation_reason": "比普通健身房更轻量，适合刚开始减脂塑形、还不想做高强度训练的人。",
+          "warnings": "如果课程里有大量卷腹或腰部发力动作，第一次可以提醒教练降低难度。",
+          "image": "/demoPre/sports/body-shaping.jpg",
+          "gallery_images": [
+            "/demoPre/sports/body-shaping.jpg"
+          ],
+          "platform_card": {
+            "title": "ShapeLab 体态塑形馆 · 国贸店",
+            "subtitle": "体态塑形｜国贸｜约 2.0km",
+            "meta": "¥99/次｜新手友好",
+            "tags": [
+              "塑形",
+              "体态",
+              "普拉提"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "xiaoming-04-recovery",
+    "profileId": "user_a",
+    "title": "小明对话4：放松场地推荐",
+    "match": {
+      "exact": [
+        "运动后我可能想放松一下，国贸附近有没有按摩、头疗或者肩颈放松的地方？推荐 3 个，不要太医疗化，舒服一点就行。"
+      ],
+      "keywords": [
+        "放松",
+        "按摩",
+        "头疗",
+        "国贸",
+        "肩颈"
+      ]
+    },
+    "assistant": {
+      "displayText": "可以。你是新手塑形用户，如果只是普通疲劳或肩颈紧张，我会优先推荐生活化的放松服务，比如肩颈按摩、头疗和轻量拉伸。如果出现刺痛、麻木、肿胀或活动受限，就不建议按摩，需要先休息或咨询专业人士。",
+      "followUpChips": [
+        {
+          "label": "头疗和按摩选哪个",
+          "message": "久坐肩颈紧的话，头疗和按摩哪个更适合"
+        },
+        {
+          "label": "运动后怎么恢复",
+          "message": "做完普拉提后怎么安排放松恢复"
+        }
+      ]
+    },
+    "stream": {
+      "charsPerTick": 6,
+      "tickMs": 24
+    },
+    "payload": {
+      "scene_type": "service_or_home",
+      "recommendations": [
+        {
+          "shop_name": "云间头疗",
+          "service_type": "头疗 / 肩颈放松",
+          "district": "国贸附近",
+          "distance": "约 1.0km",
+          "price": "¥128 起",
+          "suitable_scenarios": "久坐肩颈紧、晚上放松、轻疲劳",
+          "relaxation_fit": 5,
+          "recommendation_reason": "它更偏生活放松，不会像康复理疗那么「医疗感」。适合久坐、想轻松恢复状态的场景。",
+          "suitable_services": "头部放松 + 肩颈舒缓套餐",
+          "warnings": "力度特别重的深层按压",
+          "image": "/demoPre/recovery/headspa.jpg",
+          "gallery_images": [
+            "/demoPre/recovery/headspa.jpg"
+          ],
+          "platform_card": {
+            "title": "云间头疗 · 国贸店",
+            "subtitle": "头疗 / 肩颈放松｜国贸｜约 1.0km",
+            "meta": "¥128 起｜适合久坐疲劳",
+            "tags": [
+              "头疗",
+              "肩颈",
+              "放松"
+            ]
+          }
+        },
+        {
+          "shop_name": "轻松拉伸馆",
+          "service_type": "拉伸 / 筋膜放松",
+          "district": "国贸商圈",
+          "distance": "约 1.4km",
+          "price": "¥98 起",
+          "suitable_scenarios": "普拉提 / 瑜伽后放松、腿部和肩颈紧张",
+          "relaxation_fit": 4,
+          "recommendation_reason": "如果你做完普拉提或瑜伽后觉得腿部或肩颈紧，这类拉伸服务会比普通按摩更贴近运动后恢复。",
+          "suitable_services": "基础全身拉伸、肩颈放松、下肢轻拉伸",
+          "image": "/demoPre/recovery/stretch.jpg",
+          "gallery_images": [
+            "/demoPre/recovery/stretch.jpg"
+          ],
+          "platform_card": {
+            "title": "轻松拉伸馆 · 国贸店",
+            "subtitle": "拉伸 / 筋膜放松｜国贸｜约 1.4km",
+            "meta": "¥98 起｜运动后恢复",
+            "tags": [
+              "拉伸",
+              "筋膜",
+              "恢复"
+            ]
+          }
+        },
+        {
+          "shop_name": "静悦按摩",
+          "service_type": "按摩 / 足疗 / 肩颈",
+          "district": "国贸附近",
+          "distance": "约 1.8km",
+          "price": "¥138 起",
+          "suitable_scenarios": "下班后放松、轻疲劳、久坐酸胀",
+          "relaxation_fit": 4,
+          "recommendation_reason": "更适合想「舒服一点」的放松需求。适合普通疲劳和肩颈紧，不适合处理急性疼痛。",
+          "warnings": "第一次建议选择中轻力度，不要直接选强力深层按摩。",
+          "image": "/demoPre/recovery/massage.jpg",
+          "gallery_images": [
+            "/demoPre/recovery/massage.jpg"
+          ],
+          "platform_card": {
+            "title": "静悦按摩 · 国贸店",
+            "subtitle": "按摩 / 足疗｜国贸｜约 1.8km",
+            "meta": "¥138 起｜舒适放松",
+            "tags": [
+              "按摩",
+              "肩颈",
+              "足疗"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "xiaotian-02-strict-takeout",
+    "profileId": "user_b",
+    "title": "小天对话2：严格外卖推荐",
+    "match": {
+      "exact": [
+        "我今天还剩 520 kcal，想点一个更干净的外卖。目标是高蛋白、低脂、控碳，最好适合减脂期，不要太油，预算可以 50 元以上。"
+      ],
+      "keywords": [
+        "520 kcal",
+        "外卖",
+        "高蛋白",
+        "低脂",
+        "控碳"
+      ]
+    },
+    "assistant": {
+      "displayText": "收到。你今天剩余热量只有 520 kcal，而且当前在减脂期，我会按「高蛋白、低脂、控碳、少酱料、不过度加工」来筛选。这次推荐会比普通减脂外卖更严格，优先选择牛排、鸡胸、鱼虾、蔬菜和少量优质碳水。",
+      "followUpChips": [
+        {
+          "label": "帮我对比前两家",
+          "message": "牛排轻食碗和鸡胸藜麦沙拉哪个更适合今天"
+        },
+        {
+          "label": "训练日怎么吃",
+          "message": "拉日训练的话这份外卖怎么搭配更好"
+        }
+      ]
+    },
+    "stream": {
+      "charsPerTick": 6,
+      "tickMs": 24
+    },
+    "payload": {
+      "scene_type": "takeout",
+      "recommendations": [
+        {
+          "store_name": "Protein Lab 牛排轻食",
+          "combo_name": "低脂牛排轻食碗 + 烤南瓜 + 西兰花 + 无糖茶",
+          "kcal_range": "约 480–520 kcal",
+          "protein_g": 38,
+          "avg_price_yuan": 58,
+          "recommendation_reason": "牛排提供优质蛋白，搭配烤南瓜和西兰花，碳水适中但不会太低，适合减脂期同时保留训练表现。",
+          "warnings": "不加奶油酱、不加芝士、酱汁分开放、不点甜饮",
+          "image": "/demoPre/takeout/steak-bowl.jpg",
+          "gallery_images": [
+            "/demoPre/takeout/steak-bowl.jpg"
+          ],
+          "platform_card": {
+            "title": "Protein Lab 牛排轻食 · 中关村店",
+            "subtitle": "牛排轻食｜中关村｜高蛋白",
+            "meta": "¥58｜约 480–520 kcal｜蛋白约 38g",
+            "tags": [
+              "牛排",
+              "高蛋白",
+              "低脂"
+            ]
+          }
+        },
+        {
+          "store_name": "沙野轻食",
+          "combo_name": "烤鸡胸藜麦沙拉 + 水煮蛋 + 无糖饮品",
+          "kcal_range": "约 350–430 kcal",
+          "protein_g": 35,
+          "avg_price_yuan": "42–50",
+          "recommendation_reason": "这份比普通健身餐更轻，蛋白质足够，脂肪低，适合今天剩余热量只有 520 kcal 的情况。",
+          "warnings": "不加沙拉酱、不加坚果碎、不加甜口饮料",
+          "image": "/demoPre/takeout/chicken-quinoa-salad.jpg",
+          "gallery_images": [
+            "/demoPre/takeout/chicken-quinoa-salad.jpg"
+          ],
+          "platform_card": {
+            "title": "沙野轻食 · 中关村店",
+            "subtitle": "鸡胸藜麦沙拉｜中关村｜低脂",
+            "meta": "¥42–50｜约 350–430 kcal｜蛋白约 35g",
+            "tags": [
+              "鸡胸",
+              "藜麦",
+              "控热量"
+            ]
+          }
+        },
+        {
+          "store_name": "嘉和一品",
+          "combo_name": "清蒸鲈鱼 + 清炒西兰花 + 杂粮饭半份",
+          "kcal_range": "约 350–400 kcal",
+          "protein_g": 28,
+          "avg_price_yuan": 35,
+          "recommendation_reason": "这份比沙拉更像正餐，有鱼肉、蔬菜和少量杂粮饭，适合不想吃太冷的轻食但又需要控制热量的人。",
+          "warnings": "杂粮饭吃半份、不额外加粥点或甜豆浆、不加油炸小食",
+          "image": "/demoPre/takeout/steamed-fish-meal.jpg",
+          "gallery_images": [
+            "/demoPre/takeout/steamed-fish-meal.jpg"
+          ],
+          "platform_card": {
+            "title": "嘉和一品 · 中关村店",
+            "subtitle": "清蒸鱼杂粮套餐｜中关村｜少油",
+            "meta": "¥35｜约 350–400 kcal｜蛋白约 28g",
+            "tags": [
+              "清蒸鱼",
+              "杂粮",
+              "少油"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "xiaotian-03-activities",
+    "profileId": "user_b",
+    "title": "小天对话3：一起动活动推荐",
+    "match": {
+      "exact": [
+        "我想探索一些新的运动活动和训练方式，不一定只去健身房。希望能对减脂有帮助，也适合有训练基础的人。帮我推荐 3 个附近的活动。"
+      ],
+      "keywords": [
+        "运动活动",
+        "训练方式",
+        "减脂",
+        "训练基础"
+      ]
+    },
+    "assistant": {
+      "displayText": "可以。你是有 3 年训练经验的进阶用户，当前又在减脂期，所以我会优先推荐「有一定运动量、但不影响主训练恢复」的活动。这次不只看好玩，也会看它对有氧消耗、协调性和训练新鲜感的帮助。",
+      "followUpChips": [
+        {
+          "label": "网球和 HIIT 选哪个",
+          "message": "减脂期的话网球和 HIIT 哪个更适合我"
+        },
+        {
+          "label": "和拉日怎么搭配",
+          "message": "拉日训练的话这些活动怎么安排比较好"
+        }
+      ]
+    },
+    "stream": {
+      "charsPerTick": 6,
+      "tickMs": 24
+    },
+    "payload": {
+      "scene_type": "activity",
+      "recommendations": [
+        {
+          "venue_name": "向往生活网球馆",
+          "activity_type": "网球体验 / 小班训练",
+          "schedule": "周末可预约",
+          "district": "海淀区",
+          "distance": "约 2.4km",
+          "price": "¥99 / 次",
+          "intensity": "中等",
+          "suitable_audience": "有训练基础、想增加有氧和协调性训练的人",
+          "recommendation_reason": "网球比普通有氧更有趣，也能训练反应、移动和协调性。对减脂期来说，它可以作为力量训练之外的有氧补充，不会像 HIIT 那样过度压榨恢复。",
+          "warnings": "如果当天刚练完腿，不建议安排高强度对打；可以选择基础挥拍课或低强度陪练。",
+          "image": "/demoPre/sports/tennis.jpg",
+          "gallery_images": [
+            "/demoPre/sports/tennis.jpg"
+          ],
+          "platform_card": {
+            "title": "向往生活网球馆",
+            "subtitle": "网球体验｜海淀区｜约 2.4km",
+            "meta": "¥99/次｜中等强度｜适合有基础用户",
+            "tags": [
+              "网球",
+              "有氧补充",
+              "协调性",
+              "轻竞技"
+            ]
+          }
+        },
+        {
+          "venue_name": "U-24 HIIT 燃脂训练",
+          "activity_type": "HIIT 团课",
+          "schedule": "周二 / 周四 / 周六 19:30",
+          "district": "中关村",
+          "price": "¥65 / 次",
+          "duration": "45 分钟",
+          "estimated_kcal": 400,
+          "intensity": "中高",
+          "suitable_audience": "有基础、想提高心肺和减脂效率的人",
+          "recommendation_reason": "你有 3 年训练经验，能承受一定强度。HIIT 可以作为减脂期的高效有氧补充，但不建议和大重量腿日放在同一天。",
+          "warnings": "如果当天训练已接近力竭，HIIT 可以改成 LISS 或休息，避免恢复压力过大。",
+          "image": "/demoPre/sports/hiit.jpg",
+          "gallery_images": [
+            "/demoPre/sports/hiit.jpg"
+          ],
+          "platform_card": {
+            "title": "U-24 HIIT 燃脂训练",
+            "subtitle": "团课｜中关村｜45 分钟",
+            "meta": "¥65/次｜预计消耗约 400 kcal",
+            "tags": [
+              "HIIT",
+              "高消耗",
+              "心肺"
+            ]
+          }
+        },
+        {
+          "venue_name": "五道口攀岩体验课",
+          "activity_type": "室内攀岩",
+          "schedule": "周末可预约",
+          "district": "五道口",
+          "distance": "约 2.0km",
+          "price": "¥88 / 人",
+          "intensity": "中等",
+          "suitable_audience": "力量基础较好、想尝试新运动的人",
+          "recommendation_reason": "攀岩对背部、前臂、核心和身体协调性要求较高，比较适合有力量训练基础的人。相比普通健身房，它更有新鲜感，也能训练身体控制能力。",
+          "warnings": "如果本周拉日训练量已经很高，攀岩不要安排在拉日后一天，避免前臂和背部恢复不足。",
+          "image": "/demoPre/sports/climbing.jpg",
+          "gallery_images": [
+            "/demoPre/sports/climbing.jpg"
+          ],
+          "platform_card": {
+            "title": "五道口攀岩体验课",
+            "subtitle": "室内攀岩｜五道口｜约 2.0km",
+            "meta": "¥88/人｜中等强度｜力量协调",
+            "tags": [
+              "攀岩",
+              "核心",
+              "协调性"
+            ]
+          }
+        }
+      ]
+    }
   }
 ]

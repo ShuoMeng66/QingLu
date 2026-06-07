@@ -1,0 +1,85 @@
+{
+  "id": "xiaoming-04-recovery",
+  "profileId": "user_a",
+  "title": "小明对话4：放松场地推荐",
+  "match": {
+    "exact": [
+      "运动后我可能想放松一下，国贸附近有没有按摩、头疗或者肩颈放松的地方？推荐 3 个，不要太医疗化，舒服一点就行。"
+    ],
+    "keywords": ["放松", "按摩", "头疗", "国贸", "肩颈"]
+  },
+  "assistant": {
+    "displayText": "可以。你是新手塑形用户，如果只是普通疲劳或肩颈紧张，我会优先推荐生活化的放松服务，比如肩颈按摩、头疗和轻量拉伸。如果出现刺痛、麻木、肿胀或活动受限，就不建议按摩，需要先休息或咨询专业人士。",
+    "followUpChips": [
+      { "label": "头疗和按摩选哪个", "message": "久坐肩颈紧的话，头疗和按摩哪个更适合" },
+      { "label": "运动后怎么恢复", "message": "做完普拉提后怎么安排放松恢复" }
+    ]
+  },
+  "stream": {
+    "charsPerTick": 6,
+    "tickMs": 24
+  },
+  "payload": {
+    "scene_type": "service_or_home",
+    "recommendations": [
+      {
+        "shop_name": "云间头疗",
+        "service_type": "头疗 / 肩颈放松",
+        "district": "国贸附近",
+        "distance": "约 1.0km",
+        "price": "¥128 起",
+        "suitable_scenarios": "久坐肩颈紧、晚上放松、轻疲劳",
+        "relaxation_fit": 5,
+        "recommendation_reason": "它更偏生活放松，不会像康复理疗那么「医疗感」。适合久坐、想轻松恢复状态的场景。",
+        "suitable_services": "头部放松 + 肩颈舒缓套餐",
+        "warnings": "力度特别重的深层按压",
+        "image": "/demoPre/recovery/headspa.jpg",
+        "gallery_images": ["/demoPre/recovery/headspa.jpg"],
+        "platform_card": {
+          "title": "云间头疗 · 国贸店",
+          "subtitle": "头疗 / 肩颈放松｜国贸｜约 1.0km",
+          "meta": "¥128 起｜适合久坐疲劳",
+          "tags": ["头疗", "肩颈", "放松"]
+        }
+      },
+      {
+        "shop_name": "轻松拉伸馆",
+        "service_type": "拉伸 / 筋膜放松",
+        "district": "国贸商圈",
+        "distance": "约 1.4km",
+        "price": "¥98 起",
+        "suitable_scenarios": "普拉提 / 瑜伽后放松、腿部和肩颈紧张",
+        "relaxation_fit": 4,
+        "recommendation_reason": "如果你做完普拉提或瑜伽后觉得腿部或肩颈紧，这类拉伸服务会比普通按摩更贴近运动后恢复。",
+        "suitable_services": "基础全身拉伸、肩颈放松、下肢轻拉伸",
+        "image": "/demoPre/recovery/stretch.jpg",
+        "gallery_images": ["/demoPre/recovery/stretch.jpg"],
+        "platform_card": {
+          "title": "轻松拉伸馆 · 国贸店",
+          "subtitle": "拉伸 / 筋膜放松｜国贸｜约 1.4km",
+          "meta": "¥98 起｜运动后恢复",
+          "tags": ["拉伸", "筋膜", "恢复"]
+        }
+      },
+      {
+        "shop_name": "静悦按摩",
+        "service_type": "按摩 / 足疗 / 肩颈",
+        "district": "国贸附近",
+        "distance": "约 1.8km",
+        "price": "¥138 起",
+        "suitable_scenarios": "下班后放松、轻疲劳、久坐酸胀",
+        "relaxation_fit": 4,
+        "recommendation_reason": "更适合想「舒服一点」的放松需求。适合普通疲劳和肩颈紧，不适合处理急性疼痛。",
+        "warnings": "第一次建议选择中轻力度，不要直接选强力深层按摩。",
+        "image": "/demoPre/recovery/massage.jpg",
+        "gallery_images": ["/demoPre/recovery/massage.jpg"],
+        "platform_card": {
+          "title": "静悦按摩 · 国贸店",
+          "subtitle": "按摩 / 足疗｜国贸｜约 1.8km",
+          "meta": "¥138 起｜舒适放松",
+          "tags": ["按摩", "肩颈", "足疗"]
+        }
+      }
+    ]
+  }
+}

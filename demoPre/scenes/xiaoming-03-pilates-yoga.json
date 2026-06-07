@@ -1,0 +1,87 @@
+{
+  "id": "xiaoming-03-pilates-yoga",
+  "profileId": "user_a",
+  "title": "小明对话3：普拉提/瑜伽馆推荐",
+  "match": {
+    "exact": [
+      "那你帮我顺便看看，明天或者周末国贸附近有没有适合新手的普拉提或瑜伽馆？我想做一点低强度塑形。"
+    ],
+    "keywords": ["普拉提", "瑜伽", "国贸", "新手", "低强度"]
+  },
+  "assistant": {
+    "displayText": "可以。因为你今晚有聚餐，我不建议饭后马上做普拉提或瑜伽。更适合把轻运动安排在明天或周末，选择低强度、新手友好的课程。",
+    "followUpChips": [
+      { "label": "普拉提和瑜伽选哪个", "message": "新手塑形的话，普拉提和瑜伽哪个更适合我" },
+      { "label": "周末怎么安排", "message": "周末聚餐和普拉提怎么搭配比较好" }
+    ]
+  },
+  "stream": {
+    "charsPerTick": 6,
+    "tickMs": 24
+  },
+  "payload": {
+    "scene_type": "venue",
+    "recommendations": [
+      {
+        "venue_name": "CoreFit 普拉提",
+        "class_type": "普拉提体验课",
+        "district": "国贸附近",
+        "distance": "约 1.5km",
+        "price": "¥69 / 次",
+        "intensity": "低中",
+        "beginner_friendly": 5,
+        "goals": "核心激活 / 体态调整 / 轻度塑形",
+        "recommendation_reason": "普拉提比高强度燃脂课更适合新手，动作节奏慢，对身体控制和体态改善更友好。",
+        "warnings": "第一次上课建议选基础小班课，不要直接选高阶器械课。",
+        "image": "/demoPre/sports/pilates.jpg",
+        "gallery_images": ["/demoPre/sports/pilates.jpg"],
+        "platform_card": {
+          "title": "CoreFit 普拉提 · 国贸店",
+          "subtitle": "普拉提体验课｜国贸｜约 1.5km",
+          "meta": "¥69/次｜低中强度｜新手友好",
+          "tags": ["普拉提", "体态", "核心"]
+        }
+      },
+      {
+        "venue_name": "Luna Yoga",
+        "class_type": "瑜伽 / 舒缓拉伸",
+        "district": "国贸商圈",
+        "distance": "约 1.2km",
+        "price": "¥79 / 次",
+        "intensity": "低",
+        "beginner_friendly": 5,
+        "goals": "放松肩颈 / 拉伸 / 缓解久坐紧张",
+        "recommendation_reason": "如果你平时久坐多、肩颈紧，瑜伽会比力量课更舒服，也更适合在聚餐后第二天恢复状态。",
+        "suitable_classes": "基础流瑜伽、肩颈舒缓、拉伸修复课",
+        "image": "/demoPre/sports/yoga.jpg",
+        "gallery_images": ["/demoPre/sports/yoga.jpg"],
+        "platform_card": {
+          "title": "Luna Yoga · 国贸店",
+          "subtitle": "瑜伽｜国贸｜约 1.2km",
+          "meta": "¥79/次｜低强度｜肩颈友好",
+          "tags": ["瑜伽", "拉伸", "肩颈"]
+        }
+      },
+      {
+        "venue_name": "ShapeLab 体态塑形馆",
+        "class_type": "体态塑形 / 普拉提小班",
+        "district": "国贸附近",
+        "distance": "约 2.0km",
+        "price": "¥99 / 次",
+        "intensity": "低中",
+        "beginner_friendly": 4,
+        "goals": "改善体态 / 核心稳定 / 新手塑形",
+        "recommendation_reason": "比普通健身房更轻量，适合刚开始减脂塑形、还不想做高强度训练的人。",
+        "warnings": "如果课程里有大量卷腹或腰部发力动作，第一次可以提醒教练降低难度。",
+        "image": "/demoPre/sports/body-shaping.jpg",
+        "gallery_images": ["/demoPre/sports/body-shaping.jpg"],
+        "platform_card": {
+          "title": "ShapeLab 体态塑形馆 · 国贸店",
+          "subtitle": "体态塑形｜国贸｜约 2.0km",
+          "meta": "¥99/次｜新手友好",
+          "tags": ["塑形", "体态", "普拉提"]
+        }
+      }
+    ]
+  }
+}

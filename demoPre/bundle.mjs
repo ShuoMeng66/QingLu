@@ -83,6 +83,9 @@ const scenes = loadScenes()
 
 if (fs.existsSync(ASSETS_DIR)) {
   syncAssetDir('takeout', path.join(PUBLIC_DIR, 'takeout'))
+  syncAssetDir('restaurants', path.join(PUBLIC_DIR, 'restaurants'))
+  syncAssetDir('sports', path.join(PUBLIC_DIR, 'sports'))
+  syncAssetDir('recovery', path.join(PUBLIC_DIR, 'recovery'))
   syncAssetDir('splash', SPLASH_PUBLIC_DIR)
   syncAssetDir('scenes', SCENES_PUBLIC_DIR)
 }

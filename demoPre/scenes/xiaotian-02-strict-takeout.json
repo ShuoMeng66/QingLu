@@ -1,0 +1,78 @@
+{
+  "id": "xiaotian-02-strict-takeout",
+  "profileId": "user_b",
+  "title": "小天对话2：严格外卖推荐",
+  "match": {
+    "exact": [
+      "我今天还剩 520 kcal，想点一个更干净的外卖。目标是高蛋白、低脂、控碳，最好适合减脂期，不要太油，预算可以 50 元以上。"
+    ],
+    "keywords": ["520 kcal", "外卖", "高蛋白", "低脂", "控碳"]
+  },
+  "assistant": {
+    "displayText": "收到。你今天剩余热量只有 520 kcal，而且当前在减脂期，我会按「高蛋白、低脂、控碳、少酱料、不过度加工」来筛选。这次推荐会比普通减脂外卖更严格，优先选择牛排、鸡胸、鱼虾、蔬菜和少量优质碳水。",
+    "followUpChips": [
+      { "label": "帮我对比前两家", "message": "牛排轻食碗和鸡胸藜麦沙拉哪个更适合今天" },
+      { "label": "训练日怎么吃", "message": "拉日训练的话这份外卖怎么搭配更好" }
+    ]
+  },
+  "stream": {
+    "charsPerTick": 6,
+    "tickMs": 24
+  },
+  "payload": {
+    "scene_type": "takeout",
+    "recommendations": [
+      {
+        "store_name": "Protein Lab 牛排轻食",
+        "combo_name": "低脂牛排轻食碗 + 烤南瓜 + 西兰花 + 无糖茶",
+        "kcal_range": "约 480–520 kcal",
+        "protein_g": 38,
+        "avg_price_yuan": 58,
+        "recommendation_reason": "牛排提供优质蛋白，搭配烤南瓜和西兰花，碳水适中但不会太低，适合减脂期同时保留训练表现。",
+        "warnings": "不加奶油酱、不加芝士、酱汁分开放、不点甜饮",
+        "image": "/demoPre/takeout/steak-bowl.jpg",
+        "gallery_images": ["/demoPre/takeout/steak-bowl.jpg"],
+        "platform_card": {
+          "title": "Protein Lab 牛排轻食 · 中关村店",
+          "subtitle": "牛排轻食｜中关村｜高蛋白",
+          "meta": "¥58｜约 480–520 kcal｜蛋白约 38g",
+          "tags": ["牛排", "高蛋白", "低脂"]
+        }
+      },
+      {
+        "store_name": "沙野轻食",
+        "combo_name": "烤鸡胸藜麦沙拉 + 水煮蛋 + 无糖饮品",
+        "kcal_range": "约 350–430 kcal",
+        "protein_g": 35,
+        "avg_price_yuan": "42–50",
+        "recommendation_reason": "这份比普通健身餐更轻，蛋白质足够，脂肪低，适合今天剩余热量只有 520 kcal 的情况。",
+        "warnings": "不加沙拉酱、不加坚果碎、不加甜口饮料",
+        "image": "/demoPre/takeout/chicken-quinoa-salad.jpg",
+        "gallery_images": ["/demoPre/takeout/chicken-quinoa-salad.jpg"],
+        "platform_card": {
+          "title": "沙野轻食 · 中关村店",
+          "subtitle": "鸡胸藜麦沙拉｜中关村｜低脂",
+          "meta": "¥42–50｜约 350–430 kcal｜蛋白约 35g",
+          "tags": ["鸡胸", "藜麦", "控热量"]
+        }
+      },
+      {
+        "store_name": "嘉和一品",
+        "combo_name": "清蒸鲈鱼 + 清炒西兰花 + 杂粮饭半份",
+        "kcal_range": "约 350–400 kcal",
+        "protein_g": 28,
+        "avg_price_yuan": 35,
+        "recommendation_reason": "这份比沙拉更像正餐，有鱼肉、蔬菜和少量杂粮饭，适合不想吃太冷的轻食但又需要控制热量的人。",
+        "warnings": "杂粮饭吃半份、不额外加粥点或甜豆浆、不加油炸小食",
+        "image": "/demoPre/takeout/steamed-fish-meal.jpg",
+        "gallery_images": ["/demoPre/takeout/steamed-fish-meal.jpg"],
+        "platform_card": {
+          "title": "嘉和一品 · 中关村店",
+          "subtitle": "清蒸鱼杂粮套餐｜中关村｜少油",
+          "meta": "¥35｜约 350–400 kcal｜蛋白约 28g",
+          "tags": ["清蒸鱼", "杂粮", "少油"]
+        }
+      }
+    ]
+  }
+}
