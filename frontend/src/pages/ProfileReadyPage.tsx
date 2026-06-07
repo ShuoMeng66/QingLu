@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppShell } from '../components/qinglu/AppShell'
+import { OnboardStepper } from '../components/qinglu/OnboardStepper'
 import { QingluLogo } from '../components/qinglu/QingluLogo'
 import {
   ProfilePrioritiesCard,
@@ -49,9 +50,14 @@ export function ProfileReadyPage() {
 
   return (
     <AppShell scrollable showMesh>
-      <PageTransition className="mx-auto flex min-h-dvh max-w-5xl flex-col px-5 py-8">
+      <PageTransition className="onboard-ready-shell mx-auto flex min-h-dvh max-w-5xl flex-col px-5 py-8">
         <QingluLogo compact />
-        <header className="mt-6">
+
+        <div className="mt-6">
+          <OnboardStepper currentStep={3} />
+        </div>
+
+        <header className="mt-8">
           <h1 className="font-display-serif text-2xl font-semibold text-body-primary sm:text-3xl">
             {t('ready.title', { name: nickname })}
           </h1>
@@ -61,15 +67,21 @@ export function ProfileReadyPage() {
         </header>
 
         <div className="profile-ready-grid mt-6">
-          <ProfileSummaryCard tags={tagGroups} />
-          <ProfileTodayCard
-            profile={profile}
-            today={today}
-            regionFallback={summary.region}
-          />
+          <div className="onboard-card">
+            <ProfileSummaryCard tags={tagGroups} />
+          </div>
+          <div className="onboard-card">
+            <ProfileTodayCard
+              profile={profile}
+              today={today}
+              regionFallback={summary.region}
+            />
+          </div>
         </div>
 
-        <ProfilePrioritiesCard priorities={priorities} />
+        <div className="onboard-card mt-4">
+          <ProfilePrioritiesCard priorities={priorities} />
+        </div>
 
         <ProfileReadyActions
           primaryLabel={t('ready.startBtn')}

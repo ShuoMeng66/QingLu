@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppShell } from '../components/qinglu/AppShell'
 import { HealthProfileForm } from '../components/qinglu/HealthProfileForm'
+import { OnboardStepper } from '../components/qinglu/OnboardStepper'
 import {
   ProfileHelpCard,
   ProfileReadyActions,
@@ -38,37 +39,35 @@ export function HealthProfilePage() {
   return (
     <AppShell scrollable showMesh>
       <PageTransition
-        className={`mx-auto flex min-h-dvh flex-col px-5 py-6 ${
-          phase === 'success' ? 'max-w-5xl' : 'max-w-lg qinglu-chat-column'
+        className={`onboard-ready-shell mx-auto flex min-h-dvh flex-col px-5 py-6 ${
+          phase === 'success' ? 'max-w-5xl' : 'max-w-lg'
         }`}
       >
         {phase === 'form' ? (
           <>
-            <header className="mb-4 flex items-center gap-2">
+            <header className="profile-page-header">
               <button
                 type="button"
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/60 text-slate-600 backdrop-blur-md"
+                className="profile-page-header__back"
                 aria-label={t('action.back')}
                 onClick={() => navigate('/onboard')}
               >
                 <ChevronLeft className="h-5 w-5" />
               </button>
-              <div className="min-w-0 flex-1">
-                <h1 className="font-display-serif text-xl font-semibold text-body-primary">
-                  {t('profile.pageTitle')}
-                </h1>
-                <p className="mt-0.5 text-xs leading-relaxed text-body-secondary">
-                  {t('profile.hint')}
-                </p>
-              </div>
+              <h1 className="profile-page-header__title">{t('profile.pageTitle')}</h1>
+              <p className="profile-page-header__hint">{t('profile.hint')}</p>
             </header>
-            <HealthProfileForm onSaveSuccess={handleSaveSuccess} />
+            <div className="profile-form-page">
+              <HealthProfileForm onSaveSuccess={handleSaveSuccess} variant="page" />
+            </div>
           </>
         ) : (
           tagGroups &&
           savedProfile && (
-            <div className="flex flex-1 flex-col py-4">
-              <div className="flex flex-col items-center text-center">
+            <div className="flex flex-1 flex-col py-2">
+              <OnboardStepper currentStep={2} />
+
+              <div className="mt-8 flex flex-col items-center text-center">
                 <CheckCircle2 className="h-14 w-14 text-emerald-500" aria-hidden="true" />
                 <h1 className="mt-4 font-display-serif text-2xl font-semibold text-body-primary sm:text-3xl">
                   {t('profile.saveSuccessTitle')}
@@ -79,8 +78,12 @@ export function HealthProfilePage() {
               </div>
 
               <div className="profile-ready-grid mt-8">
-                <ProfileSummaryCard tags={tagGroups} />
-                <ProfileHelpCard />
+                <div className="onboard-card">
+                  <ProfileSummaryCard tags={tagGroups} />
+                </div>
+                <div className="onboard-card">
+                  <ProfileHelpCard />
+                </div>
               </div>
 
               <ProfileReadyActions

@@ -56,13 +56,20 @@ export interface HealthProfileFormProps {
   showDailyTargetPreview?: boolean
   /** When truthy, reload profile from storage (sheet passes `open`) */
   reloadWhen?: boolean
+  /** Full-page onboard form uses card layout; sheet keeps compact glass style */
+  variant?: 'page' | 'sheet'
 }
 
 export function HealthProfileForm({
   onSaveSuccess,
   showDailyTargetPreview = true,
   reloadWhen,
+  variant = 'sheet',
 }: HealthProfileFormProps) {
+  const isPageVariant = variant === 'page'
+  const inputClass = isPageVariant
+    ? 'profile-field-input w-full text-sm text-slate-800 outline-none focus:border-primary'
+    : 'w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary'
   const { toast } = useToast()
   const { t, locale } = useI18n()
   const profileCtx = useOptionalProfileContext()
@@ -186,7 +193,7 @@ export function HealthProfileForm({
 
   return (
     <>
-      <ProfileSection title={t('profile.sectionTier')}>
+      <ProfileSection title={t('profile.sectionTier')} variant={variant}>
                 <div className="mb-3 flex flex-wrap gap-2">
                   {getProfileTierOptions(locale).map((option) => (
                     <ChipButton
@@ -208,6 +215,7 @@ export function HealthProfileForm({
                 title={t('health.sectionGoal')}
                 sectionRef={goalSectionRef}
                 highlight={highlightGoal}
+                variant={variant}
               >
                 <p className="mb-1.5 text-[11px] font-medium text-slate-500">
                   {t('health.currentGoal')}
@@ -245,19 +253,20 @@ export function HealthProfileForm({
                 title={t('profile.sectionBody')}
                 sectionRef={bodySectionRef}
                 highlight={highlightBody}
+                variant={variant}
               >
                 <div className="grid grid-cols-2 gap-3">
                   <ProfileField label={t('profile.nickname')}>
                     <input
                       value={profile.nickname ?? ''}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      className={inputClass}
                       onChange={(e) => updateProfile({ nickname: e.target.value })}
                     />
                   </ProfileField>
                   <ProfileField label={t('profile.sex')}>
                     <select
                       value={profile.sex ?? ''}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      className={inputClass}
                       onChange={(e) =>
                         updateProfile({ sex: e.target.value as 'male' | 'female' })
                       }
@@ -271,7 +280,7 @@ export function HealthProfileForm({
                     <input
                       type="number"
                       value={profile.age ?? ''}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      className={inputClass}
                       onChange={(e) =>
                         updateProfile({ age: Number(e.target.value) || undefined })
                       }
@@ -280,7 +289,7 @@ export function HealthProfileForm({
                   <ProfileField label={t('profile.activity')}>
                     <select
                       value={profile.activity_level ?? 'moderate'}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      className={inputClass}
                       onChange={(e) =>
                         updateProfile({
                           activity_level: e.target.value as UserProfile['activity_level'],
@@ -297,7 +306,7 @@ export function HealthProfileForm({
                     <input
                       type="number"
                       value={profile.height_cm ?? ''}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      className={inputClass}
                       onChange={(e) =>
                         updateProfile({ height_cm: Number(e.target.value) || undefined })
                       }
@@ -307,7 +316,7 @@ export function HealthProfileForm({
                     <input
                       type="number"
                       value={profile.weight_kg ?? ''}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      className={inputClass}
                       onChange={(e) =>
                         updateProfile({ weight_kg: Number(e.target.value) || undefined })
                       }
@@ -321,7 +330,7 @@ export function HealthProfileForm({
                           step="0.1"
                           placeholder="—"
                           value={profile.body_fat_pct ?? ''}
-                          className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                          className={inputClass}
                           onChange={(e) =>
                             updateProfile({ body_fat_pct: Number(e.target.value) || undefined })
                           }
@@ -333,7 +342,7 @@ export function HealthProfileForm({
                           step="0.1"
                           placeholder="—"
                           value={profile.target_weight_kg ?? ''}
-                          className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                          className={inputClass}
                           onChange={(e) =>
                             updateProfile({
                               target_weight_kg: Number(e.target.value) || undefined,
@@ -346,7 +355,7 @@ export function HealthProfileForm({
                 </div>
               </ProfileSection>
 
-              <ProfileSection title={t('health.sectionDiet')}>
+              <ProfileSection title={t('health.sectionDiet')} variant={variant}>
                 <p className="mb-1.5 text-[11px] font-medium text-slate-500">
                   {t('health.dietStrategy')}
                 </p>
@@ -392,7 +401,7 @@ export function HealthProfileForm({
                 />
               </ProfileSection>
 
-              <ProfileSection title={t('health.sectionBudget')}>
+              <ProfileSection title={t('health.sectionBudget')} variant={variant}>
                 <p className="mb-1.5 text-[11px] font-medium text-slate-500">
                   {t('health.takeoutBudget')}
                 </p>
@@ -421,7 +430,7 @@ export function HealthProfileForm({
                 </div>
               </ProfileSection>
 
-              <ProfileSection title={t('health.sectionSport')}>
+              <ProfileSection title={t('health.sectionSport')} variant={variant}>
                 <p className="mb-1.5 text-[11px] font-medium text-slate-500">
                   {t('health.commonSports')}
                 </p>
@@ -470,7 +479,7 @@ export function HealthProfileForm({
                 )}
               </ProfileSection>
 
-              <ProfileSection title={t('health.sectionArea')}>
+              <ProfileSection title={t('health.sectionArea')} variant={variant}>
                 <TagCloud
                   options={areaOptions.map((o) => ({ value: o.value, label: o.label }))}
                   selected={prefs?.common_areas ?? []}
@@ -478,7 +487,7 @@ export function HealthProfileForm({
                 />
               </ProfileSection>
 
-              <ProfileSection title={t('health.sectionBoundary')}>
+              <ProfileSection title={t('health.sectionBoundary')} variant={variant}>
                 <TagCloud
                   options={healthBoundaryOptions.map((o) => ({ value: o.value, label: o.label }))}
                   selected={prefs?.health_boundaries ?? []}
@@ -491,7 +500,7 @@ export function HealthProfileForm({
               </ProfileSection>
 
               {isAdvanced && (
-              <ProfileSection title={t('profile.sectionTraining')}>
+              <ProfileSection title={t('profile.sectionTraining')} variant={variant}>
                 <p className="mb-2 text-[11px] text-slate-400">{t('profile.sectionTrainingHint')}</p>
                 <div className="mb-3 flex flex-wrap gap-2">
                   {getTrainingExperienceOptions(locale).map((option) => (
@@ -533,7 +542,7 @@ export function HealthProfileForm({
                       max={7}
                       placeholder="4"
                       value={tp?.frequency_per_week ?? ''}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      className={inputClass}
                       onChange={(e) =>
                         updateTraining({
                           frequency_per_week: Number(e.target.value) || undefined,
@@ -548,7 +557,7 @@ export function HealthProfileForm({
                       max={120}
                       placeholder="50"
                       value={tp?.session_minutes ?? ''}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      className={inputClass}
                       onChange={(e) =>
                         updateTraining({
                           session_minutes: Number(e.target.value) || undefined,
@@ -559,7 +568,7 @@ export function HealthProfileForm({
                   <ProfileField label={t('profile.preferredTime')}>
                     <select
                       value={tp?.preferred_time ?? ''}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      className={inputClass}
                       onChange={(e) => {
                         const v = e.target.value
                         updateTraining({
@@ -578,7 +587,7 @@ export function HealthProfileForm({
                   <ProfileField label={t('profile.equipment')}>
                     <select
                       value={tp?.equipment ?? ''}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      className={inputClass}
                       onChange={(e) =>
                         updateTraining({
                           equipment: (e.target.value || undefined) as
@@ -616,7 +625,7 @@ export function HealthProfileForm({
                       max={40}
                       placeholder="3"
                       value={tp?.training_years ?? ''}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      className={inputClass}
                       onChange={(e) =>
                         updateTraining({
                           training_years: Number(e.target.value) || undefined,
@@ -632,7 +641,7 @@ export function HealthProfileForm({
                       max={25000}
                       placeholder="8000"
                       value={tp?.weekly_steps_target ?? ''}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      className={inputClass}
                       onChange={(e) =>
                         updateTraining({
                           weekly_steps_target: Number(e.target.value) || undefined,
@@ -710,7 +719,7 @@ export function HealthProfileForm({
               )}
 
               {isAdvanced && (
-              <ProfileSection title={t('profile.sectionNutrition')}>
+              <ProfileSection title={t('profile.sectionNutrition')} variant={variant}>
                 <p className="mb-2 text-[11px] text-slate-400">{t('profile.sectionNutritionHint')}</p>
                 <p className="mb-1.5 text-[11px] font-medium text-slate-500">{t('profile.proteinPerKg')}</p>
                 <div className="mb-3 flex flex-wrap gap-2">
@@ -752,7 +761,7 @@ export function HealthProfileForm({
                     type="number"
                     placeholder={t('profile.kcalOverridePlaceholder')}
                     value={profile.nutrition_advanced?.kcal_override ?? ''}
-                    className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                    className={inputClass}
                     onChange={(e) =>
                       updateNutrition({
                         kcal_override: Number(e.target.value) || undefined,
@@ -764,7 +773,7 @@ export function HealthProfileForm({
               )}
 
               {isAdvanced && (
-              <ProfileSection title={t('profile.sectionRecovery')}>
+              <ProfileSection title={t('profile.sectionRecovery')} variant={variant}>
                 <div className="grid grid-cols-2 gap-3">
                   <ProfileField label={t('profile.sleepHours')}>
                     <input
@@ -774,7 +783,7 @@ export function HealthProfileForm({
                       max={12}
                       placeholder="7"
                       value={profile.recovery?.sleep_hours ?? ''}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      className={inputClass}
                       onChange={(e) =>
                         updateRecovery({
                           sleep_hours: Number(e.target.value) || undefined,
@@ -785,7 +794,7 @@ export function HealthProfileForm({
                   <ProfileField label={t('profile.stress')}>
                     <select
                       value={profile.recovery?.stress_level ?? ''}
-                      className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm text-slate-800 outline-none focus:border-primary"
+                      className={inputClass}
                       onChange={(e) =>
                         updateRecovery({
                           stress_level: (e.target.value || undefined) as
@@ -844,20 +853,26 @@ function ProfileSection({
   children,
   sectionRef,
   highlight,
+  variant = 'sheet',
 }: {
   title: string
   children: ReactNode
   sectionRef?: React.RefObject<HTMLElement | null>
   highlight?: boolean
+  variant?: 'page' | 'sheet'
 }) {
+  const highlightClass = highlight
+    ? 'border-rose-300 ring-2 ring-rose-200/80'
+    : ''
+  const sheetClass = `mb-5 rounded-[20px] border bg-white/45 p-4 shadow-glass ${
+    highlight ? 'border-rose-300 ring-2 ring-rose-200/80' : 'border-white/70'
+  }`
+  const pageClass = `profile-section ${highlightClass}`.trim()
+
   return (
     <section
       ref={sectionRef}
-      className={`mb-5 rounded-[20px] border bg-white/45 p-4 shadow-glass ${
-        highlight
-          ? 'border-rose-300 ring-2 ring-rose-200/80'
-          : 'border-white/70'
-      }`}
+      className={variant === 'page' ? pageClass : sheetClass}
     >
       <h3 className="mb-3 text-sm font-semibold text-slate-800">{title}</h3>
       {children}
