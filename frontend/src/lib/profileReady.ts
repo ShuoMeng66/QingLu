@@ -17,7 +17,9 @@ import {
   getDietaryCustomOptions,
   getDietStrategyOptions,
   getFoodRestrictionOptions,
+  getTastePreferenceOptions,
 } from './healthProfileOptions'
+import { labelsFromStored, resolveTrainingSessionLabel } from './preferenceLabels'
 
 const GOAL_LABEL_ZH: Record<string, string> = {
   fat_loss: '减脂',
@@ -69,16 +71,6 @@ export interface ProfileReadyTagGroups {
   regionTags: string[]
 }
 
-function labelsFromStored(
-  values: string[] | undefined,
-  options: { value: string; label: string }[],
-): string[] {
-  if (!values?.length) return []
-  return values
-    .map((v) => options.find((o) => o.value === v || o.label === v)?.label ?? v)
-    .filter(Boolean)
-}
-
 export function getProfileReadyTagGroups(
   profile: UserProfile,
   locale: AppLocale = 'zh',
@@ -87,19 +79,26 @@ export function getProfileReadyTagGroups(
   const prefs = profile.preferences
 
   const dietTags = [
-    ...labelsFromStored(prefs?.diet_strategies, getDietStrategyOptions(locale)),
-    ...(prefs?.favorite_cuisines ?? []),
+    ...new Set([
+      ...labelsFromStored(prefs?.diet_strategies, getDietStrategyOptions(locale), locale),
+      ...labelsFromStored(prefs?.taste_preferences, getTastePreferenceOptions(locale), locale),
+      ...(prefs?.favorite_cuisines ?? []),
+    ]),
   ].filter(Boolean)
 
   const avoidTags = [
-    ...labelsFromStored(prefs?.food_restrictions, getFoodRestrictionOptions(locale)),
-    ...labelsFromStored(prefs?.dietary_customs, getDietaryCustomOptions(locale)),
+    ...labelsFromStored(prefs?.food_restrictions, getFoodRestrictionOptions(locale), locale),
+    ...labelsFromStored(prefs?.dietary_customs, getDietaryCustomOptions(locale), locale),
   ].filter((tag) => tag && tag !== '无' && tag !== '无忌口' && tag !== '无特殊忌口')
 
-  const regionTags = labelsFromStored(prefs?.common_areas, getCommonAreaOptions(locale))
+  const regionTags = labelsFromStored(prefs?.common_areas, getCommonAreaOptions(locale), locale)
   if (!regionTags.length && profile.location_city?.trim()) {
     regionTags.push(profile.location_city.trim())
   }
+
+  // #region agent log
+  fetch('http://127.0.0.1:7530/ingest/077fc56f-9998-421e-953f-c0c89307702f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'9a6481'},body:JSON.stringify({sessionId:'9a6481',hypothesisId:'H2',location:'profileReady.ts:getProfileReadyTagGroups',message:'resolved tags',data:{nickname:profile.nickname,dietStrategiesRaw:prefs?.diet_strategies,dietTags,avoidTags,regionTags},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
 
   return {
     goalLabel: summary.goalLabel,
@@ -129,8 +128,11 @@ export function getProfileReadySummary(profile: UserProfile, locale: AppLocale =
 
 export function getReadyPrioritiesFromProfile(profile: UserProfile): string[] {
   const remaining = getRemainingKcal(profile, getTodayConsumedKcal())
-  const train =
-    profile.training?.typical_session ?? profile.training?.next_session ?? '今日训练'
+  const train = resolveTrainingSessionLabel(
+    profile.training?.next_session && profile.training.next_session !== '—'
+      ? profile.training.next_session
+      : profile.training?.typical_session,
+  )
   return [
     `按今日剩余约 ${remaining} kcal 推荐午餐/外卖`,
     `结合「${train}」推荐附近场地或课程`,

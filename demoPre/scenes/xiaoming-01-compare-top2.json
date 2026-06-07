@@ -1,0 +1,14 @@
+{
+  "id": "xiaoming-01-compare-top2",
+  "profileId": "user_a",
+  "title": "小明对话1跟进：对比前两家外卖",
+  "match": {
+    "exact": ["帮我对比一下前两家哪家更适合中午吃"],
+    "keywordGroups": [["对比", "前两家"], ["中午", "外卖"]]
+  },
+  "assistant": {
+    "displayText": "中午吃的话，我会优先推荐 **Wagas**，其次是 **和风便当**。\n\n**Wagas 沃歌斯**更适合你想清淡、控热量的时候：沙拉/轻食组合更稳，蛋白质也够，吃完不太犯困。\n\n**和风便当**更有正餐感，但记得少酱、不点炸物，主食可以半份，这样下午不会太累。\n\n如果你今天想更严格一点，选 Wagas；如果想吃饱一点但仍可控，选和风便当少酱版。"
+  },
+  "stream": { "charsPerTick": 8, "tickMs": 20 },
+  "payload": { "scene_type": "takeout_guidance" }
+}

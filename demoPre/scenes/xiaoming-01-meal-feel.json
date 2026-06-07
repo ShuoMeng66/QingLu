@@ -1,0 +1,14 @@
+{
+  "id": "xiaoming-01-meal-feel",
+  "profileId": "user_a",
+  "title": "小明对话1跟进：哪家更有正餐感",
+  "match": {
+    "exact": ["这几家里哪家更有正餐感、又不会太撑"],
+    "keywordGroups": [["正餐感", "不太撑"], ["哪家", "正餐感"]]
+  },
+  "assistant": {
+    "displayText": "想要「有正餐感、又不太撑」，我会首推 **和风便当（少酱版）**，其次是 **粤小馆**。\n\n- **和风便当**：有主食+蛋白质，饱腹感更好，但记得少酱、不加炸物。\n- **粤小馆**：清蒸/粥品路线更温和，也有正餐感，不那么像吃草。\n- **Wagas** 最清淡，但正餐感相对弱一些，更适合严格控卡日。\n\n今天如果想均衡一点，选和风便当；如果想更清淡，选 Wagas。"
+  },
+  "stream": { "charsPerTick": 8, "tickMs": 20 },
+  "payload": { "scene_type": "takeout_guidance" }
+}

@@ -11,7 +11,6 @@ import {
   updateDemoPresentationMessages,
   DEMO_PRESENTATION_CONVERSATION_ID,
 } from '../demoPresentation'
-import { applyDemoProfile } from '../lib/demoProfiles'
 import { setDeveloperModeEnabled } from '../lib/developerMode'
 import { preloadDemoAssets } from '../demoPresentation/preloadDemoAssets'
 import { DEMO_RECORDING_BOOTSTRAP } from '../demoPresentation/recording'
@@ -32,10 +31,6 @@ export function useDemoPresentation() {
     window.addEventListener('qinglu:demo-presentation-changed', onChange)
     return () => window.removeEventListener('qinglu:demo-presentation-changed', onChange)
   }, [refresh])
-
-  useEffect(() => {
-    if (enabled) applyDemoProfile('user_a')
-  }, [enabled])
 
   useEffect(() => {
     if (!DEMO_RECORDING_BOOTSTRAP) return

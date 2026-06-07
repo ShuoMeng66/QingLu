@@ -21,9 +21,15 @@ function areaFromLocation(current: string): string {
 }
 
 function mapDemoToProfile(demo: DemoProfileRecord): UserProfile {
-  const restrictions = demo.dietary_restrictions.join('、')
-  const tastes = demo.taste_preferences.join('、')
+  const restrictions = demo.dietary_restrictions.filter(Boolean)
+  const tastes = demo.taste_preferences.filter(Boolean)
+  const cuisines = tastes.filter((t) => /中餐|粤菜|日料|西餐|轻食/.test(t))
+  const tastePrefs = tastes.filter((t) => !cuisines.includes(t))
   const area = areaFromLocation(demo.location.current)
+  const dietStrategies =
+    demo.training_type === 'strength'
+      ? ['高蛋白', '低脂', '控碳']
+      : ['高蛋白', '控碳', '均衡']
   return {
     user_id: demo.id,
     nickname: demo.name,
@@ -50,11 +56,14 @@ function mapDemoToProfile(demo: DemoProfileRecord): UserProfile {
       next_session: demo.today.training_plan,
     },
     preferences: {
-      favorite_cuisines: tastes.split('、').filter(Boolean),
-      avoid: restrictions.split('、').filter(Boolean),
-      diet_strategies: ['high_protein', 'low_fat', 'carb_control', 'light'],
-      food_restrictions: ['low_fat', 'offal', 'fried'],
-      common_areas: ['near_company'],
+      favorite_cuisines: cuisines.length > 0 ? cuisines : tastes,
+      taste_preferences: tastePrefs.length > 0 ? tastePrefs : tastes,
+      dietary_customs: restrictions,
+      diet_strategies: dietStrategies,
+      food_restrictions: [],
+      common_areas: ['公司附近'],
+      takeout_budget: demo.budget_per_meal_yuan >= 50 ? '50+' : '30-50',
+      dining_budget: '100-200',
     },
     location_city: area || demo.location.city,
     profile_complete: true,
@@ -76,6 +85,10 @@ export function getActiveDemoProfileId(): string | null {
 export function applyDemoProfile(id: string): DemoProfileRecord | null {
   const demo = getDemoProfileById(id)
   if (!demo) return null
+
+  // #region agent log
+  fetch('http://127.0.0.1:7530/ingest/077fc56f-9998-421e-953f-c0c89307702f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'9a6481'},body:JSON.stringify({sessionId:'9a6481',hypothesisId:'H1',location:'demoProfiles.ts:applyDemoProfile',message:'apply demo profile',data:{id,demoName:demo.name},timestamp:Date.now()})}).catch(()=>{});
+  // #endregion
 
   sessionStorage.setItem(DEMO_PROFILE_SESSION_KEY, id)
   replaceUserProfile(mapDemoToProfile(demo))

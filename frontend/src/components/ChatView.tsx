@@ -635,7 +635,7 @@ export function ChatView({
                   <button
                     type="button"
                     className="chat-back-home-link"
-                    onClick={() => navigate('/')}
+                    onClick={() => navigate('/?stay=1')}
                   >
                     {t('chat.backToHome')}
                   </button>

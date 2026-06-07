@@ -3,6 +3,66 @@ import type { DemoScene } from './types'
 
 export const DEMO_SCENES: DemoScene[] = [
   {
+    "id": "xiaoming-01-compare-top2",
+    "profileId": "user_a",
+    "title": "小明对话1跟进：对比前两家外卖",
+    "match": {
+      "exact": [
+        "帮我对比一下前两家哪家更适合中午吃"
+      ],
+      "keywordGroups": [
+        [
+          "对比",
+          "前两家"
+        ],
+        [
+          "中午",
+          "外卖"
+        ]
+      ]
+    },
+    "assistant": {
+      "displayText": "中午吃的话，我会优先推荐 **Wagas**，其次是 **和风便当**。\n\n**Wagas 沃歌斯**更适合你想清淡、控热量的时候：沙拉/轻食组合更稳，蛋白质也够，吃完不太犯困。\n\n**和风便当**更有正餐感，但记得少酱、不点炸物，主食可以半份，这样下午不会太累。\n\n如果你今天想更严格一点，选 Wagas；如果想吃饱一点但仍可控，选和风便当少酱版。"
+    },
+    "stream": {
+      "charsPerTick": 8,
+      "tickMs": 20
+    },
+    "payload": {
+      "scene_type": "takeout_guidance"
+    }
+  },
+  {
+    "id": "xiaoming-01-meal-feel",
+    "profileId": "user_a",
+    "title": "小明对话1跟进：哪家更有正餐感",
+    "match": {
+      "exact": [
+        "这几家里哪家更有正餐感、又不会太撑"
+      ],
+      "keywordGroups": [
+        [
+          "正餐感",
+          "不太撑"
+        ],
+        [
+          "哪家",
+          "正餐感"
+        ]
+      ]
+    },
+    "assistant": {
+      "displayText": "想要「有正餐感、又不太撑」，我会首推 **和风便当（少酱版）**，其次是 **粤小馆**。\n\n- **和风便当**：有主食+蛋白质，饱腹感更好，但记得少酱、不加炸物。\n- **粤小馆**：清蒸/粥品路线更温和，也有正餐感，不那么像吃草。\n- **Wagas** 最清淡，但正餐感相对弱一些，更适合严格控卡日。\n\n今天如果想均衡一点，选和风便当；如果想更清淡，选 Wagas。"
+    },
+    "stream": {
+      "charsPerTick": 8,
+      "tickMs": 20
+    },
+    "payload": {
+      "scene_type": "takeout_guidance"
+    }
+  },
+  {
     "id": "xiaoming-01-takeout-lunch",
     "profileId": "user_a",
     "title": "小明对话1：中午外卖推荐",
@@ -279,6 +339,66 @@ export const DEMO_SCENES: DemoScene[] = [
     }
   },
   {
+    "id": "xiaoming-02-pick-first",
+    "profileId": "user_a",
+    "title": "小明对话2跟进：Wagas和火锅选哪家",
+    "match": {
+      "exact": [
+        "聚餐的话，第一家 Wagas 和第二家火锅你更推荐哪家？"
+      ],
+      "keywordGroups": [
+        [
+          "Wagas",
+          "火锅"
+        ],
+        [
+          "第一家",
+          "第二家"
+        ]
+      ]
+    },
+    "assistant": {
+      "displayText": "如果是 **4 人朋友聚餐、又不想扫大家兴**，我会更推荐 **左庭右院鲜牛肉火锅**，而不是第一家 Wagas。\n\n**为什么优先火锅：**\n- 氛围更适合朋友一起吃，聊天更自然\n- 鲜牛肉蛋白质高，清汤锅底+少蘸料可以尽量可控\n- 大家选择多，不容易因为你在减脂而显得「太讲究」\n\n**什么时候选 Wagas：**\n- 朋友也愿意吃轻食、想吃得特别清淡\n- 你想把热量控得更严格\n\n综合社交氛围和可控性，这次聚餐我会首推火锅，你自己按之前说的点菜方式控制就好。"
+    },
+    "stream": {
+      "charsPerTick": 8,
+      "tickMs": 20
+    },
+    "payload": {
+      "scene_type": "dining_guidance"
+    }
+  },
+  {
+    "id": "xiaoming-03-pilates-vs-yoga",
+    "profileId": "user_a",
+    "title": "小明对话3跟进：普拉提和瑜伽选哪个",
+    "match": {
+      "exact": [
+        "新手塑形的话，普拉提和瑜伽哪个更适合我"
+      ],
+      "keywordGroups": [
+        [
+          "普拉提",
+          "瑜伽"
+        ],
+        [
+          "新手",
+          "塑形"
+        ]
+      ]
+    },
+    "assistant": {
+      "displayText": "新手塑形的话，**普拉提通常更适合作为第一条线**，瑜伽可以作为补充。\n\n**普拉提更适合你如果：**\n- 想改善体态、核心稳定\n- 久坐多、想练得更「有结构」\n- 能接受慢一点、但更精准的动作\n\n**瑜伽更适合你如果：**\n- 肩颈更紧、想先放松再轻塑形\n- 更喜欢拉伸感和呼吸节奏\n\n对你现在「减脂+塑形」的目标，我会建议：**先普拉提打基础，第二天或周末再安排瑜伽放松**。第一次都选基础小班课，不要直接上高阶课。"
+    },
+    "stream": {
+      "charsPerTick": 8,
+      "tickMs": 20
+    },
+    "payload": {
+      "scene_type": "venue_guidance"
+    }
+  },
+  {
     "id": "xiaoming-03-pilates-yoga",
     "profileId": "user_a",
     "title": "小明对话3：普拉提/瑜伽馆推荐",
@@ -393,6 +513,96 @@ export const DEMO_SCENES: DemoScene[] = [
           }
         }
       ]
+    }
+  },
+  {
+    "id": "xiaoming-03-weekend-plan",
+    "profileId": "user_a",
+    "title": "小明对话3跟进：周末聚餐和普拉提搭配",
+    "match": {
+      "exact": [
+        "周末聚餐和普拉提怎么搭配比较好"
+      ],
+      "keywordGroups": [
+        [
+          "周末",
+          "聚餐"
+        ],
+        [
+          "聚餐",
+          "普拉提"
+        ]
+      ]
+    },
+    "assistant": {
+      "displayText": "周末如果既有聚餐又有普拉提，建议这样安排：\n\n**更稳的组合：**\n- **周六**：普拉提/瑜伽（上午或下午）\n- **周六晚**：聚餐（按「适合点」控制）\n- **周日**：散步/轻拉伸恢复，不再安排高强度课\n\n**不建议：**\n- 聚餐当晚立刻去练普拉提（尤其核心课）\n- 聚餐第二天直接上高阶器械课\n\n这样既能社交不扫兴，又不会因为周末两件事情叠在一起让身体太疲劳。"
+    },
+    "stream": {
+      "charsPerTick": 8,
+      "tickMs": 20
+    },
+    "payload": {
+      "scene_type": "venue_guidance"
+    }
+  },
+  {
+    "id": "xiaoming-04-headspa-vs-massage",
+    "profileId": "user_a",
+    "title": "小明对话4跟进：头疗和按摩选哪个",
+    "match": {
+      "exact": [
+        "久坐肩颈紧的话，头疗和按摩哪个更适合"
+      ],
+      "keywordGroups": [
+        [
+          "头疗",
+          "按摩"
+        ],
+        [
+          "肩颈",
+          "久坐"
+        ]
+      ]
+    },
+    "assistant": {
+      "displayText": "久坐肩颈紧的话，**头疗通常更适合第一次放松**；如果你更想按肩颈、腰背，可以选按摩。\n\n**优先头疗（云间头疗）如果：**\n- 主要是久坐、头昏脑胀、肩颈紧\n- 想要生活化放松，不要太「医疗感」\n\n**优先按摩（静悦按摩）如果：**\n- 你想整体舒服一点、下班放松\n- 肩颈+足疗都想兼顾\n\n对你现在的情况，我会首推 **头疗+肩颈舒缓套餐**，力度选中轻，先放松再考虑深层按压。"
+    },
+    "stream": {
+      "charsPerTick": 8,
+      "tickMs": 20
+    },
+    "payload": {
+      "scene_type": "recovery_guidance"
+    }
+  },
+  {
+    "id": "xiaoming-04-post-pilates-recovery",
+    "profileId": "user_a",
+    "title": "小明对话4跟进：普拉提后怎么恢复",
+    "match": {
+      "exact": [
+        "做完普拉提后怎么安排放松恢复"
+      ],
+      "keywordGroups": [
+        [
+          "普拉提",
+          "恢复"
+        ],
+        [
+          "做完",
+          "放松"
+        ]
+      ]
+    },
+    "assistant": {
+      "displayText": "做完普拉提后，恢复可以按这个顺序来：\n\n1. **当天课后 10–15 分钟**：自助拉伸（髋屈肌、胸椎、肩颈）\n2. **如果腿部或肩颈还紧**：去 **轻松拉伸馆** 做基础全身拉伸\n3. **如果只是整体疲劳**：**静悦按摩** 选中轻力度肩颈放松\n\n**不建议：**\n- 课后立刻高强度按摩或深层按压\n- 同一天再安排力量课或跑步\n\n普拉提后的目标是「松下来」，不是再叠加一层刺激。"
+    },
+    "stream": {
+      "charsPerTick": 8,
+      "tickMs": 20
+    },
+    "payload": {
+      "scene_type": "recovery_guidance"
     }
   },
   {
@@ -511,6 +721,36 @@ export const DEMO_SCENES: DemoScene[] = [
     }
   },
   {
+    "id": "xiaotian-02-compare-top2",
+    "profileId": "user_b",
+    "title": "小天对话2跟进：对比前两家外卖",
+    "match": {
+      "exact": [
+        "牛排轻食碗和鸡胸藜麦沙拉哪个更适合今天"
+      ],
+      "keywordGroups": [
+        [
+          "牛排轻食碗",
+          "鸡胸藜麦沙拉"
+        ],
+        [
+          "对比",
+          "前两家"
+        ]
+      ]
+    },
+    "assistant": {
+      "displayText": "今天严格控卡的话，**鸡胸藜麦沙拉更适合**；如果你想训练后更有饱腹感、蛋白质也更高，可以选 **牛排轻食碗**。\n\n**鸡胸藜麦沙拉：**\n- 热量更可控，更适合今天剩余热量较紧的情况\n- 蛋白质够，但饱腹感略弱\n\n**牛排轻食碗：**\n- 更有正餐感，蛋白质更高\n- 更适合训练后补充，但热量也更高\n\n如果今天已经练过或计划晚上练，牛排碗可以；如果今天想更严格，沙拉更稳。"
+    },
+    "stream": {
+      "charsPerTick": 8,
+      "tickMs": 20
+    },
+    "payload": {
+      "scene_type": "takeout_guidance"
+    }
+  },
+  {
     "id": "xiaotian-02-strict-takeout",
     "profileId": "user_b",
     "title": "小天对话2：严格外卖推荐",
@@ -616,6 +856,36 @@ export const DEMO_SCENES: DemoScene[] = [
           }
         }
       ]
+    }
+  },
+  {
+    "id": "xiaotian-02-training-day-meal",
+    "profileId": "user_b",
+    "title": "小天对话2跟进：拉日训练怎么吃",
+    "match": {
+      "exact": [
+        "拉日训练的话这份外卖怎么搭配更好"
+      ],
+      "keywordGroups": [
+        [
+          "拉日",
+          "外卖"
+        ],
+        [
+          "训练日",
+          "怎么吃"
+        ]
+      ]
+    },
+    "assistant": {
+      "displayText": "拉日训练日点外卖，原则是：**高蛋白、适量碳水、少油少酱**。\n\n**更推荐的搭配：**\n- **牛排轻食碗**：训练后补充蛋白质和碳水，记得酱汁分开放\n- **清蒸鱼套餐**：更清淡，适合想控油的日子\n\n**怎么吃更好：**\n- 训练前 1.5–2 小时可先吃一部分碳水\n- 训练后优先补蛋白质，碳水适量别过量\n- 饮料选无糖，别加甜品\n\n今天如果热量预算紧，优先清蒸鱼；如果要支撑拉背训练，牛排碗更合适。"
+    },
+    "stream": {
+      "charsPerTick": 8,
+      "tickMs": 20
+    },
+    "payload": {
+      "scene_type": "takeout_guidance"
     }
   },
   {
@@ -735,6 +1005,66 @@ export const DEMO_SCENES: DemoScene[] = [
           }
         }
       ]
+    }
+  },
+  {
+    "id": "xiaotian-03-pull-day-activities",
+    "profileId": "user_b",
+    "title": "小天对话3跟进：拉日和活动怎么搭配",
+    "match": {
+      "exact": [
+        "拉日训练的话这些活动怎么安排比较好"
+      ],
+      "keywordGroups": [
+        [
+          "拉日",
+          "活动"
+        ],
+        [
+          "拉日训练",
+          "怎么安排"
+        ]
+      ]
+    },
+    "assistant": {
+      "displayText": "拉日训练日安排这些活动，建议这样搭配：\n\n**拉日当天：**\n- 不建议 HIIT 或高强度网球对打（前臂、背部恢复压力大）\n- 可以改成散步、低强度挥拍体验课\n\n**拉日后 1 天：**\n- 可以安排 **网球基础课/陪练** 或 **攀岩体验**（强度适中）\n- 攀岩不要放在拉日后第一天，前臂和背部容易叠加疲劳\n\n**更稳的周安排：**\n- 拉日 → 休息/拉伸 → 网球或轻有氧 → 下次力量日前避免攀岩\n\n核心原则：**别把两个都很吃前臂、背部恢复的活动挤在同一天或相邻两天。**"
+    },
+    "stream": {
+      "charsPerTick": 8,
+      "tickMs": 20
+    },
+    "payload": {
+      "scene_type": "activity_guidance"
+    }
+  },
+  {
+    "id": "xiaotian-03-tennis-vs-hiit",
+    "profileId": "user_b",
+    "title": "小天对话3跟进：网球和HIIT选哪个",
+    "match": {
+      "exact": [
+        "减脂期的话网球和 HIIT 哪个更适合我"
+      ],
+      "keywordGroups": [
+        [
+          "网球",
+          "HIIT"
+        ],
+        [
+          "减脂期",
+          "哪个更适合"
+        ]
+      ]
+    },
+    "assistant": {
+      "displayText": "减脂期的话，**HIIT 短期燃脂效率更高**，但 **网球更适合作为力量训练外的有氧补充**，不那么压榨恢复。\n\n**选 HIIT 如果：**\n- 今天没有大重量腿背训练\n- 你想提高心肺、短时间拉高消耗\n\n**选网球如果：**\n- 你想更有趣、更容易坚持\n- 本周训练量已经偏高，不想恢复压力过大\n- 想练协调性、移动和反应\n\n你有 3 年训练基础，**更推荐网球做有氧补充**；只有在你状态很好、当天没练腿时，再上 HIIT。"
+    },
+    "stream": {
+      "charsPerTick": 8,
+      "tickMs": 20
+    },
+    "payload": {
+      "scene_type": "activity_guidance"
     }
   }
 ]

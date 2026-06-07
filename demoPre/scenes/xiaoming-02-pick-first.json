@@ -1,0 +1,14 @@
+{
+  "id": "xiaoming-02-pick-first",
+  "profileId": "user_a",
+  "title": "小明对话2跟进：Wagas和火锅选哪家",
+  "match": {
+    "exact": ["聚餐的话，第一家 Wagas 和第二家火锅你更推荐哪家？"],
+    "keywordGroups": [["Wagas", "火锅"], ["第一家", "第二家"]]
+  },
+  "assistant": {
+    "displayText": "如果是 **4 人朋友聚餐、又不想扫大家兴**，我会更推荐 **左庭右院鲜牛肉火锅**，而不是第一家 Wagas。\n\n**为什么优先火锅：**\n- 氛围更适合朋友一起吃，聊天更自然\n- 鲜牛肉蛋白质高，清汤锅底+少蘸料可以尽量可控\n- 大家选择多，不容易因为你在减脂而显得「太讲究」\n\n**什么时候选 Wagas：**\n- 朋友也愿意吃轻食、想吃得特别清淡\n- 你想把热量控得更严格\n\n综合社交氛围和可控性，这次聚餐我会首推火锅，你自己按之前说的点菜方式控制就好。"
+  },
+  "stream": { "charsPerTick": 8, "tickMs": 20 },
+  "payload": { "scene_type": "dining_guidance" }
+}

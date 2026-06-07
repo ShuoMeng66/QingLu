@@ -1,0 +1,14 @@
+{
+  "id": "xiaotian-03-tennis-vs-hiit",
+  "profileId": "user_b",
+  "title": "小天对话3跟进：网球和HIIT选哪个",
+  "match": {
+    "exact": ["减脂期的话网球和 HIIT 哪个更适合我"],
+    "keywordGroups": [["网球", "HIIT"], ["减脂期", "哪个更适合"]]
+  },
+  "assistant": {
+    "displayText": "减脂期的话，**HIIT 短期燃脂效率更高**，但 **网球更适合作为力量训练外的有氧补充**，不那么压榨恢复。\n\n**选 HIIT 如果：**\n- 今天没有大重量腿背训练\n- 你想提高心肺、短时间拉高消耗\n\n**选网球如果：**\n- 你想更有趣、更容易坚持\n- 本周训练量已经偏高，不想恢复压力过大\n- 想练协调性、移动和反应\n\n你有 3 年训练基础，**更推荐网球做有氧补充**；只有在你状态很好、当天没练腿时，再上 HIIT。"
+  },
+  "stream": { "charsPerTick": 8, "tickMs": 20 },
+  "payload": { "scene_type": "activity_guidance" }
+}

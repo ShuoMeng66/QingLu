@@ -1,0 +1,14 @@
+{
+  "id": "xiaoming-04-post-pilates-recovery",
+  "profileId": "user_a",
+  "title": "小明对话4跟进：普拉提后怎么恢复",
+  "match": {
+    "exact": ["做完普拉提后怎么安排放松恢复"],
+    "keywordGroups": [["普拉提", "恢复"], ["做完", "放松"]]
+  },
+  "assistant": {
+    "displayText": "做完普拉提后，恢复可以按这个顺序来：\n\n1. **当天课后 10–15 分钟**：自助拉伸（髋屈肌、胸椎、肩颈）\n2. **如果腿部或肩颈还紧**：去 **轻松拉伸馆** 做基础全身拉伸\n3. **如果只是整体疲劳**：**静悦按摩** 选中轻力度肩颈放松\n\n**不建议：**\n- 课后立刻高强度按摩或深层按压\n- 同一天再安排力量课或跑步\n\n普拉提后的目标是「松下来」，不是再叠加一层刺激。"
+  },
+  "stream": { "charsPerTick": 8, "tickMs": 20 },
+  "payload": { "scene_type": "recovery_guidance" }
+}
