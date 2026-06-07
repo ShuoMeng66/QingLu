@@ -2,7 +2,6 @@ import type { AppLocale } from './i18n/localeIds'
 import { getGoalOptions } from './i18n/chatCopy'
 import { getTodayConsumedKcal } from './mealLog'
 import { replaceTodaySnapshot } from './todaySnapshot'
-import { getActiveDemoProfileId, getDemoProfileById } from './demoProfiles'
 import {
   finalizeUserProfile,
   getRemainingKcal,
@@ -10,7 +9,6 @@ import {
   loadUserProfile,
   type UserProfile,
 } from './userProfile'
-
 import {
   formatPreferencesForPrompt,
   getCommonAreaOptions,
@@ -36,19 +34,13 @@ function resolveLocationLabel(profile: UserProfile): string {
 }
 
 export function syncTodayFromProfile(profile: UserProfile): void {
-  const demoId = getActiveDemoProfileId()
-  const demo = demoId ? getDemoProfileById(demoId) : undefined
   const consumed = getTodayConsumedKcal()
-  const remaining =
-    demo?.today.remaining_kcal ?? getRemainingKcal(profile, consumed)
+  const remaining = getRemainingKcal(profile, consumed)
   const trainingPlan =
-    demo?.today.training_plan ??
     profile.training?.next_session ??
     profile.training?.typical_session ??
     '今日训练'
-  const locationLabel = demo
-    ? areaFromLocation(demo.location.current)
-    : resolveLocationLabel(profile)
+  const locationLabel = resolveLocationLabel(profile)
 
   replaceTodaySnapshot({
     remaining_kcal: remaining,
@@ -57,11 +49,6 @@ export function syncTodayFromProfile(profile: UserProfile): void {
     body_status: '正常',
     special_note: '',
   })
-}
-
-function areaFromLocation(current: string): string {
-  const parts = current.split('·')
-  return parts.length > 1 ? parts[parts.length - 1]!.trim() : current.trim()
 }
 
 export interface ProfileReadyTagGroups {
@@ -142,11 +129,6 @@ export function completeOnboardingProfile(draft: UserProfile): UserProfile | nul
   const next = finalizeUserProfile(draft)
   if (!isProfileComplete(next)) return null
   syncTodayFromProfile(next)
-  try {
-    sessionStorage.removeItem('qinglu.demoProfileId')
-  } catch {
-    /* ignore */
-  }
   return next
 }
 

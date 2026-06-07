@@ -5,14 +5,6 @@ import { sendChat, streamChat } from '../lib/openclaw'
 import { createMessageId } from '../lib/storage'
 import { debugPerf } from '../lib/debugPerf'
 import { splitAssistantStructured } from '../lib/assistantStructured'
-import {
-  buildSceneDraft,
-  isDemoPresentationEnabled,
-  matchDemoScene,
-  resolveDemoStreamOptions,
-  streamDemoDraft,
-} from '../demoPresentation'
-import { applyDemoProfile } from '../lib/demoProfiles'
 import type { ChatMessage, OpenClawConfig } from '../types/openclaw'
 
 export interface StreamRevealContext {
@@ -228,96 +220,6 @@ export function useChatStream({
     ) => {
       const mergedOptions = mergeStreamOptions(getStreamSendOptions?.(), options)
 
-      if (isDemoPresentationEnabled()) {
-        const userText = lastUserMessage(apiMessages)
-        const scene = matchDemoScene(userText)
-        if (!scene) {
-          const assistantId = createMessageId()
-          patchMessages(conversationId, (current) => [
-            ...current,
-            {
-              id: assistantId,
-              role: 'assistant',
-              content:
-                '演示模式：未匹配到脚本。请先发送聚餐主对话，再点击「点菜怎么控制热量」跟进芯片，或使用演示脚本中的原句提问。',
-              status: 'done',
-            },
-          ])
-          return
-        }
-
-        if (scene.profileId) {
-          applyDemoProfile(scene.profileId)
-        }
-
-        const assistantId = createMessageId()
-        const controller = new AbortController()
-        const draft = buildSceneDraft(scene)
-        const { charsPerTick, tickMs } = resolveDemoStreamOptions(scene)
-
-        abortRef.current = controller
-        streamConversationRef.current = conversationId
-        setLoading(true)
-
-        patchMessages(conversationId, (current) => [
-          ...current,
-          {
-            id: assistantId,
-            role: 'assistant',
-            content: '',
-            streaming: true,
-          },
-        ])
-
-        const finishStream = () => {
-          if (streamConversationRef.current === conversationId) {
-            setLoading(false)
-            abortRef.current = null
-            streamConversationRef.current = null
-          }
-        }
-
-        try {
-          await streamDemoDraft({
-            draft,
-            conversationId,
-            assistantId,
-            charsPerTick,
-            tickMs,
-            signal: controller.signal,
-            isActive: () => streamConversationRef.current === conversationId,
-            onContent: (content) => {
-              patchMessages(conversationId, (current) =>
-                current.map((item) =>
-                  item.id === assistantId
-                    ? { ...item, content, streaming: true }
-                    : item,
-                ),
-              )
-            },
-          })
-
-          if (controller.signal.aborted) {
-            finalizeConversationStreaming(conversationId)
-            return
-          }
-
-          if (streamConversationRef.current === conversationId) {
-            await revealAssistant(
-              conversationId,
-              assistantId,
-              draft,
-              apiMessages,
-              mergedOptions,
-              controller.signal,
-            )
-          }
-        } finally {
-          finishStream()
-        }
-        return
-      }
-
       const assistantId = createMessageId()
       const controller = new AbortController()
       let systemPrompt = mergedOptions?.systemPrompt
@@ -472,7 +374,7 @@ export function useChatStream({
       const trimmed = content.trim()
       if (!trimmed || loading) return
 
-      if (!connected && !isDemoPresentationEnabled()) {
+      if (!connected) {
         toast(t('toast.needConnection'), 'error')
         onNeedSettings()
         return
@@ -505,7 +407,7 @@ export function useChatStream({
   }, [activeId, abortStream, finalizeConversationStreaming, loading, toast])
 
   const requireConnected = useCallback(() => {
-    if (connected || isDemoPresentationEnabled()) return true
+    if (connected) return true
     toast(t('toast.needConnection'), 'error')
     onNeedSettings()
     return false

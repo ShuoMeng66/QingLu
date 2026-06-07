@@ -14,9 +14,7 @@ import type { Conversation } from '../types/conversation'
 import type { ClusterTurn, MessageFeedback } from '../types/agentCluster'
 import type { YiqidongConfig } from '../lib/yiqidong'
 import { getFeedbackForMessage } from '../lib/agentFeedback'
-import { isFoodIntent, isGymIntent, isRecoveryIntent } from '../lib/recommendationIntent'
 import { updateTrajectoryFeedback } from '../lib/trajectoryLogger'
-import { createMessageId } from '../lib/storage'
 import { useToast } from '../context/ToastContext'
 import { usePreferences } from '../context/PreferencesContext'
 import { useUserLocation } from '../hooks/useUserLocation'
@@ -29,7 +27,6 @@ import { MessageAssistantToolbar } from './qinglu/MessageAssistantToolbar'
 import { enrichCardsWithGeocode } from '../lib/skillVenueMatch'
 import { enrichCardsWithFacade } from '../lib/venueEnrichment'
 import { debugPerf } from '../lib/debugPerf'
-import { formatDistance, formatWalkMinutes } from '../lib/userLocation'
 import { AppShell } from './qinglu/AppShell'
 import { QingluLogo } from './qinglu/QingluLogo'
 import { UserAccountAvatar } from './auth/UserAccountAvatar'
@@ -47,7 +44,6 @@ import { RichCard } from './qinglu/RichCard'
 import { TakeoutVenueCard } from './qinglu/TakeoutVenueCard'
 import { PageTransition } from './layout/PageTransition'
 import { usePersistedBoolean } from '../hooks/usePersistedBoolean'
-import { DEMO_RECORDING_BOOTSTRAP } from '../demoPresentation/recording'
 
 const STORAGE_HISTORY_COLLAPSED = 'qinglu.chat.historyCollapsed'
 
@@ -93,7 +89,6 @@ interface ChatViewProps {
   input: string
   loading: boolean
   connected: boolean
-  demoPresentationEnabled?: boolean
   status: ConnectionStatus
   statusMessage?: string
   clusterTurn: ClusterTurn
@@ -120,40 +115,11 @@ interface ChatViewProps {
 }
 
 
-function buildDemoReply(
-  prompt: string,
-  food: ReturnType<typeof useNearbyRecommendations>['food'],
-  gym: ReturnType<typeof useNearbyRecommendations>['gym'],
-  recovery: ReturnType<typeof useNearbyRecommendations>['recovery'],
-): string {
-  if (isFoodIntent(prompt) && food) {
-    return `根据你的位置，推荐「${food.name}」，距离约 ${formatDistance(food.distanceM)}（步行 ${formatWalkMinutes(food.distanceM)}）。可在对话里告诉我你的口味偏好，我再帮你细化选择。`
-  }
-  if (isGymIntent(prompt) && gym) {
-    return `附近找到「${gym.name}」，距离约 ${formatDistance(gym.distanceM)}，步行 ${formatWalkMinutes(gym.distanceM)}。告诉我你的训练目标，我可以帮你安排具体动作。`
-  }
-  if (isRecoveryIntent(prompt) && recovery) {
-    return `附近可以去「${recovery.name}」做恢复性散步和拉伸，距离约 ${formatDistance(recovery.distanceM)}。我也可以给你一套练后放松动作。`
-  }
-  if (isRecoveryIntent(prompt)) {
-    return '练完腿建议做 20 分钟静态拉伸：泡沫轴放松股四头肌、腘绳肌，再配合猫式与鸽子式，能缓解延迟性酸痛。'
-  }
-  if (/运动|计划|训练|move|workout|plan/i.test(prompt)) {
-    return '告诉我今天的可用时间和训练目标，我可以帮你安排具体的运动计划与饮食搭配。'
-  }
-  return '好的，我来帮你安排。请告诉我更多细节～'
-}
-
-function sleep(ms: number) {
-  return new Promise<void>((resolve) => window.setTimeout(resolve, ms))
-}
-
 export function ChatView({
   messages,
   input,
   loading,
   connected,
-  demoPresentationEnabled = false,
   status,
   statusMessage,
   clusterTurn,
@@ -191,8 +157,6 @@ export function ChatView({
   const [profileSheetOpen, setProfileSheetOpen] = useState(false)
   const [todayStatusOpen, setTodayStatusOpen] = useState(false)
   const [discoveryHidden, setDiscoveryHidden] = useState(false)
-  const [demoMessages, setDemoMessages] = useState<ChatMessage[]>([])
-  const [isTyping, setIsTyping] = useState(false)
   const [geoCardsByMessageId, setGeoCardsByMessageId] = useState<
     Record<string, DetailSheetData[]>
   >({})
@@ -200,10 +164,10 @@ export function ChatView({
   const { location } = useUserLocation({
     enabled: preferences.locationShare,
   })
-  const { food, foodPlaces, gym, recovery, loading: nearbyLoading } =
+  const { foodPlaces, gym, recovery, loading: nearbyLoading } =
     useNearbyRecommendations(location)
 
-  const useDemo = !connected && status !== 'checking' && !demoPresentationEnabled
+  const showNotConnectedBanner = !connected && status !== 'checking'
   const connectionLabel =
     status === 'checking'
       ? t('chat.statusChecking')
@@ -212,8 +176,8 @@ export function ChatView({
           ? t('chat.statusWorking')
           : t('chat.statusOnline')
         : t('chat.statusOffline')
-  const displayMessages = useDemo ? demoMessages : messages
-  const isBusy = loading || isTyping
+  const displayMessages = messages
+  const isBusy = loading
 
   const venueCardsCacheRef = useRef<Record<string, DetailSheetData[]>>({})
   const lastVenueEnrichRef = useRef<{ messageId: string; contentLen: number } | null>(
@@ -353,58 +317,27 @@ export function ChatView({
     setIsSheetOpen(true)
   }, [])
 
-  const handleQuickAction = useCallback(
-    async (prompt: string) => {
-      if (isBusy) return
-
-      if (connected) {
-        onInputChange('')
-        onQuickPrompt(prompt)
-        return
-      }
-
-      onInputChange('')
-
-      setDemoMessages((current) => [
-        ...current,
-        { id: createMessageId(), role: 'user', content: prompt },
-      ])
-      setIsTyping(true)
-      await sleep(2000)
-      setIsTyping(false)
-      setDemoMessages((current) => [
-        ...current,
-        {
-          id: createMessageId(),
-          role: 'assistant',
-          content: buildDemoReply(prompt, food, gym, recovery),
-          status: 'done',
-        },
-      ])
-    },
-    [connected, food, gym, recovery, isBusy, onInputChange, onQuickPrompt],
-  )
-
   const handleQuickGridSelect = useCallback(
     (prompt: string, scene?: TaskSceneType) => {
       if (isBusy) return
-      if (connected) {
-        onInputChange('')
-        void onQuickPrompt(
-          prompt,
-          scene ? { sceneType: scene, autoSend: true } : { autoSend: true },
-        )
+      if (!connected) {
+        toast(t('toast.needConnection'), 'error')
+        navigate('/settings')
         return
       }
-      void handleQuickAction(prompt)
+      onInputChange('')
+      void onQuickPrompt(
+        prompt,
+        scene ? { sceneType: scene, autoSend: true } : { autoSend: true },
+      )
     },
-    [connected, handleQuickAction, isBusy, onInputChange, onQuickPrompt],
+    [connected, isBusy, navigate, onInputChange, onQuickPrompt, t, toast],
   )
 
   const lastAssistantId = [...displayMessages]
     .reverse()
     .find((message) => message.role === 'assistant')?.id
-  const isEmpty = displayMessages.length === 0 && !isTyping
+  const isEmpty = displayMessages.length === 0
 
   const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
     bottomRef.current?.scrollIntoView({ behavior })
@@ -427,9 +360,9 @@ export function ChatView({
   useEffect(() => {
     if (!pinnedToBottomRef.current) return
     scrollToBottom(
-      displayMessages.some((message) => message.streaming) || isTyping ? 'auto' : 'smooth',
+      displayMessages.some((message) => message.streaming) ? 'auto' : 'smooth',
     )
-  }, [displayMessages, isTyping, scrollToBottom, clusterTurn.phase, clusterTurn.score])
+  }, [displayMessages, scrollToBottom, clusterTurn.phase, clusterTurn.score])
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -458,96 +391,29 @@ export function ChatView({
     toast(vote === 'up' ? t('toast.feedbackThanks') : t('toast.feedbackImprove'), 'success')
   }
 
-  const runDemoAssistantReply = useCallback(
-    async (userContent: string, baseMessages: ChatMessage[]) => {
-      setDemoMessages(baseMessages)
-      setIsTyping(true)
-      await sleep(2000)
-      setIsTyping(false)
-      setDemoMessages((current) => [
-        ...current,
-        {
-          id: createMessageId(),
-          role: 'assistant',
-          content: buildDemoReply(userContent, food, gym, recovery),
-          status: 'done',
-        },
-      ])
-    },
-    [food, gym, recovery],
-  )
-
   const handleRegenerateClick = useCallback(() => {
     if (isBusy) return
-
-    if (useDemo) {
-      const lastAssistantIndex = demoMessages.findLastIndex((message) => message.role === 'assistant')
-      if (lastAssistantIndex < 0) return
-
-      const kept = demoMessages.slice(0, lastAssistantIndex)
-      const lastUser = [...kept].reverse().find((message) => message.role === 'user')
-      if (!lastUser) return
-
-      toast(t('toast.regenerating'))
-      void runDemoAssistantReply(lastUser.content, kept)
-      return
-    }
-
     toast(t('toast.regenerating'))
     void onRegenerate()
-  }, [demoMessages, isBusy, onRegenerate, runDemoAssistantReply, toast, t, useDemo])
+  }, [isBusy, onRegenerate, toast, t])
 
   const handleEditClick = useCallback(
     (messageId: string, content: string) => {
       if (isBusy) return
-
-      if (useDemo) {
-        const index = demoMessages.findIndex((message) => message.id === messageId)
-        if (index === -1 || demoMessages[index]?.role !== 'user') return
-
-        const editedMessage = { ...demoMessages[index], content }
-        const kept = [...demoMessages.slice(0, index), editedMessage]
-
-        toast(t('toast.editingResend'))
-        void runDemoAssistantReply(content, kept)
-        return
-      }
-
       toast(t('toast.editingResend'))
       void onEditMessage(messageId, content)
     },
-    [demoMessages, isBusy, onEditMessage, runDemoAssistantReply, toast, t, useDemo],
+    [isBusy, onEditMessage, toast, t],
   )
 
   const handleRetryClick = useCallback(
     (messageId: string) => {
       if (isBusy) return
-
-      if (useDemo) {
-        const index = demoMessages.findIndex((message) => message.id === messageId)
-        if (index === -1) return
-
-        const kept = demoMessages.slice(0, index)
-        const lastUser = [...kept].reverse().find((message) => message.role === 'user')
-        if (!lastUser) return
-
-        toast(t('toast.regenerating'))
-        void runDemoAssistantReply(lastUser.content, kept)
-        return
-      }
-
       toast(t('toast.regenerating'))
       void onRetryMessage(messageId)
     },
-    [demoMessages, isBusy, onRetryMessage, runDemoAssistantReply, toast, useDemo],
+    [isBusy, onRetryMessage, toast, t],
   )
-
-  const typingBubble: ChatMessage = {
-    id: '__typing__',
-    role: 'assistant',
-    content: '',
-    streaming: true,
-  }
 
   return (
     <AppShell>
@@ -631,15 +497,6 @@ export function ChatView({
                 <QingluLogo compact />
               </div>
               <div className="chat-header-account ml-auto">
-                {DEMO_RECORDING_BOOTSTRAP && (
-                  <button
-                    type="button"
-                    className="chat-back-home-link"
-                    onClick={() => navigate('/?stay=1')}
-                  >
-                    {t('chat.backToHome')}
-                  </button>
-                )}
                 <span
                   className={`hidden h-2 w-2 shrink-0 rounded-full lg:inline-block ${
                     connected || status === 'checking' ? 'bg-lime-500' : 'bg-slate-300'
@@ -668,13 +525,13 @@ export function ChatView({
             onSetupProfile={() => setProfileSheetOpen(true)}
           />
 
-          {useDemo && (
+          {showNotConnectedBanner && (
             <div className="qinglu-chat-column px-4 pb-2">
               <p className="rounded-2xl border border-amber-200/80 bg-amber-50/90 px-3 py-2 text-xs leading-relaxed text-amber-950">
-                {t('chat.demoBanner')}
-                {statusMessage ? ` ${statusMessage}` : t('chat.demoBannerExtra')}
+                {t('chat.notConnectedBanner')}
+                {statusMessage ? ` ${statusMessage}` : t('chat.notConnectedBannerExtra')}
                 <Link to="/settings" className="ml-1 font-semibold text-lime-700 underline">
-                  {t('chat.demoBannerLink')}
+                  {t('chat.notConnectedBannerLink')}
                 </Link>
               </p>
             </div>
@@ -686,9 +543,9 @@ export function ChatView({
               ref={scrollRef}
               onScroll={handleScroll}
             >
-              {!discoveryHidden && (
+              {!discoveryHidden && connected && (
                 <QingluDiscoveryCard
-                  onSendPrompt={(text) => void handleQuickAction(text)}
+                  onSendPrompt={(text) => void handleQuickGridSelect(text)}
                   onDismiss={() => setDiscoveryHidden(true)}
                 />
               )}
@@ -815,9 +672,6 @@ export function ChatView({
                         </div>
                       )
                     })}
-                    {isTyping && (
-                      <ChatBubble key="__typing__" message={typingBubble} loading={isBusy} />
-                    )}
                   </AnimatePresence>
                 </div>
               )}
@@ -849,11 +703,9 @@ export function ChatView({
                 <ChatComposer
                   input={input}
                   loading={loading}
-                  connected={connected || useDemo || demoPresentationEnabled}
+                  connected={connected}
                   onInputChange={onInputChange}
-                  onSend={
-                    useDemo ? () => void handleQuickAction(input) : onSend
-                  }
+                  onSend={onSend}
                   onStop={onStop}
                 />
               </div>

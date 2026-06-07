@@ -16,7 +16,7 @@ export const QUICK_ACTIONS = [
   { id: 'move', icon: '💪', label: '一起动', prompt: '帮我安排今天的运动计划' },
 ] as const
 
-export const DEMO_STATUS = {
+export const PLACEHOLDER_STATUS = {
   calories: { label: '今日剩余热量', value: '剩余 782 kcal', icon: '🔥' },
   training: { label: '训练计划', value: '晚间臀腿训练', time: '19:00 开始', icon: '🏋' },
   location: { label: '当前位置', value: '珠江新城', weather: '晴 28°C 优', icon: '📍' },

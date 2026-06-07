@@ -17,8 +17,7 @@ export interface AiPreferences {
   detail: AiDetail
   useEmoji: boolean
   citeNearby: boolean
-  /** @deprecated 展示前质检常驻开启，不再提供用户开关 */
-  outputGuard?: boolean
+  outputGuard: boolean
 }
 
 export interface AppPreferences {
@@ -39,6 +38,7 @@ export const DEFAULT_PREFERENCES: AppPreferences = {
     detail: 'balanced',
     useEmoji: true,
     citeNearby: true,
+    outputGuard: false,
   },
   mealReminders: true,
   locationShare: true,
@@ -54,7 +54,11 @@ export function loadAppPreferences(): AppPreferences {
       ...DEFAULT_PREFERENCES,
       ...parsed,
       locale,
-      ai: { ...DEFAULT_PREFERENCES.ai, ...parsed.ai },
+      ai: {
+        ...DEFAULT_PREFERENCES.ai,
+        ...parsed.ai,
+        outputGuard: parsed.ai?.outputGuard ?? DEFAULT_PREFERENCES.ai.outputGuard,
+      },
     }
   } catch {
     return { ...DEFAULT_PREFERENCES, ai: { ...DEFAULT_PREFERENCES.ai } }

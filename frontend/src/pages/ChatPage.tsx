@@ -26,7 +26,6 @@ export function ChatPage() {
       input={ctx.input}
       loading={ctx.loading}
       connected={ctx.connected}
-      demoPresentationEnabled={ctx.demoPresentationEnabled}
       status={ctx.status}
       statusMessage={ctx.statusMessage}
       clusterTurn={ctx.clusterTurn}

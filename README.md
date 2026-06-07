@@ -21,7 +21,7 @@ flowchart LR
 - 用户自建档案 → `/ready` 反馈 → `/chat` 今日管家与五类任务
 - OpenClaw 四模块 Skill + 北京/上海场景数据
 - 意图路由后按模块注入 Skill，节省 token
-- 门店卡片、输出守门、门面检索、账户与云同步
+- 门店卡片、可选输出守门（设置中开启）、门面检索、账户与云同步
 
 ## 技术栈
 
@@ -69,4 +69,15 @@ RESEND_FROM = QingLu <onboarding@resend.dev>
 
 `frontend/` · `backend/` · `Agent/burnpal_skill/` · `api/` · `lib/` · `vercel.json`
 
-子文档：[`frontend/README.md`](frontend/README.md) · [`backend/README.md`](backend/README.md) · [`Agent/README.md`](Agent/README.md)
+子文档：[`frontend/README.md`](frontend/README.md) · [`backend/README.md`](backend/README.md) · [`Agent/README.md`](Agent/README.md) · [`docs/architecture.md`](docs/architecture.md)
+
+## 开源
+
+- 许可证：[MIT](LICENSE)
+- 贡献指南：[CONTRIBUTING.md](CONTRIBUTING.md)
+- 安全报告：[SECURITY.md](SECURITY.md)
+- 部署环境模板：[`.env.example`](.env.example)
+
+### Third-party
+
+[`Agent/burnpal_skill/`](Agent/burnpal_skill/) 自 [CCLYX/burnpal.skill](https://github.com/CCLYX/burnpal.skill) vendor 引入，修改时请保留上游归因。黑客松背景见 [`docs/hackathon.md`](docs/hackathon.md)。

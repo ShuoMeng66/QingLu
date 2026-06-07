@@ -9,10 +9,7 @@ import { useToast } from './ToastContext'
 import { useAgentCluster } from '../hooks/useAgentCluster'
 import { useChatStream } from '../hooks/useChatStream'
 import { useConversations } from '../hooks/useConversations'
-import { useDemoPresentation } from '../hooks/useDemoPresentation'
-import { isDemoPresentationEnabled } from '../demoPresentation'
-import { preloadDemoAssets } from '../demoPresentation/preloadDemoAssets'
-import { DEMO_RECORDING_BOOTSTRAP } from '../demoPresentation/recording'
+import { usePreferences } from './PreferencesContext'
 import { useOpenClawConfig } from '../hooks/useOpenClawConfig'
 import { useYiqidongQuest } from '../hooks/useYiqidongQuest'
 import {
@@ -80,6 +77,8 @@ export function AppProvider({ children }: AppProviderProps) {
   const navigate = useNavigate()
   const location = useLocation()
   const { toast } = useToast()
+  const { preferences } = usePreferences()
+  const outputGuardEnabled = preferences.ai.outputGuard ?? false
   const shouldConnectOpenClaw =
     location.pathname === '/chat' || location.pathname === '/settings'
   const [input, setInput] = useState('')
@@ -97,17 +96,6 @@ export function AppProvider({ children }: AppProviderProps) {
 
   const refreshUserProfile = useCallback(() => {
     setUserProfile(loadUserProfile())
-  }, [])
-
-  useEffect(() => {
-    const onProfileChange = () => refreshUserProfile()
-    window.addEventListener('qinglu:demo-profile-changed', onProfileChange)
-    return () => window.removeEventListener('qinglu:demo-profile-changed', onProfileChange)
-  }, [refreshUserProfile])
-
-  useEffect(() => {
-    if (!DEMO_RECORDING_BOOTSTRAP) return
-    preloadDemoAssets()
   }, [])
 
   const {
@@ -134,14 +122,6 @@ export function AppProvider({ children }: AppProviderProps) {
     updateConversationMessages,
   } = useConversations()
 
-  const {
-    enabled: demoPresentationEnabled,
-    conversation: demoConversation,
-    demoActiveId,
-    updateMessages: updateDemoMessages,
-    resetConversation: resetDemoConversation,
-  } = useDemoPresentation()
-
   const connected = status === 'connected'
 
   const scoreAnswer = useCallback(
@@ -160,20 +140,7 @@ export function AppProvider({ children }: AppProviderProps) {
 
   const { questLetter, dismissQuest, clearQuest } = useYiqidongQuest(yiqidongConfig)
 
-  const messages = demoPresentationEnabled
-    ? demoConversation.messages
-    : (activeConversation?.messages ?? [])
-
-  const effectiveActiveId = demoPresentationEnabled ? demoActiveId : activeId
-  const effectiveActiveConversation = demoPresentationEnabled
-    ? demoConversation
-    : activeConversation
-
-  const effectiveHistoryConversations = demoPresentationEnabled ? [] : historyConversations
-
-  const effectiveUpdateConversationMessages = demoPresentationEnabled
-    ? updateDemoMessages
-    : updateConversationMessages
+  const messages = activeConversation?.messages ?? []
 
   const refreshYiqidongUnread = useCallback(() => {
     setYiqidongUnread(countUnreadLetters(getYiqidongLetters()))
@@ -254,7 +221,6 @@ export function AppProvider({ children }: AppProviderProps) {
       rawDraft: string | undefined,
       sceneType?: QuickPromptMeta['sceneType'],
     ) => {
-      if (isDemoPresentationEnabled()) return
       const route = routeQingluSkillModule(userMessage, { sceneType })
       updateSessionFromAssistantReply(rawDraft ?? answer, route.moduleId)
       const score = await finishExecution(userMessage, answer)
@@ -306,15 +272,15 @@ export function AppProvider({ children }: AppProviderProps) {
         )
       },
       onReviewPhase: (active: boolean) => {
-        if (isDemoPresentationEnabled()) return
+        if (!outputGuardEnabled) return
         if (active) setReviewing(true)
       },
       onBeforeReveal: async (draft: string, ctx: import('../hooks/useChatStream').StreamRevealContext) => {
-        if (isDemoPresentationEnabled()) return draft
+        if (!outputGuardEnabled) return draft
         const result = await runOutputGuard({
           config,
           connected,
-          enabled: true,
+          enabled: outputGuardEnabled,
           userMessage: ctx.userMessage,
           draft,
           rawDraft: ctx.rawDraft,
@@ -324,7 +290,15 @@ export function AppProvider({ children }: AppProviderProps) {
         return result.finalContent
       },
     }),
-    [config, connected, handleStreamAssistantDone, messages, resolveSystemPrompt, setReviewing],
+    [
+      config,
+      connected,
+      handleStreamAssistantDone,
+      messages,
+      outputGuardEnabled,
+      resolveSystemPrompt,
+      setReviewing,
+    ],
   )
 
   const {
@@ -336,26 +310,20 @@ export function AppProvider({ children }: AppProviderProps) {
     handleRetryMessage,
   } = useChatStream({
     config,
-    connected: connected || demoPresentationEnabled,
-    activeId: effectiveActiveId,
+    connected,
+    activeId,
     messages,
-    updateConversationMessages: effectiveUpdateConversationMessages,
+    updateConversationMessages,
     onNeedSettings: () => navigate('/settings'),
     toast,
     getStreamSendOptions,
   })
 
   const handleCreateNewConversation = useCallback(() => {
-    if (demoPresentationEnabled) {
-      resetDemoConversation()
-      setInput('')
-      toast(translate(loadAppPreferences().locale, 'toast.newConversation'), 'success')
-      return
-    }
     createNewConversation()
     setInput('')
     toast(translate(loadAppPreferences().locale, 'toast.newConversation'), 'success')
-  }, [createNewConversation, demoPresentationEnabled, resetDemoConversation, toast])
+  }, [createNewConversation, toast])
 
   const handleSelectConversation = useCallback(
     (id: string) => {
@@ -405,11 +373,6 @@ export function AppProvider({ children }: AppProviderProps) {
         rememberPendingUserQuestion(content)
       }
 
-      if (demoPresentationEnabled) {
-        await sendMessage(content)
-        return
-      }
-
       if (messages.length > 0) {
         markTrajectoryFollowUp(activeId)
       }
@@ -443,7 +406,6 @@ export function AppProvider({ children }: AppProviderProps) {
     },
     [
       activeId,
-      demoPresentationEnabled,
       handleStreamAssistantDone,
       messages.length,
       prepareTurn,
@@ -536,11 +498,10 @@ export function AppProvider({ children }: AppProviderProps) {
       handleSaveSettings,
       handleResetSettings,
       handleTestSettings,
-      activeConversation: effectiveActiveConversation,
-      activeId: effectiveActiveId,
-      historyConversations: effectiveHistoryConversations,
-      conversations: demoPresentationEnabled ? [demoConversation] : conversations,
-      demoPresentationEnabled,
+      activeConversation,
+      activeId,
+      historyConversations,
+      conversations,
       selectConversation: handleSelectConversation,
       createNewConversation: handleCreateNewConversation,
       deleteConversation: handleDeleteConversation,
@@ -579,12 +540,10 @@ export function AppProvider({ children }: AppProviderProps) {
       handleSaveSettings,
       handleResetSettings,
       handleTestSettings,
-      effectiveActiveConversation,
-      effectiveActiveId,
-      effectiveHistoryConversations,
+      activeConversation,
+      activeId,
+      historyConversations,
       conversations,
-      demoPresentationEnabled,
-      demoConversation,
       handleSelectConversation,
       handleCreateNewConversation,
       handleDeleteConversation,
@@ -616,7 +575,7 @@ export function AppProvider({ children }: AppProviderProps) {
     <AppContextProvider value={value}>
       {children}
 
-      {questLetter && !DEMO_RECORDING_BOOTSTRAP && (
+      {questLetter && (
         <YiqidongLetterExperience
           letter={questLetter}
           onAcknowledge={handleQuestAcknowledge}
@@ -633,7 +592,7 @@ export function AppProvider({ children }: AppProviderProps) {
         />
       )}
 
-      {mealReminder && mealRemindersEnabled && !DEMO_RECORDING_BOOTSTRAP && (
+      {mealReminder && mealRemindersEnabled && (
         <MealEnvelopePopup
           reminder={mealReminder}
           profile={userProfile}

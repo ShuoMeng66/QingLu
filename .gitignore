@@ -20,8 +20,13 @@ backend/data/*.db-*
 
 # Logs & OS
 *.log
+debug-*.log
 .DS_Store
 Thumbs.db
+
+# Temp / scratch
+**/_tmp_*
+**/temp_*.json
 
 # IDE
 .vscode/

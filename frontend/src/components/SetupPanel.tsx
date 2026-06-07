@@ -68,7 +68,7 @@ export function SetupPanel({
           <input
             value={config.agent}
             onChange={(event) => onChange({ ...config, agent: event.target.value })}
-            placeholder="openclaw/hackathon-dev"
+            placeholder="openclaw/qinglu-dev"
           />
         </label>
       </div>
@@ -106,12 +106,12 @@ export function SetupPanel({
         <summary>首次接入 checklist</summary>
         <ol>
           <li>
-            在 <code>D:\OpenClaw\.openclaw\openclaw.json</code> 中启用{' '}
+            在 OpenClaw 配置目录的 <code>openclaw.json</code> 中启用{' '}
             <code>gateway.http.endpoints.chatCompletions.enabled</code>
           </li>
-          <li>运行 <code>openclaw gateway</code>，确认端口 18789 可用</li>
+          <li>运行 <code>openclaw gateway</code>，确认 Gateway 端口可用</li>
           <li>将 Gateway Token 填入上方输入框并测试连接</li>
-          <li>选择 <code>openclaw/hackathon-dev</code> 或你的 Agent 目标后开始对话</li>
+          <li>选择 <code>openclaw/qinglu-dev</code> 或你的 Agent 目标后开始对话</li>
         </ol>
       </details>
     </section>

@@ -1,12 +1,12 @@
-import { BRAND, DEMO_STATUS } from '../../copy/ui'
+import { BRAND, PLACEHOLDER_STATUS } from '../../copy/ui'
 import { QINGLU } from '../../data/qingluAssets'
 import './StatusDashboard.css'
 
 export function StatusDashboard() {
   const cards = [
-    DEMO_STATUS.calories,
-    DEMO_STATUS.training,
-    DEMO_STATUS.location,
+    PLACEHOLDER_STATUS.calories,
+    PLACEHOLDER_STATUS.training,
+    PLACEHOLDER_STATUS.location,
   ] as const
 
   return (

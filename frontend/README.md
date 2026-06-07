@@ -1,11 +1,11 @@
 # QingLu 轻鹭 Frontend
 
-基于 OpenClaw / 百炼的前端，美团黑客松「本地生活全天候私人管家」赛道。
+基于 OpenClaw / 百炼的 React SPA。
 
 ## 功能
 
-- Demo 旅程：首页 → 建档 → 档案反馈 → 今日管家 → 对话 + 推荐卡片
-- OpenClaw 兼容 API（流式对话、输出守门、门面检索）
+- 用户旅程：首页 → 建档 (`/onboard`) → 档案反馈 (`/ready`) → 对话 (`/chat`)
+- OpenClaw 兼容 API（流式对话、可选输出守门、门面检索）
 - 五类生活任务快捷入口（外卖 / 聚餐 / 去哪练 / 恢复 / 一起动）
 - 账户注册登录与云同步（需 `backend`）
 
@@ -26,12 +26,14 @@ npm run dev
 
 见 `.env.example`。生产构建使用 Vercel 环境变量 `OPENCLAW_TOKEN`（服务端注入），勿将 API Key 写入 `VITE_OPENCLAW_TOKEN`。
 
+未配置 API 时聊天页会提示前往设置，不会发送本地假回复。
+
 ## 路由
 
 | 路径 | 说明 |
 |------|------|
 | `/` | 首页 |
-| `/onboard` | Demo 档案选择 |
+| `/onboard` | 自建减脂档案 |
 | `/ready` | 建档完成反馈 |
 | `/chat` | 今日管家 + 对话 |
-| `/settings` | 设置与 AI 偏好 |
+| `/settings` | 设置与 AI 偏好（含「对话拦截」开关，默认关闭） |

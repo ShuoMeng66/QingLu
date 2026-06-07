@@ -33,8 +33,8 @@ export function ProfileReadyPage() {
 
   useEffect(() => {
     const onChange = () => setProfileTick((n) => n + 1)
-    window.addEventListener('qinglu:demo-profile-changed', onChange)
-    return () => window.removeEventListener('qinglu:demo-profile-changed', onChange)
+    window.addEventListener('qinglu:user-data-applied', onChange)
+    return () => window.removeEventListener('qinglu:user-data-applied', onChange)
   }, [])
 
   const profile = useMemo(() => loadReadyProfile(), [profileTick])

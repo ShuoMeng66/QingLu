@@ -1,6 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useRef, useState, type ReactNode } from 'react'
 import { ToastViewport } from '../components/ToastViewport'
-import { DEMO_RECORDING_BOOTSTRAP } from '../demoPresentation/recording'
 
 export type ToastTone = 'default' | 'success' | 'error'
 
@@ -35,7 +34,6 @@ export function ToastProvider({ children }: { children: ReactNode }) {
 
   const toast = useCallback(
     (message: string, tone: ToastTone = 'default') => {
-      if (DEMO_RECORDING_BOOTSTRAP) return
       const key = `${tone}:${message}`
       const now = Date.now()
       const lastShown = recentRef.current.get(key)

@@ -11,8 +11,11 @@ export function buildAiPreferencePrompt(ai: AiPreferences, locale: AppLocale = '
     translate(locale, detailKey),
     translate(locale, ai.useEmoji ? 'ai.pref.emojiOn' : 'ai.pref.emojiOff'),
     translate(locale, ai.citeNearby ? 'ai.pref.nearbyOn' : 'ai.pref.nearbyOff'),
-    translate(locale, 'ai.pref.outputGuardOn'),
   ]
+
+  if (ai.outputGuard) {
+    parts.push(translate(locale, 'ai.pref.outputGuardOn'))
+  }
 
   return [
     `${translate(locale, 'ai.pref.header')}：${parts.join('；')}。`,
