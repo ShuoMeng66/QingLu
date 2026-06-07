@@ -48,11 +48,11 @@ export const DEMO_PROFILES: DemoProfileRecord[] = [
   {
     "id": "user_a",
     "name": "小明",
-    "gender": "male",
-    "age": 30,
-    "height_cm": 180,
-    "weight_kg": 82,
-    "target_weight_kg": 75,
+    "gender": "female",
+    "age": 26,
+    "height_cm": 165,
+    "weight_kg": 58,
+    "target_weight_kg": 54,
     "bmr_kcal": 1830,
     "tdee_kcal": 2720,
     "daily_target_kcal": 2200,
@@ -60,12 +60,14 @@ export const DEMO_PROFILES: DemoProfileRecord[] = [
     "training_type": "light_exercise",
     "training_frequency": "3x/week",
     "dietary_restrictions": [
-      "不吃辣"
+      "油炸",
+      "内脏"
     ],
     "taste_preferences": [
       "清淡",
       "轻食",
-      "中餐"
+      "中餐",
+      "粤菜"
     ],
     "budget_per_meal_yuan": 40,
     "budget_dining_per_person_yuan": 150,
@@ -126,26 +128,27 @@ export const DEMO_PROFILES: DemoProfileRecord[] = [
       "current": "海淀区·中关村"
     },
     "today": {
-      "training_plan": "快走+体态拉伸",
+      "training_plan": "拉日 / 上肢训练",
       "meals_logged": [
         {
           "meal": "早餐",
-          "items": "杂粮粥+水煮蛋1个+小番茄",
-          "estimated_kcal": 200
+          "items": "蛋白粉+燕麦+蓝莓",
+          "estimated_kcal": 380
         },
         {
           "meal": "午餐",
-          "items": "清炒时蔬+去皮鸡腿肉",
-          "estimated_kcal": 360
+          "items": "鸡胸沙拉+杂粮饭半份",
+          "estimated_kcal": 428
         }
       ],
-      "total_intake_kcal": 560,
-      "remaining_kcal": 820
+      "total_intake_kcal": 808,
+      "remaining_kcal": 780
     },
     "sport_interests": [
-      "羽毛球",
-      "慢跑",
-      "徒步"
+      "网球",
+      "HIIT",
+      "攀岩",
+      "力量训练"
     ],
     "preferred_scale": "small",
     "preferred_time": "白天"

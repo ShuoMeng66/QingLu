@@ -2,6 +2,7 @@ import type { AppLocale } from './i18n/localeIds'
 import { getGoalOptions } from './i18n/chatCopy'
 import { getTodayConsumedKcal } from './mealLog'
 import { replaceTodaySnapshot } from './todaySnapshot'
+import { getActiveDemoProfileId, getDemoProfileById } from './demoProfiles'
 import {
   finalizeUserProfile,
   getRemainingKcal,
@@ -25,19 +26,40 @@ const GOAL_LABEL_ZH: Record<string, string> = {
   healthy_living: '健康生活',
 }
 
+function resolveLocationLabel(profile: UserProfile): string {
+  const commonArea = profile.preferences?.common_areas?.[0]?.trim()
+  if (commonArea === 'near_company') return '国贸'
+  if (commonArea) return commonArea
+  return profile.location_city?.trim() || '—'
+}
+
 export function syncTodayFromProfile(profile: UserProfile): void {
+  const demoId = getActiveDemoProfileId()
+  const demo = demoId ? getDemoProfileById(demoId) : undefined
   const consumed = getTodayConsumedKcal()
-  const remaining = getRemainingKcal(profile, consumed)
+  const remaining =
+    demo?.today.remaining_kcal ?? getRemainingKcal(profile, consumed)
+  const trainingPlan =
+    demo?.today.training_plan ??
+    profile.training?.next_session ??
+    profile.training?.typical_session ??
+    '今日训练'
+  const locationLabel = demo
+    ? areaFromLocation(demo.location.current)
+    : resolveLocationLabel(profile)
+
   replaceTodaySnapshot({
     remaining_kcal: remaining,
-    training_plan:
-      profile.training?.typical_session ??
-      profile.training?.next_session ??
-      '今日训练',
-    location_label: profile.location_city?.trim() || '—',
+    training_plan: trainingPlan,
+    location_label: locationLabel,
     body_status: '正常',
     special_note: '',
   })
+}
+
+function areaFromLocation(current: string): string {
+  const parts = current.split('·')
+  return parts.length > 1 ? parts[parts.length - 1]!.trim() : current.trim()
 }
 
 export interface ProfileReadyTagGroups {

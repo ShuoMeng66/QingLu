@@ -23,6 +23,7 @@ function areaFromLocation(current: string): string {
 function mapDemoToProfile(demo: DemoProfileRecord): UserProfile {
   const restrictions = demo.dietary_restrictions.join('、')
   const tastes = demo.taste_preferences.join('、')
+  const area = areaFromLocation(demo.location.current)
   return {
     user_id: demo.id,
     nickname: demo.name,
@@ -51,8 +52,11 @@ function mapDemoToProfile(demo: DemoProfileRecord): UserProfile {
     preferences: {
       favorite_cuisines: tastes.split('、').filter(Boolean),
       avoid: restrictions.split('、').filter(Boolean),
+      diet_strategies: ['high_protein', 'low_fat', 'carb_control', 'light'],
+      food_restrictions: ['low_fat', 'offal', 'fried'],
+      common_areas: ['near_company'],
     },
-    location_city: demo.location.city,
+    location_city: area || demo.location.city,
     profile_complete: true,
   }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AppShell } from '../components/qinglu/AppShell'
 import { OnboardStepper } from '../components/qinglu/OnboardStepper'
@@ -10,20 +10,36 @@ import {
   ProfileTodayCard,
 } from '../components/qinglu/ProfileReadyPanels'
 import { PageTransition } from '../components/layout/PageTransition'
+import { DEMO_RECORDING_BOOTSTRAP } from '../demoPresentation/recording'
 import {
   getProfileReadySummary,
   getProfileReadyTagGroups,
   getReadyPrioritiesFromProfile,
   loadReadyProfile,
 } from '../lib/profileReady'
+import { applyDemoProfile } from '../lib/demoProfiles'
 import { loadTodaySnapshot } from '../lib/todaySnapshot'
 import { useI18n } from '../hooks/useI18n'
 
 export function ProfileReadyPage() {
   const navigate = useNavigate()
   const { t, locale } = useI18n()
-  const profile = loadReadyProfile()
-  const today = loadTodaySnapshot()
+  const [profileTick, setProfileTick] = useState(0)
+
+  useEffect(() => {
+    if (!DEMO_RECORDING_BOOTSTRAP) return
+    applyDemoProfile('user_a')
+    setProfileTick((n) => n + 1)
+  }, [])
+
+  useEffect(() => {
+    const onChange = () => setProfileTick((n) => n + 1)
+    window.addEventListener('qinglu:demo-profile-changed', onChange)
+    return () => window.removeEventListener('qinglu:demo-profile-changed', onChange)
+  }, [])
+
+  const profile = useMemo(() => loadReadyProfile(), [profileTick])
+  const today = useMemo(() => loadTodaySnapshot(), [profileTick])
 
   const summary = useMemo(
     () => (profile ? getProfileReadySummary(profile, locale) : null),
