@@ -30,9 +30,6 @@ export function SplashPage() {
   useEffect(() => {
     if (!loading && user) {
       const stayOnSplash = new URLSearchParams(window.location.search).get('stay') === '1'
-      // #region agent log
-      fetch('http://127.0.0.1:7530/ingest/077fc56f-9998-421e-953f-c0c89307702f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'9a6481'},body:JSON.stringify({sessionId:'9a6481',hypothesisId:'H3',location:'SplashPage.tsx:redirect',message:'post-auth redirect check',data:{stayOnSplash,path:resolvePostAuthPath()},timestamp:Date.now()})}).catch(()=>{});
-      // #endregion
       if (stayOnSplash) return
       navigate(resolvePostAuthPath(), { replace: true })
     }

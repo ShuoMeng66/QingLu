@@ -231,9 +231,6 @@ export function useChatStream({
       if (isDemoPresentationEnabled()) {
         const userText = lastUserMessage(apiMessages)
         const scene = matchDemoScene(userText)
-        // #region agent log
-        fetch('http://127.0.0.1:7530/ingest/077fc56f-9998-421e-953f-c0c89307702f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'9a6481'},body:JSON.stringify({sessionId:'9a6481',hypothesisId:'H4',location:'useChatStream.ts:runStream',message:'demo scene match',data:{userText,sceneId:scene?.id ?? null},timestamp:Date.now()})}).catch(()=>{});
-        // #endregion
         if (!scene) {
           const assistantId = createMessageId()
           patchMessages(conversationId, (current) => [

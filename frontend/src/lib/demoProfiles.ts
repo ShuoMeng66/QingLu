@@ -86,10 +86,6 @@ export function applyDemoProfile(id: string): DemoProfileRecord | null {
   const demo = getDemoProfileById(id)
   if (!demo) return null
 
-  // #region agent log
-  fetch('http://127.0.0.1:7530/ingest/077fc56f-9998-421e-953f-c0c89307702f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'9a6481'},body:JSON.stringify({sessionId:'9a6481',hypothesisId:'H1',location:'demoProfiles.ts:applyDemoProfile',message:'apply demo profile',data:{id,demoName:demo.name},timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
-
   sessionStorage.setItem(DEMO_PROFILE_SESSION_KEY, id)
   replaceUserProfile(mapDemoToProfile(demo))
 

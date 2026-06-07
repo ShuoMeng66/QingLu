@@ -96,10 +96,6 @@ export function getProfileReadyTagGroups(
     regionTags.push(profile.location_city.trim())
   }
 
-  // #region agent log
-  fetch('http://127.0.0.1:7530/ingest/077fc56f-9998-421e-953f-c0c89307702f',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'9a6481'},body:JSON.stringify({sessionId:'9a6481',hypothesisId:'H2',location:'profileReady.ts:getProfileReadyTagGroups',message:'resolved tags',data:{nickname:profile.nickname,dietStrategiesRaw:prefs?.diet_strategies,dietTags,avoidTags,regionTags},timestamp:Date.now()})}).catch(()=>{});
-  // #endregion
-
   return {
     goalLabel: summary.goalLabel,
     dietTags: dietTags.length ? dietTags : summary.dietStrategy.split(/[；;]/).filter(Boolean),
