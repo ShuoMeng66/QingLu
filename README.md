@@ -2,7 +2,15 @@
 
 > AI 本地生活减脂管家：React 前端 + Express 账户后端 + 百炼 OpenClaw 对话。
 
-仓库：[ShuoMeng66/QingLu](https://github.com/ShuoMeng66/QingLu)
+**项目主页**：[github.com/ShuoMeng66/QingLu](https://github.com/ShuoMeng66/QingLu)
+
+## 贡献者
+
+| 姓名 | 主页 |
+|------|------|
+| 李雨曦 | [github.com/CCLYX](https://github.com/CCLYX) |
+| 陈荣杰 | [github.com/ShuoMeng66](https://github.com/ShuoMeng66) |
+| 邓志洋 | [github.com/theArcticbby](https://github.com/theArcticbby) |
 
 ## 概览
 
