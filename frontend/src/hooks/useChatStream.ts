@@ -12,6 +12,7 @@ import {
   resolveDemoStreamOptions,
   streamDemoDraft,
 } from '../demoPresentation'
+import { applyDemoProfile } from '../lib/demoProfiles'
 import type { ChatMessage, OpenClawConfig } from '../types/openclaw'
 
 export interface StreamRevealContext {
@@ -231,6 +232,10 @@ export function useChatStream({
         const userText = lastUserMessage(apiMessages)
         const scene = matchDemoScene(userText)
         if (!scene) return
+
+        if (scene.profileId) {
+          applyDemoProfile(scene.profileId)
+        }
 
         const assistantId = createMessageId()
         const controller = new AbortController()

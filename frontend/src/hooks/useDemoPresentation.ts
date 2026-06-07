@@ -13,6 +13,7 @@ import {
 } from '../demoPresentation'
 import { applyDemoProfile } from '../lib/demoProfiles'
 import { setDeveloperModeEnabled } from '../lib/developerMode'
+import { preloadDemoAssets } from '../demoPresentation/preloadDemoAssets'
 import { DEMO_RECORDING_BOOTSTRAP } from '../demoPresentation/recording'
 
 export function useDemoPresentation() {
@@ -39,6 +40,7 @@ export function useDemoPresentation() {
   useEffect(() => {
     if (!DEMO_RECORDING_BOOTSTRAP) return
     setDeveloperModeEnabled(true)
+    preloadDemoAssets()
     if (!isDemoPresentationEnabled()) {
       enableDemoPresentation(null)
     }

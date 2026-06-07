@@ -1,5 +1,6 @@
 import type { ChatMessage } from '../types/openclaw'
 import { buildDraftFromScene } from './buildDraft'
+import { DEMO_RECORDING_BOOTSTRAP, DEMO_RECORDING_STREAM } from './recording'
 import type { DemoScene } from './types'
 
 function sleep(ms: number, signal: AbortSignal) {
@@ -46,6 +47,9 @@ export async function streamDemoDraft(params: {
 }
 
 export function resolveDemoStreamOptions(scene: DemoScene) {
+  if (DEMO_RECORDING_BOOTSTRAP) {
+    return { ...DEMO_RECORDING_STREAM }
+  }
   return {
     charsPerTick: scene.stream?.charsPerTick ?? 6,
     tickMs: scene.stream?.tickMs ?? 24,

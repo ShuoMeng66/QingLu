@@ -56,18 +56,19 @@ export const DEMO_PROFILES: DemoProfileRecord[] = [
     "bmr_kcal": 1830,
     "tdee_kcal": 2720,
     "daily_target_kcal": 2200,
-    "activity_level": "heavy",
-    "training_type": "strength",
-    "training_frequency": "5x/week",
+    "activity_level": "moderate",
+    "training_type": "light_exercise",
+    "training_frequency": "3x/week",
     "dietary_restrictions": [
-      "不吃甜食"
+      "不吃辣"
     ],
     "taste_preferences": [
-      "重咸",
-      "高蛋白肉食"
+      "清淡",
+      "轻食",
+      "中餐"
     ],
-    "budget_per_meal_yuan": 48,
-    "budget_dining_per_person_yuan": 140,
+    "budget_per_meal_yuan": 40,
+    "budget_dining_per_person_yuan": 150,
     "location": {
       "city": "北京",
       "work": "朝阳区·国贸",
@@ -75,49 +76,49 @@ export const DEMO_PROFILES: DemoProfileRecord[] = [
       "current": "朝阳区·国贸"
     },
     "today": {
-      "training_plan": "胸+肩",
+      "training_plan": "—",
       "meals_logged": [
         {
           "meal": "早餐",
-          "items": "全麦吐司3片+煎蛋2个+无糖酸奶",
-          "estimated_kcal": 420
+          "items": "全麦吐司+煎蛋+无糖酸奶",
+          "estimated_kcal": 612
         }
       ],
-      "total_intake_kcal": 420,
-      "remaining_kcal": 1780
+      "total_intake_kcal": 612,
+      "remaining_kcal": 1588
     },
     "sport_interests": [
-      "篮球",
-      "引体向上",
-      "跑步"
+      "普拉提",
+      "瑜伽",
+      "慢跑"
     ],
     "preferred_scale": "large",
     "preferred_time": "晚上"
   },
   {
     "id": "user_b",
-    "name": "小红",
+    "name": "小天",
     "gender": "female",
-    "age": 25,
-    "height_cm": 163,
+    "age": 21,
+    "height_cm": 164,
     "weight_kg": 55,
-    "target_weight_kg": 50,
+    "target_weight_kg": 52,
     "bmr_kcal": 1320,
-    "tdee_kcal": 1760,
-    "daily_target_kcal": 1380,
-    "activity_level": "light",
-    "training_type": "light_exercise",
-    "training_frequency": "3x/week",
-    "dietary_restrictions": [
-      "不吃生冷",
-      "少食主食"
-    ],
+    "tdee_kcal": 2100,
+    "daily_target_kcal": 1588,
+    "activity_level": "heavy",
+    "training_type": "strength",
+    "training_frequency": "4x/week",
+    "dietary_restrictions": [],
     "taste_preferences": [
-      "鲜香",
-      "果蔬搭配"
+      "清淡",
+      "日料",
+      "中餐",
+      "西餐",
+      "轻食"
     ],
-    "budget_per_meal_yuan": 42,
-    "budget_dining_per_person_yuan": 95,
+    "budget_per_meal_yuan": 50,
+    "budget_dining_per_person_yuan": 150,
     "location": {
       "city": "北京",
       "work": "海淀区·中关村",

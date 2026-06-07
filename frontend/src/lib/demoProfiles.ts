@@ -97,6 +97,8 @@ export function applyDemoProfile(id: string): DemoProfileRecord | null {
 
   seedCachedUserLocation(demo.location.city, demo.location.current)
 
+  window.dispatchEvent(new Event('qinglu:demo-profile-changed'))
+
   return demo
 }
 

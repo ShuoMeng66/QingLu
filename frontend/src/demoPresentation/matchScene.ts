@@ -1,8 +1,33 @@
 import { DEMO_SCENES } from './scenes.generated'
 import type { DemoScene } from './types'
 
+const FULLWIDTH_PUNCTUATION: Record<string, string> = {
+  '，': ',',
+  '。': '.',
+  '；': ';',
+  '：': ':',
+  '？': '?',
+  '！': '!',
+  '（': '(',
+  '）': ')',
+  '「': '"',
+  '」': '"',
+  '『': '"',
+  '』': '"',
+  '、': ',',
+  '％': '%',
+  '＋': '+',
+}
+
 export function normalizeDemoText(value: string): string {
-  return value.replace(/\s+/g, ' ').trim()
+  let text = value.replace(/\s+/g, ' ').trim()
+  text = text.replace(/[–—−‑]/g, '-')
+  text = text.replace(/[０-９]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0xfee0))
+  text = text.replace(/[Ａ-Ｚａ-ｚ]/g, (ch) => String.fromCharCode(ch.charCodeAt(0) - 0xfee0))
+  for (const [full, half] of Object.entries(FULLWIDTH_PUNCTUATION)) {
+    text = text.split(full).join(half)
+  }
+  return text
 }
 
 export function matchDemoScene(userText: string): DemoScene | null {

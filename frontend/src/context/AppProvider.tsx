@@ -11,6 +11,8 @@ import { useChatStream } from '../hooks/useChatStream'
 import { useConversations } from '../hooks/useConversations'
 import { useDemoPresentation } from '../hooks/useDemoPresentation'
 import { isDemoPresentationEnabled } from '../demoPresentation'
+import { preloadDemoAssets } from '../demoPresentation/preloadDemoAssets'
+import { DEMO_RECORDING_BOOTSTRAP } from '../demoPresentation/recording'
 import { useOpenClawConfig } from '../hooks/useOpenClawConfig'
 import { useYiqidongQuest } from '../hooks/useYiqidongQuest'
 import {
@@ -96,6 +98,20 @@ export function AppProvider({ children }: AppProviderProps) {
   const refreshUserProfile = useCallback(() => {
     setUserProfile(loadUserProfile())
   }, [])
+
+  useEffect(() => {
+    const onProfileChange = () => refreshUserProfile()
+    window.addEventListener('qinglu:demo-profile-changed', onProfileChange)
+    return () => window.removeEventListener('qinglu:demo-profile-changed', onProfileChange)
+  }, [refreshUserProfile])
+
+  useEffect(() => {
+    if (!DEMO_RECORDING_BOOTSTRAP) return
+    preloadDemoAssets()
+    if (location.pathname === '/' || location.pathname === '/splash') {
+      navigate('/chat', { replace: true })
+    }
+  }, [location.pathname, navigate])
 
   const {
     config,
@@ -241,6 +257,7 @@ export function AppProvider({ children }: AppProviderProps) {
       rawDraft: string | undefined,
       sceneType?: QuickPromptMeta['sceneType'],
     ) => {
+      if (isDemoPresentationEnabled()) return
       const route = routeQingluSkillModule(userMessage, { sceneType })
       updateSessionFromAssistantReply(rawDraft ?? answer, route.moduleId)
       const score = await finishExecution(userMessage, answer)
@@ -292,6 +309,7 @@ export function AppProvider({ children }: AppProviderProps) {
         )
       },
       onReviewPhase: (active: boolean) => {
+        if (isDemoPresentationEnabled()) return
         if (active) setReviewing(true)
       },
       onBeforeReveal: async (draft: string, ctx: import('../hooks/useChatStream').StreamRevealContext) => {
@@ -601,7 +619,7 @@ export function AppProvider({ children }: AppProviderProps) {
     <AppContextProvider value={value}>
       {children}
 
-      {questLetter && (
+      {questLetter && !DEMO_RECORDING_BOOTSTRAP && (
         <YiqidongLetterExperience
           letter={questLetter}
           onAcknowledge={handleQuestAcknowledge}
@@ -618,7 +636,7 @@ export function AppProvider({ children }: AppProviderProps) {
         />
       )}
 
-      {mealReminder && mealRemindersEnabled && (
+      {mealReminder && mealRemindersEnabled && !DEMO_RECORDING_BOOTSTRAP && (
         <MealEnvelopePopup
           reminder={mealReminder}
           profile={userProfile}
