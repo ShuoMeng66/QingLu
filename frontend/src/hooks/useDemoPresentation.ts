@@ -12,6 +12,8 @@ import {
   DEMO_PRESENTATION_CONVERSATION_ID,
 } from '../demoPresentation'
 import { applyDemoProfile } from '../lib/demoProfiles'
+import { setDeveloperModeEnabled } from '../lib/developerMode'
+import { DEMO_RECORDING_BOOTSTRAP } from '../demoPresentation/recording'
 
 export function useDemoPresentation() {
   const [enabled, setEnabled] = useState(() => isDemoPresentationEnabled())
@@ -33,6 +35,15 @@ export function useDemoPresentation() {
   useEffect(() => {
     if (enabled) applyDemoProfile('user_a')
   }, [enabled])
+
+  useEffect(() => {
+    if (!DEMO_RECORDING_BOOTSTRAP) return
+    setDeveloperModeEnabled(true)
+    if (!isDemoPresentationEnabled()) {
+      enableDemoPresentation(null)
+    }
+    refresh()
+  }, [refresh])
 
   const turnOn = useCallback((currentActiveId: string) => {
     enableDemoPresentation(currentActiveId)

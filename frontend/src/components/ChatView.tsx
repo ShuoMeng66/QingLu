@@ -657,14 +657,6 @@ export function ChatView({
             onSetupProfile={() => setProfileSheetOpen(true)}
           />
 
-          {demoPresentationEnabled && (
-            <div className="qinglu-chat-column px-4 pb-2">
-              <p className="rounded-2xl border border-emerald-200/80 bg-emerald-50/90 px-3 py-2 text-xs leading-relaxed text-emerald-950">
-                {t('chat.demoPresentationBanner')}
-              </p>
-            </div>
-          )}
-
           {useDemo && (
             <div className="qinglu-chat-column px-4 pb-2">
               <p className="rounded-2xl border border-amber-200/80 bg-amber-50/90 px-3 py-2 text-xs leading-relaxed text-amber-950">
