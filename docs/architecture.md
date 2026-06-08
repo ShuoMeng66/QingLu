@@ -18,7 +18,6 @@ flowchart LR
 - **React 19 + Vite** SPA in `frontend/`
 - Skill modules bundled from `Agent/burnpal_skill/` into `frontend/src/generated/`
 - Intent routing selects one skill module per turn to save tokens
-- Optional **Output Guard**: pre-display review using a fast model (user-toggle in Settings, off by default)
 
 ## Backend
 

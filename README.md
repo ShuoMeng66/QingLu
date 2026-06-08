@@ -53,7 +53,6 @@ OPENCLAW_PROXY_TARGET = https://dashscope.aliyuncs.com
 OPENCLAW_PROXY_PATH = /compatible-mode
 VITE_OPENCLAW_BASE_URL = /api/openclaw/v1
 VITE_OPENCLAW_AGENT = deepseek-v4-flash
-VITE_GUARD_AGENT = deepseek-v4-flash
 BACKEND_URL = <Render 后端 URL>
 RESEND_API_KEY = <可选>
 QINGLU_PROXY_SECRET = <与 Render 相同，可选>

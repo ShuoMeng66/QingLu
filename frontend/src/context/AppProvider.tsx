@@ -9,7 +9,6 @@ import { useToast } from './ToastContext'
 import { useAgentCluster } from '../hooks/useAgentCluster'
 import { useChatStream } from '../hooks/useChatStream'
 import { useConversations } from '../hooks/useConversations'
-import { usePreferences } from './PreferencesContext'
 import { useOpenClawConfig } from '../hooks/useOpenClawConfig'
 import { useYiqidongQuest } from '../hooks/useYiqidongQuest'
 import {
@@ -36,8 +35,6 @@ import {
 } from '../lib/sessionContext'
 import { routeQingluSkillModule } from '../lib/skillRouter'
 import type { FollowUpActionMeta } from '../types/openclaw'
-import { runOutputGuard } from '../lib/outputGuard'
-import { getCachedUserLocation } from '../lib/userLocation'
 import {
   createTrajectoryDraft,
   completeTrajectory,
@@ -77,8 +74,6 @@ export function AppProvider({ children }: AppProviderProps) {
   const navigate = useNavigate()
   const location = useLocation()
   const { toast } = useToast()
-  const { preferences } = usePreferences()
-  const outputGuardEnabled = preferences.ai.outputGuard ?? false
   const shouldConnectOpenClaw =
     location.pathname === '/chat' || location.pathname === '/settings'
   const [input, setInput] = useState('')
@@ -133,7 +128,6 @@ export function AppProvider({ children }: AppProviderProps) {
     turn: clusterTurn,
     prepareTurn,
     finishExecution,
-    setReviewing,
     resetTurn,
     submitFeedback,
   } = useAgentCluster({ scoreAnswer })
@@ -271,34 +265,8 @@ export function AppProvider({ children }: AppProviderProps) {
           rawDraft,
         )
       },
-      onReviewPhase: (active: boolean) => {
-        if (!outputGuardEnabled) return
-        if (active) setReviewing(true)
-      },
-      onBeforeReveal: async (draft: string, ctx: import('../hooks/useChatStream').StreamRevealContext) => {
-        if (!outputGuardEnabled) return draft
-        const result = await runOutputGuard({
-          config,
-          connected,
-          enabled: outputGuardEnabled,
-          userMessage: ctx.userMessage,
-          draft,
-          rawDraft: ctx.rawDraft,
-          hasStructuredPayload: ctx.hasStructuredPayload,
-          userLocation: getCachedUserLocation(),
-        })
-        return result.finalContent
-      },
     }),
-    [
-      config,
-      connected,
-      handleStreamAssistantDone,
-      messages,
-      outputGuardEnabled,
-      resolveSystemPrompt,
-      setReviewing,
-    ],
+    [handleStreamAssistantDone, messages, resolveSystemPrompt],
   )
 
   const {

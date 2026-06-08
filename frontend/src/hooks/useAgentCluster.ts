@@ -40,10 +40,6 @@ function agentsForPhase(phase: ClusterPhase): SquadAgentState[] {
       set('planner', 'done')
       set('executor', 'working')
       break
-    case 'reviewing':
-      set('executor', 'done')
-      set('scorer', 'working')
-      break
     case 'scoring':
       set('executor', 'done')
       set('scorer', 'working')
@@ -94,13 +90,6 @@ export function useAgentCluster(options?: {
     return plan
   }, [setPhase])
 
-  const setReviewing = useCallback(
-    (active: boolean) => {
-      if (active) setPhase('reviewing')
-    },
-    [setPhase],
-  )
-
   const finishExecution = useCallback(async (userMessage: string, answer: string) => {
     setPhase('scoring')
     await sleep(360)
@@ -138,7 +127,6 @@ export function useAgentCluster(options?: {
     feedbackStats,
     prepareTurn,
     finishExecution,
-    setReviewing,
     resetTurn,
     submitFeedback,
   }

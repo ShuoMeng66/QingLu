@@ -199,7 +199,7 @@ export function ChatBubble({
           } ${isAborted ? 'opacity-70' : ''}`}
         >
           {isThinking ? (
-            <p className="text-sm text-slate-500">{t('chat.guardReviewing')}</p>
+            <p className="text-sm text-slate-500">{t('typing.thinking')}</p>
           ) : assistantDisplay ? (
             <MarkdownContent content={assistantDisplay} />
           ) : (

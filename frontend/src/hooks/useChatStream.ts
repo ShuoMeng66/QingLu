@@ -7,14 +7,6 @@ import { debugPerf } from '../lib/debugPerf'
 import { splitAssistantStructured } from '../lib/assistantStructured'
 import type { ChatMessage, OpenClawConfig } from '../types/openclaw'
 
-export interface StreamRevealContext {
-  userMessage: string
-  /** Full model draft before display strip */
-  rawDraft: string
-  /** Rich cards / structured payload present (JSON block) */
-  hasStructuredPayload: boolean
-}
-
 export interface StreamSendOptions {
   systemPrompt?: string
   /** Rebuild skill prompt from last user turn (regenerate / edit / retry) */
@@ -27,9 +19,6 @@ export interface StreamSendOptions {
     meta?: import('../types/openclaw').AssistantMessageMeta,
     rawDraft?: string,
   ) => void | Promise<void>
-  /** Run after model finishes, before user sees assistant text */
-  onBeforeReveal?: (draft: string, ctx: StreamRevealContext) => Promise<string>
-  onReviewPhase?: (active: boolean) => void
 }
 
 interface UseChatStreamOptions {
@@ -56,13 +45,6 @@ function finalizeAssistant(
 
 function t(key: Parameters<typeof translate>[1]) {
   return translate(loadAppPreferences().locale, key)
-}
-
-function lastUserMessage(apiMessages: ChatMessage[]): string {
-  for (let i = apiMessages.length - 1; i >= 0; i -= 1) {
-    if (apiMessages[i]?.role === 'user') return apiMessages[i].content
-  }
-  return ''
 }
 
 function mergeStreamOptions(
@@ -141,45 +123,29 @@ export function useChatStream({
       conversationId: string,
       assistantId: string,
       draft: string,
-      apiMessages: ChatMessage[],
+      _apiMessages: ChatMessage[],
       options: StreamSendOptions | undefined,
       signal: AbortSignal,
     ): Promise<boolean> => {
       if (signal.aborted) return false
       if (streamConversationRef.current !== conversationId) return false
 
-      const userMessage = lastUserMessage(apiMessages)
       const revealStart = performance.now()
 
       debugPerf(
         'useChatStream.ts:revealAssistant',
         'reveal_start',
-        { draftLen: draft.length, hasGuard: Boolean(options?.onBeforeReveal) },
+        { draftLen: draft.length },
         'C',
       )
 
       const structured = splitAssistantStructured(draft)
-      let displayContent = structured.displayContent
-      const revealCtx: StreamRevealContext = {
-        userMessage,
-        rawDraft: draft,
-        hasStructuredPayload: Boolean(structured.payload || structured.meta?.structuredPayload),
-      }
-
-      try {
-        options?.onReviewPhase?.(true)
-        if (options?.onBeforeReveal) {
-          displayContent = await options.onBeforeReveal(displayContent, revealCtx)
-        }
-      } finally {
-        options?.onReviewPhase?.(false)
-      }
+      const finalContent = structured.displayContent
+      const assistantMeta = structured.meta ?? undefined
 
       if (signal.aborted || streamConversationRef.current !== conversationId) {
         return false
       }
-      const finalContent = displayContent
-      const assistantMeta = structured.meta ?? undefined
 
       debugPerf(
         'useChatStream.ts:revealAssistant',

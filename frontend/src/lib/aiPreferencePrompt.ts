@@ -13,10 +13,6 @@ export function buildAiPreferencePrompt(ai: AiPreferences, locale: AppLocale = '
     translate(locale, ai.citeNearby ? 'ai.pref.nearbyOn' : 'ai.pref.nearbyOff'),
   ]
 
-  if (ai.outputGuard) {
-    parts.push(translate(locale, 'ai.pref.outputGuardOn'))
-  }
-
   return [
     `${translate(locale, 'ai.pref.header')}：${parts.join('；')}。`,
     buildLocaleReplyInstruction(locale),

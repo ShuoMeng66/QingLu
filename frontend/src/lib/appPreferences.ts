@@ -17,7 +17,6 @@ export interface AiPreferences {
   detail: AiDetail
   useEmoji: boolean
   citeNearby: boolean
-  outputGuard: boolean
 }
 
 export interface AppPreferences {
@@ -38,7 +37,6 @@ export const DEFAULT_PREFERENCES: AppPreferences = {
     detail: 'balanced',
     useEmoji: true,
     citeNearby: true,
-    outputGuard: false,
   },
   mealReminders: true,
   locationShare: true,
@@ -57,7 +55,6 @@ export function loadAppPreferences(): AppPreferences {
       ai: {
         ...DEFAULT_PREFERENCES.ai,
         ...parsed.ai,
-        outputGuard: parsed.ai?.outputGuard ?? DEFAULT_PREFERENCES.ai.outputGuard,
       },
     }
   } catch {
